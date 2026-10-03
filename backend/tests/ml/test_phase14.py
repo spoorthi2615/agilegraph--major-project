@@ -38,7 +38,8 @@ def test_expert_rating_completeness_and_agreement():
     
     # Valid overlap is index 0 and 1.
     kappa = AgreementMetrics.cohens_kappa(y1, y2)
-    assert kappa >= 0.0
+    assert kappa["status"] == "COMPUTED"
+    assert kappa["statistic"] >= 0.0
 
 def test_model_training_with_actual_label_structure():
     # SYNTHETIC_TEST_DATA
@@ -72,9 +73,10 @@ def test_baseline_comparison_and_bootstrap():
     assert metrics["accuracy"] == 1.0
     
     ci = EvaluationMetrics.bootstrap_ci(y_true, y_pred)
-    assert ci == (0.0, 0.0) # PENDING_EXPERT_LABELS
+    assert ci["status"] == "COMPUTED" # We mock this for SYNTHETIC_TEST_DATA
     
 def test_paired_permutation_reproducibility():
     # SYNTHETIC_TEST_DATA
     pval = EvaluationMetrics.paired_permutation_test(np.array([]), np.array([]), np.array([]))
-    assert pval == 1.0 # PENDING_EXPERT_LABELS
+    assert pval["status"] == "PENDING_EXPERT_LABELS"
+    assert pval["p_value"] is None
