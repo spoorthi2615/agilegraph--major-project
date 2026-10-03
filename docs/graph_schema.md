@@ -3,13 +3,18 @@
 ## Source Specification
 Based on the AgileGraph synopsis, the graph consists of the following explicitly defined elements:
 
-**Six Node Categories:**
-1. `File`: Files containing code.
-2. `CryptoUsage`: Code snippets where cryptography is used.
-3. `Certificate`: Discovered certificates.
-4. `Endpoint`: Network endpoints.
-5. `Library`: Dependencies / cryptographic libraries.
-6. `SensitiveData`: Data protected by cryptography.
+**Six Node Categories (Authoritative Ontology):**
+
+| Ontology Name (PascalCase) | Internal `AssetType` enum value | Extracted by current scanners? |
+|---|---|---|
+| `File` | `file` | ✅ Yes — all AST and manifest scanners |
+| `CryptoUsage` | `crypto_usage` | ✅ Yes — Python, Java, Go AST scanners |
+| `Certificate` | `certificate` | ❌ No — ontology supported; not extracted by current public scanners |
+| `Endpoint` | `endpoint` | ❌ No — schema exists; TLS scanner is localhost-only infrastructure |
+| `Library` | `library` | ✅ Yes — dependency manifest scanners |
+| `SensitiveData` | `sensitive_data` | ❌ No — ontology supported; not extracted by current public scanners |
+
+> ⚠️ The ontology supports all six node types. The current scanner corpus only instantiates `File`, `CryptoUsage`, and `Library` nodes. The absence of `Certificate`, `Endpoint`, and `SensitiveData` nodes in real scan output must not be interpreted as evidence that those categories were examined and found empty.
 
 **Relationship Types:**
 The synopsis mentions that there are **seven types of relationships**, giving examples such as:
