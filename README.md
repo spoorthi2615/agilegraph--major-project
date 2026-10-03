@@ -80,11 +80,15 @@ Continuous Integration (CI) is configured via GitHub Actions in `.github/workflo
 ## Current Status and Limitations
 
 - **IMPLEMENTED**: CLI, Dashboard, Heuristic Risk Engine, Scanners (AST Python/Java/Go), Graph Ontology, Dependency Manifest Parsing.
-- **TESTED**: Backend test suite (123 tests), CLI commands, Frontend build.
+- **TESTED**: Backend test suite, CLI commands, Frontend build.
 - **PARTIALLY IMPLEMENTED**: Dependency intelligence (CVE/CBOM is unavailable).
 - **INFRASTRUCTURE ONLY**: Certificate/TLS Scanner, GATv2 architecture, leakage ablation, baseline comparison, expert validation schema.
+- **UNAVAILABLE / NOT INCLUDED**: 
+  - CBOMkit/CVE enrichment (unavailable).
+  - Semgrep (not utilized in the current scanner implementation).
+  - CT (Certificate Transparency) / passive certificates (not implemented).
+  - Certificate, Endpoint, and SensitiveData nodes (ontology supports them, but current scanners do not extract them).
 - **PENDING**: Genuine expert annotation import.
 - **BLOCKED**: GATv2 training, Empirical evaluation, Statistical inference.
-- **UNAVAILABLE**: CBOMkit/CVE enrichment.
 
 *AgileGraph is designed to ensure rigorous provenance and structural determinism before proceeding to expert-in-the-loop evaluation.*

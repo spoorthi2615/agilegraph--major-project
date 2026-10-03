@@ -3,8 +3,9 @@ from typing import List
 from src.scanners.common.models import FindingRecord
 from src.scanners.common.enums import AssetType, Language
 
-GO_IMPORT_PATTERN = re.compile(r'"(crypto/rsa|crypto/ecdsa|crypto/ed25519|crypto/aes|crypto/cipher|crypto/sha256|crypto/sha512|crypto/tls)"')
-GO_CRYPTO_USAGE_PATTERN = re.compile(r'(rsa\.GenerateKey|ecdsa\.GenerateKey|ed25519\.GenerateKey|aes\.NewCipher|sha256\.New|sha512\.New|tls\.Config)\s*\(')
+GO_IMPORT_PATTERN = re.compile(r'"(crypto/(md5|sha1|des|rsa|ecdsa|ed25519|aes|cipher|sha256|sha512|tls))"')
+GO_CRYPTO_USAGE_PATTERN = re.compile(r'(md5\.New|sha1\.New|des\.NewCipher|rsa\.GenerateKey|ecdsa\.GenerateKey|ed25519\.GenerateKey|aes\.NewCipher|sha256\.New|sha512\.New|tls\.Config)\s*\(')
+GO_RSA_KEY_SIZE_PATTERN = re.compile(r'rsa\.GenerateKey\([^,]+,\s*(\d+)\)')
 
 def scan_go_code(repository: str, filepath: str, code: str) -> List[FindingRecord]:
     findings = []
@@ -37,11 +38,17 @@ def scan_go_code(repository: str, filepath: str, code: str) -> List[FindingRecor
                 operation = "tls_config"
             elif "GenerateKey" in api:
                 operation = "key_generation"
-            elif algorithm in ("sha256", "sha512"):
+            elif algorithm in ("md5", "sha1", "sha256", "sha512"):
                 operation = "hashing"
             else:
                 operation = "encryption"
                 
+            extra = {}
+            if algorithm == "rsa":
+                key_size_match = GO_RSA_KEY_SIZE_PATTERN.search(line)
+                if key_size_match:
+                    extra["key_size"] = int(key_size_match.group(1))
+                    
             findings.append(FindingRecord(
                 asset_type=AssetType.CRYPTO_USAGE,
                 repository=repository,
@@ -52,7 +59,8 @@ def scan_go_code(repository: str, filepath: str, code: str) -> List[FindingRecor
                 algorithm=algorithm,
                 operation=operation,
                 evidence=line.strip(),
-                confidence=0.9
+                confidence=0.9,
+                extra=extra
             ))
             
     return findings

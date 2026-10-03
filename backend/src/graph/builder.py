@@ -55,8 +55,10 @@ class GraphBuilder:
 
             # Add the primary node
             # If it's a file node itself, it might override the stub, which is fine
+            # If it's a library node, we don't add the line-specific finding node, we only add the canonical library node later
             if node.id != file_node_id or node.category != AssetType.FILE.value:
-                self.graph.add_node(node)
+                if record.asset_type != AssetType.LIBRARY:
+                    self.graph.add_node(node)
                 
             # Create Edges based on Implementation Decisions from docs/graph_schema.md
             if record.asset_type == AssetType.CRYPTO_USAGE and file_node_id:

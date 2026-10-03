@@ -4,7 +4,9 @@ from src.scanners.common.models import FindingRecord
 from src.scanners.common.enums import AssetType, Language
 
 JAVA_IMPORT_PATTERN = re.compile(r'import\s+(java\.security\.[a-zA-Z0-9_.*]+|javax\.crypto\.[a-zA-Z0-9_.*]+|org\.bouncycastle\.[a-zA-Z0-9_.*]+);')
-JAVA_CRYPTO_USAGE_PATTERN = re.compile(r'(Cipher\.getInstance|MessageDigest\.getInstance|KeyPairGenerator\.getInstance|KeyGenerator\.getInstance|Signature\.getInstance)\s*\(\s*"([^"]+)"\s*\)')
+# Broaden pattern to capture algorithms in strings, even if assigned to variables
+JAVA_ALGO_PATTERN = re.compile(r'(Cipher|MessageDigest|KeyPairGenerator|KeyGenerator|Signature)\.getInstance\s*\(\s*([^)]+)\s*\)')
+JAVA_KEY_SIZE_PATTERN = re.compile(r'\.initialize\s*\(\s*(\d+)\s*\)')
 
 def scan_java_code(repository: str, filepath: str, code: str) -> List[FindingRecord]:
     findings = []
@@ -29,22 +31,44 @@ def scan_java_code(repository: str, filepath: str, code: str) -> List[FindingRec
             ))
             
         # Check usages
-        usage_match = JAVA_CRYPTO_USAGE_PATTERN.search(line)
+        usage_match = JAVA_ALGO_PATTERN.search(line)
         if usage_match:
             api = usage_match.group(1)
-            algorithm = usage_match.group(2)
+            algorithm_raw = usage_match.group(2).strip()
+            
+            # Extract string literal if it's there
+            algorithm = algorithm_raw.strip('"\'')
             operation = "encryption" if "Cipher" in api else "hashing" if "MessageDigest" in api else "key_generation" if "Key" in api else "signature"
+            
             findings.append(FindingRecord(
                 asset_type=AssetType.CRYPTO_USAGE,
                 repository=repository,
                 file=filepath,
                 line=line_num,
                 language=Language.JAVA,
-                api=f"{api}()",
+                api=f"{api}.getInstance()",
                 algorithm=algorithm,
                 operation=operation,
                 evidence=line.strip(),
                 confidence=0.9
+            ))
+            
+        # Check key size
+        key_size_match = JAVA_KEY_SIZE_PATTERN.search(line)
+        if key_size_match:
+            key_size = key_size_match.group(1)
+            findings.append(FindingRecord(
+                asset_type=AssetType.CRYPTO_USAGE,
+                repository=repository,
+                file=filepath,
+                line=line_num,
+                language=Language.JAVA,
+                api="initialize()",
+                algorithm="rsa", # we assume RSA for now or keygen
+                operation="key_generation",
+                evidence=f"Key size {key_size}",
+                confidence=0.8,
+                extra={"key_size": int(key_size)}
             ))
             
     return findings

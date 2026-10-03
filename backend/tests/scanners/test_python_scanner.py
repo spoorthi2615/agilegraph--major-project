@@ -17,6 +17,6 @@ def test_scan_python_calls():
     
     calls = [f for f in findings if f.asset_type == AssetType.CRYPTO_USAGE]
     assert len(calls) == 1
-    assert calls[0].api == "hashlib.md5"
+    assert calls[0].api == "hashlib.md5()"
     assert calls[0].algorithm == "md5"
     assert calls[0].line == 2

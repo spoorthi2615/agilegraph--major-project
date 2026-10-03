@@ -31,6 +31,8 @@ def get_status():
 
 @router.get("/mosca-index")
 def get_mosca_readiness_index(confidentiality: int = 10, migration: int = 5, quantum: int = 20):
+    if confidentiality < 0 or migration < 0 or quantum < 0:
+        raise HTTPException(status_code=400, detail="Mosca parameters must be non-negative.")
     readiness = "Vulnerable" if (confidentiality + migration > quantum) else "Safe"
     return {"readiness": readiness, "c_period": confidentiality, "m_time": migration, "q_horizon": quantum}
 
@@ -38,6 +40,12 @@ def get_mosca_readiness_index(confidentiality: int = 10, migration: int = 5, qua
 def trigger_scan(request: ScanRequest):
     if not os.path.exists(request.repository_path):
         raise HTTPException(status_code=400, detail="Repository path does not exist.")
+        
+    # Security: explicitly reject paths that look like system roots or sensitive directories
+    abs_path = os.path.abspath(request.repository_path).lower()
+    system_roots = ["/etc", "/var", "/usr", "/sys", "/dev", "c:\\windows", "c:\\program files"]
+    if any(abs_path.startswith(r) for r in system_roots) or abs_path == "/" or abs_path == "c:\\":
+        raise HTTPException(status_code=403, detail="Scanning system directories is not allowed.")
         
     try:
         result = run_pipeline(request.repository_path, request.project_id, "RENORMALIZE")

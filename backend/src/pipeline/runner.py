@@ -18,10 +18,15 @@ def run_pipeline(repository_path: str, project_id: str, missing_data_policy: str
     policy = MissingDataPolicy(missing_data_policy)
         
     findings = []
+    scanned_files_count = 0
+    scanner_errors = []
+    
     for root, _, files in os.walk(repository_path):
         for file in files:
             path = os.path.join(root, file)
             rel_path = os.path.relpath(path, repository_path).replace("\\", "/")
+            
+            scanned_files_count += 1
             
             try:
                 with open(path, "r", encoding="utf-8") as f:
@@ -36,8 +41,8 @@ def run_pipeline(repository_path: str, project_id: str, missing_data_policy: str
                     
                 if file in ["requirements.txt", "pom.xml", "build.gradle", "go.mod"]:
                     findings.extend(scan_manifest(project_id, file, content))
-            except Exception:
-                pass
+            except Exception as e:
+                scanner_errors.append({"file": rel_path, "error": str(e)})
                 
     agile_graph = AgileGraph()
     builder = GraphBuilder(agile_graph)
@@ -69,7 +74,10 @@ def run_pipeline(repository_path: str, project_id: str, missing_data_policy: str
         "graph": g,
         "scores": scores,
         "provenance": {
-            "scanned_files": len(findings),
+            "scanned_files": scanned_files_count,
+            "findings_count": len(findings),
+            "errors": len(scanner_errors),
+            "error_details": scanner_errors,
             "is_mock": False
         }
     }

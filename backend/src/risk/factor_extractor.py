@@ -16,6 +16,27 @@ class FactorExtractor:
         """
         Extracts the seven heuristic risk factors without calculating the final risk score.
         """
+        if algorithm is None:
+            # Traverse CONTAINS edges to find crypto_usage nodes
+            weakest_algo = None
+            out_edges = self.graph.G.out_edges(node_id, data=True)
+            for _, target, edge_data in out_edges:
+                if edge_data.get("relationship") == "CONTAINS":
+                    target_data = self.graph.G.nodes.get(target, {})
+                    if target_data and target_data.get("category") == "crypto_usage":
+                        target_algo = target_data.get("algorithm")
+                        if target_algo:
+                            # Simple logic: if we found an algorithm, use it.
+                            # In a real system, we'd rank them by weakness, but for now we take the first found
+                            # or try to find a known weak one.
+                            if weakest_algo is None:
+                                weakest_algo = target_algo
+                            elif target_algo.lower() in ("md5", "sha1", "des", "rc4"):
+                                weakest_algo = target_algo
+                                
+            if weakest_algo:
+                algorithm = weakest_algo
+                
         return RiskFactors(
             data_sensitivity=extract_data_sensitivity(metadata),
             asset_criticality=extract_asset_criticality(metadata),

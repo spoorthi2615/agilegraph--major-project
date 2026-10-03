@@ -41,3 +41,35 @@ def test_factor_extractor_incomplete_fixture():
     assert factors.crypto_weakness.value is None
     assert factors.cve_risk.value is None
     assert factors.migration_difficulty.value is None
+
+def test_factor_extractor_graph_traversal_weak_algo():
+    ag = AgileGraph()
+    ag.add_node(GraphNode(id="file1", category="file"))
+    ag.add_node(GraphNode(id="usage_md5", category="crypto_usage", properties={"algorithm": "md5"}))
+    ag.add_node(GraphNode(id="usage_aes", category="crypto_usage", properties={"algorithm": "aes"}))
+    
+    from src.graph.schema import GraphEdge
+    ag.add_edge(GraphEdge(source_id="file1", target_id="usage_md5", relationship="CONTAINS"))
+    ag.add_edge(GraphEdge(source_id="file1", target_id="usage_aes", relationship="CONTAINS"))
+    
+    extractor = FactorExtractor(ag)
+    factors = extractor.extract("file1", {}, {}, {})
+    
+    # MD5 should be prioritized as the weakest algorithm
+    assert factors.crypto_weakness.value > 0.5
+    assert "md5" in factors.crypto_weakness.source.lower()
+
+def test_factor_extractor_graph_traversal_strong_algo():
+    ag = AgileGraph()
+    ag.add_node(GraphNode(id="file1", category="file"))
+    ag.add_node(GraphNode(id="usage_aes", category="crypto_usage", properties={"algorithm": "aes"}))
+    
+    from src.graph.schema import GraphEdge
+    ag.add_edge(GraphEdge(source_id="file1", target_id="usage_aes", relationship="CONTAINS"))
+    
+    extractor = FactorExtractor(ag)
+    factors = extractor.extract("file1", {}, {}, {})
+    
+    # AES should not be 1.0 risk (it's safe, but let's check what algorithm_strength.py returns)
+    assert factors.crypto_weakness.value == 0.3 # AES is currently safe in the system
+    assert "aes" in factors.crypto_weakness.source.lower()
