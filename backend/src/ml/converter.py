@@ -12,6 +12,7 @@ def convert_agilegraph_to_pyg(ag: AgileGraph, config: FeatureConfig) -> HeteroDa
     
     # Track node mapping for edges: node_id -> integer index per category
     node_maps = {}
+    initialized_categories = set()
     
     # 1. Process Nodes
     # The 6 synopsis categories: file, cryptousage, certificate, endpoint, library, sensitivedata
@@ -25,7 +26,8 @@ def convert_agilegraph_to_pyg(ag: AgileGraph, config: FeatureConfig) -> HeteroDa
         node_maps[category][n_id] = current_idx
         
         # We will build up tensors for this category
-        if category not in data:
+        if category not in initialized_categories:
+            initialized_categories.add(category)
             data[category].x = []
             data[category].y = []
             data[category].node_ids = [] # Store original IDs
