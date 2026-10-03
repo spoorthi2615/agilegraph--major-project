@@ -11,16 +11,22 @@ class ScanResponse(BaseModel):
     message: str
     asset_count: Optional[int] = None
 
+class FactorContribution(BaseModel):
+    value: float
+    weight: float
+    contribution: float
+
 class RiskScore(BaseModel):
     asset_id: str
     score: float
-    data_sensitivity: Optional[float] = None
-    asset_criticality: Optional[float] = None
-    internet_exposure: Optional[float] = None
-    crypto_weakness: Optional[float] = None
-    cve_risk: Optional[float] = None
-    library_centrality: Optional[float] = None
-    migration_difficulty: Optional[float] = None
+    scale: str = "0.0-1.0"
+    formula_version: Optional[str] = None
+    weights: Optional[Dict[str, float]] = None
+    factors: Optional[Dict[str, Any]] = None
+    weighted_contributions: Optional[Dict[str, FactorContribution]] = None
+    missing_factors: Optional[List[str]] = None
+    missing_data_policy: Optional[str] = None
+    assumptions: Optional[List[str]] = None
 
 class RiskResponse(BaseModel):
     project_id: str

@@ -13,6 +13,7 @@ export default function Dashboard() {
   const [scanResult, setScanResult] = useState<ScanResponse | null>(null);
   const [graphData, setGraphData] = useState<GraphResponse | null>(null);
   const [riskData, setRiskData] = useState<RiskResponse | null>(null);
+  const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null);
 
   const handleScan = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,6 +30,7 @@ export default function Dashboard() {
       
       const risk = await apiClient.getRisk(projectId);
       setRiskData(risk);
+      setSelectedAssetId(null);
     } catch (err: any) {
       setError(err.message || 'An error occurred during scanning.');
     } finally {
@@ -110,7 +112,12 @@ export default function Dashboard() {
             <h2 className="text-lg font-semibold p-5 pb-0">Heuristic Risk Decomposition</h2>
             <div className="p-5 flex-1 overflow-auto">
               {riskData ? (
-                <RiskTable data={riskData} />
+                <RiskTable 
+                  data={riskData} 
+                  graphData={graphData}
+                  selectedAssetId={selectedAssetId} 
+                  onRowClick={setSelectedAssetId} 
+                />
               ) : (
                 <div className="h-full flex items-center justify-center text-slate-500 text-sm border-2 border-dashed border-slate-700 rounded-lg p-6 text-center">
                   Run a scan to view asset risk decompositions.
@@ -137,7 +144,11 @@ export default function Dashboard() {
           </div>
           <div className="flex-1 bg-slate-950 relative min-h-[500px]">
             {graphData ? (
-              <GraphView data={graphData} />
+              <GraphView 
+                data={graphData} 
+                selectedAssetId={selectedAssetId}
+                onNodeClick={setSelectedAssetId}
+              />
             ) : (
               <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-600">
                  <Shield className="w-16 h-16 mb-4 opacity-20" />

@@ -81,11 +81,10 @@ def trigger_scan(request: ScanRequest):
                 factors = extractor.extract(node, {}, {}, {})
                 try:
                     score_res = calculate_heuristic_score(factors, weights, policy=MissingDataPolicy.RENORMALIZE)
-                    scores.append({
-                        "asset_id": node,
-                        "score": score_res.score,
-                        "library_centrality": factors.library_centrality.value or 0.0
-                    })
+                    
+                    score_dict = score_res.model_dump()
+                    score_dict["asset_id"] = node
+                    scores.append(score_dict)
                 except ValueError:
                     pass
 

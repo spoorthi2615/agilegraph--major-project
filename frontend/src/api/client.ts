@@ -10,16 +10,23 @@ export interface ScanResponse {
   asset_count?: number;
 }
 
+export interface FactorContribution {
+  value: number;
+  weight: number;
+  contribution: number;
+}
+
 export interface RiskScore {
   asset_id: string;
   score: number;
-  data_sensitivity?: number;
-  asset_criticality?: number;
-  internet_exposure?: number;
-  crypto_weakness?: number;
-  cve_risk?: number;
-  library_centrality?: number;
-  migration_difficulty?: number;
+  scale?: string;
+  formula_version?: string;
+  weights?: Record<string, number>;
+  factors?: Record<string, any>;
+  weighted_contributions?: Record<string, FactorContribution>;
+  missing_factors?: string[];
+  missing_data_policy?: string;
+  assumptions?: string[];
 }
 
 export interface RiskResponse {

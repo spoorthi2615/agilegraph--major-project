@@ -2,7 +2,13 @@ import { useRef, useEffect, useState } from 'react';
 import ForceGraph2D from 'react-force-graph-2d';
 import type { GraphResponse } from '../api/client';
 
-export default function GraphView({ data }: { data: GraphResponse }) {
+interface GraphViewProps {
+  data: GraphResponse;
+  selectedAssetId: string | null;
+  onNodeClick: (nodeId: string) => void;
+}
+
+export default function GraphView({ data, selectedAssetId, onNodeClick }: GraphViewProps) {
   const fgRef = useRef<any>(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
   const containerRef = useRef<HTMLDivElement>(null);
@@ -35,13 +41,26 @@ export default function GraphView({ data }: { data: GraphResponse }) {
   };
 
   const getNodeColor = (node: any) => {
+    if (selectedAssetId && node.id !== selectedAssetId) {
+      return '#334155'; // dimmed if not selected
+    }
     switch(node.category) {
-      case 'file': return '#60a5fa'; // blue-400
-      case 'library': return '#34d399'; // emerald-400
-      case 'crypto_usage': return '#c084fc'; // purple-400
-      default: return '#94a3b8'; // slate-400
+      case 'file': return selectedAssetId === node.id ? '#93c5fd' : '#60a5fa'; // blue
+      case 'library': return selectedAssetId === node.id ? '#6ee7b7' : '#34d399'; // emerald
+      case 'crypto_usage': return selectedAssetId === node.id ? '#d8b4fe' : '#c084fc'; // purple
+      default: return '#94a3b8'; // slate
     }
   };
+  
+  useEffect(() => {
+    if (selectedAssetId && fgRef.current) {
+      const node = graphData.nodes.find((n: any) => n.id === selectedAssetId) as any;
+      if (node) {
+        fgRef.current.centerAt(node.x, node.y, 1000);
+        fgRef.current.zoom(4, 1000);
+      }
+    }
+  }, [selectedAssetId, graphData.nodes]);
 
   return (
     <div ref={containerRef} className="w-full h-full absolute inset-0 overflow-hidden">
@@ -58,6 +77,7 @@ export default function GraphView({ data }: { data: GraphResponse }) {
         backgroundColor="#020617" // slate-950
         cooldownTicks={100}
         onEngineStop={() => fgRef.current?.zoomToFit(400)}
+        onNodeClick={(node: any) => onNodeClick(node.id)}
       />
     </div>
   );
