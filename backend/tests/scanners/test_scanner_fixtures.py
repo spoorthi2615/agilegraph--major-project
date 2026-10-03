@@ -7,14 +7,20 @@ def test_python_scanner_coverage():
     code = """
 import hashlib
 from Crypto.Cipher import DES
+from hashlib import sha1
+import rsa
 
 def hash_data():
     h1 = hashlib.md5()
     h2 = hashlib.new("sha1")
-    return h1, h2
+    h3 = sha1(b"test")
+    return h1, h2, h3
 
 def encrypt_data():
     cipher = DES.new(b'12345678', DES.MODE_ECB)
+    
+def gen_key():
+    private_key, public_key = rsa.generate_private_key(key_size=1024)
 """
     findings = scan_python_code("test", "test.py", code)
     
@@ -23,6 +29,10 @@ def encrypt_data():
     assert "md5" in algorithms
     assert "sha1" in algorithms
     assert "des" in algorithms
+    assert "rsa" in algorithms
+    
+    key_sizes = [f.extra.get("key_size") for f in findings if f.extra and "key_size" in f.extra]
+    assert 1024 in key_sizes
 
 def test_java_scanner_coverage():
     code = """

@@ -20,7 +20,7 @@ DEFAULT_WEAKNESS_MAP = {
     "dilithium": 0.0, # PQC
 }
 
-def extract_crypto_weakness(algorithm: str, weakness_map: dict = None) -> FactorValue:
+def extract_crypto_weakness(algorithm: str, weakness_map: dict = None, key_size: int = None) -> FactorValue:
     if weakness_map is None:
         weakness_map = DEFAULT_WEAKNESS_MAP
         
@@ -31,6 +31,15 @@ def extract_crypto_weakness(algorithm: str, weakness_map: dict = None) -> Factor
     
     for key, weakness in weakness_map.items():
         if key in alg:
+            # Explicit key size modifications for RSA
+            if key == "rsa" and key_size is not None:
+                if key_size <= 1024:
+                    return FactorValue(value=1.0, source=f"algorithm classification (rsa-{key_size})", confidence=0.9)
+                elif key_size >= 4096:
+                    return FactorValue(value=0.8, source=f"algorithm classification (rsa-{key_size})", confidence=0.9)
+                else:
+                    return FactorValue(value=0.9, source=f"algorithm classification (rsa-{key_size})", confidence=0.9)
+                    
             return FactorValue(value=weakness, source=f"algorithm classification ({key})", confidence=0.9)
             
     return FactorValue(value=None, source=f"unrecognized algorithm ({algorithm})", confidence=0.0)

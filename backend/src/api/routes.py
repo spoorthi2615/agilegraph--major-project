@@ -40,12 +40,15 @@ def get_mosca_readiness_index(confidentiality: int = 10, migration: int = 5, qua
 def trigger_scan(request: ScanRequest):
     if not os.path.exists(request.repository_path):
         raise HTTPException(status_code=400, detail="Repository path does not exist.")
-        
-    # Security: explicitly reject paths that look like system roots or sensitive directories
-    abs_path = os.path.abspath(request.repository_path).lower()
-    system_roots = ["/etc", "/var", "/usr", "/sys", "/dev", "c:\\windows", "c:\\program files"]
-    if any(abs_path.startswith(r) for r in system_roots) or abs_path == "/" or abs_path == "c:\\":
-        raise HTTPException(status_code=403, detail="Scanning system directories is not allowed.")
+    allowed_root = os.path.realpath(os.environ.get("AGILEGRAPH_SCAN_ROOT", os.getcwd()))
+    req_root = os.path.realpath(request.repository_path)
+    
+    try:
+        if os.path.commonpath([allowed_root, req_root]) != allowed_root:
+            raise HTTPException(status_code=403, detail="Path is outside allowed scan root.")
+    except ValueError:
+        # Happens on Windows if paths are on different drives
+        raise HTTPException(status_code=403, detail="Path is outside allowed scan root.")
         
     try:
         result = run_pipeline(request.repository_path, request.project_id, "RENORMALIZE")

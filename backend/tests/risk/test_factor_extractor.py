@@ -73,3 +73,39 @@ def test_factor_extractor_graph_traversal_strong_algo():
     # AES should not be 1.0 risk (it's safe, but let's check what algorithm_strength.py returns)
     assert factors.crypto_weakness.value == 0.3 # AES is currently safe in the system
     assert "aes" in factors.crypto_weakness.source.lower()
+
+def test_factor_extractor_graph_traversal_rsa_keysize():
+    ag = AgileGraph()
+    ag.add_node(GraphNode(id="file1", category="file"))
+    ag.add_node(GraphNode(id="usage_rsa_1024", category="crypto_usage", properties={"algorithm": "rsa", "key_size": 1024}))
+    ag.add_node(GraphNode(id="file2", category="file"))
+    ag.add_node(GraphNode(id="usage_rsa_4096", category="crypto_usage", properties={"algorithm": "rsa", "key_size": 4096}))
+    
+    from src.graph.schema import GraphEdge
+    ag.add_edge(GraphEdge(source_id="file1", target_id="usage_rsa_1024", relationship="CONTAINS"))
+    ag.add_edge(GraphEdge(source_id="file2", target_id="usage_rsa_4096", relationship="CONTAINS"))
+    
+    extractor = FactorExtractor(ag)
+    factors1 = extractor.extract("file1", {}, {}, {})
+    factors2 = extractor.extract("file2", {}, {}, {})
+    
+    assert factors1.crypto_weakness.value == 1.0
+    assert factors2.crypto_weakness.value == 0.8
+    assert factors1.crypto_weakness.value != factors2.crypto_weakness.value
+
+def test_factor_extractor_graph_traversal_aes_and_rsa():
+    ag = AgileGraph()
+    ag.add_node(GraphNode(id="file1", category="file"))
+    ag.add_node(GraphNode(id="usage_aes", category="crypto_usage", properties={"algorithm": "aes"}))
+    ag.add_node(GraphNode(id="usage_rsa_1024", category="crypto_usage", properties={"algorithm": "rsa", "key_size": 1024}))
+    
+    from src.graph.schema import GraphEdge
+    ag.add_edge(GraphEdge(source_id="file1", target_id="usage_aes", relationship="CONTAINS"))
+    ag.add_edge(GraphEdge(source_id="file1", target_id="usage_rsa_1024", relationship="CONTAINS"))
+    
+    extractor = FactorExtractor(ag)
+    factors = extractor.extract("file1", {}, {}, {})
+    
+    # AES (0.3) < RSA-1024 (1.0), so 1.0 should be chosen
+    assert factors.crypto_weakness.value == 1.0
+    assert "rsa" in factors.crypto_weakness.source.lower()

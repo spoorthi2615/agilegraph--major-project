@@ -104,6 +104,47 @@ class PythonCryptoVisitor(ast.NodeVisitor):
                         evidence=f"Called {api}()",
                         confidence=1.0
                     ))
+        # Handle from hashlib import sha1; sha1(...)
+        elif isinstance(node.func, ast.Name):
+            if node.func.id in ("md5", "sha1", "sha256", "sha512", "DES", "AES", "RSA"):
+                algorithm = node.func.id
+                api = f"{algorithm}()"
+                self.findings.append(FindingRecord(
+                    asset_type=AssetType.CRYPTO_USAGE,
+                    repository=self.repository,
+                    file=self.filepath,
+                    line=node.lineno,
+                    language=Language.PYTHON,
+                    library="unknown", # We don't track imports locally yet
+                    api=api,
+                    algorithm=algorithm,
+                    operation="encryption" if algorithm in ("DES", "AES", "RSA") else "hashing",
+                    evidence=f"Called {api}",
+                    confidence=1.0
+                ))
+                
+        # Handle rsa.generate_private_key(key_size=1024)
+        if isinstance(node.func, ast.Attribute) and node.func.attr == "generate_private_key":
+            if getattr(node.func.value, "id", "") == "rsa":
+                key_size = None
+                for kw in node.keywords:
+                    if kw.arg == "key_size" and isinstance(kw.value, ast.Constant):
+                        key_size = kw.value.value
+                        
+                self.findings.append(FindingRecord(
+                    asset_type=AssetType.CRYPTO_USAGE,
+                    repository=self.repository,
+                    file=self.filepath,
+                    line=node.lineno,
+                    language=Language.PYTHON,
+                    library="rsa",
+                    api="rsa.generate_private_key()",
+                    algorithm="rsa",
+                    operation="key_generation",
+                    evidence="Called rsa.generate_private_key()",
+                    confidence=1.0,
+                    extra={"key_size": int(key_size)} if key_size else {}
+                ))
         self.generic_visit(node)
 
 def scan_python_code(repository: str, filepath: str, code: str) -> List[FindingRecord]:

@@ -16,6 +16,7 @@ def test_cli_scan_valid():
         # Run CLI
         env = os.environ.copy()
         env["PYTHONPATH"] = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+        env["AGILEGRAPH_SCAN_ROOT"] = temp_repo
         
         cli_path = os.path.join(env["PYTHONPATH"], "src", "cli.py")
         

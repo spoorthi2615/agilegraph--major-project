@@ -9,6 +9,10 @@ def calculate_in_degree_centrality(graph: AgileGraph, node_id: str) -> FactorVal
     if node_id not in graph.G.nodes:
         return FactorValue(value=None, source="Node not in graph", confidence=0.0)
         
+    node_data = graph.G.nodes[node_id]
+    if node_data.get("category") != "library":
+        return FactorValue(value=None, source="Not applicable for non-library nodes", confidence=0.0)
+        
     in_degree = graph.G.in_degree(node_id)
     total_nodes = len(graph.G.nodes)
     

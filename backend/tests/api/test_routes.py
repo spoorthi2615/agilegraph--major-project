@@ -18,8 +18,9 @@ def test_scan_nonexistent_repo():
     })
     assert response.status_code == 400
 
-def test_scan_and_fetch():
+def test_scan_and_fetch(monkeypatch):
     with tempfile.TemporaryDirectory() as temp_dir:
+        monkeypatch.setenv("AGILEGRAPH_SCAN_ROOT", temp_dir)
         # Create a test python file so the scanner finds a node
         with open(os.path.join(temp_dir, "main.py"), "w") as f:
             f.write("import hashlib\nm = hashlib.md5()\n")
