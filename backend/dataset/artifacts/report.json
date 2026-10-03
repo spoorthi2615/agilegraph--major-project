@@ -1,0 +1,90 @@
+{
+  "projects_acquired": 8,
+  "projects_rejected": 0,
+  "languages": {
+    "PYTHON": 3,
+    "JAVA": 2,
+    "GO": 3
+  },
+  "size_tiers": {
+    "SMALL": 5,
+    "LARGE": 3
+  },
+  "findings": 1357,
+  "graphs": 8,
+  "failed_scans": 0,
+  "details": [
+    {
+      "id": "python_itsdangerous",
+      "sha": "672971d66a2ef9f85151e53283113f33d642dabd",
+      "nodes": 8,
+      "edges": 5,
+      "findings": 4
+    },
+    {
+      "id": "python_bcrypt",
+      "sha": "59b41aaa24c025d1cd231c37d2755b94184a3e67",
+      "nodes": 1,
+      "edges": 0,
+      "findings": 1
+    },
+    {
+      "id": "python_cryptography",
+      "sha": "f0ba3000a365d44db153362e847c88339c9231f4",
+      "nodes": 764,
+      "edges": 198,
+      "findings": 585
+    },
+    {
+      "id": "java_java_jwt",
+      "sha": "29f252b2d6fea74df6576803d5fce5f6d6799cf3",
+      "nodes": 113,
+      "edges": 66,
+      "findings": 66
+    },
+    {
+      "id": "java_jjwt",
+      "sha": "fb71496164c71442d08adec4571d9616ed5e1b8d",
+      "nodes": 702,
+      "edges": 453,
+      "findings": 474
+    },
+    {
+      "id": "go_jwt",
+      "sha": "73c870b18e68b6e654b2b03f485aa3c9fab32cea",
+      "nodes": 30,
+      "edges": 14,
+      "findings": 14
+    },
+    {
+      "id": "go_jwt_go",
+      "sha": "9742bd7fca1c67ba2eb793750f56ee3094d1b04f",
+      "nodes": 22,
+      "edges": 10,
+      "findings": 10
+    },
+    {
+      "id": "go_crypto",
+      "sha": "b39ff6d641ecc5bb4b241737cb0c6b646f3e12a9",
+      "nodes": 283,
+      "edges": 198,
+      "findings": 203
+    }
+  ],
+  "splits": {
+    "train": [
+      "python_itsdangerous",
+      "python_bcrypt",
+      "python_cryptography",
+      "java_java_jwt",
+      "java_jjwt"
+    ],
+    "validation": [
+      "go_jwt",
+      "go_jwt_go"
+    ],
+    "test": [
+      "go_crypto"
+    ]
+  }
+}
