@@ -33,8 +33,17 @@ def calculate_heuristic_score(
     available_weight = sum(weights_dict[f] for f in valid_factors.keys())
     
     if available_weight == 0.0:
-        # Cannot calculate score with no factors
-        raise ValueError("Cannot calculate score: no valid factors available.")
+        # Cannot calculate score with no factors, return unrated
+        return RiskScoreResult(
+            score=None,
+            formula_version=CURRENT_FORMULA_VERSION,
+            weights=weights_dict,
+            factors=factors_dict,
+            weighted_contributions={},
+            missing_factors=missing_factors,
+            missing_data_policy=policy,
+            assumptions=["Unscored due to missing factors (0.0 valid weight)"]
+        )
         
     score = 0.0
     contributions = {}
@@ -78,7 +87,8 @@ def rank_assets(assets: Dict[str, RiskScoreResult]) -> List[Tuple[int, str, floa
     Deterministically ranks assets by score (descending), breaking ties by asset_id (ascending).
     Returns list of (rank, asset_id, base_risk)
     """
-    sorted_items = sorted(assets.items(), key=lambda item: (-item[1].score, item[0]))
+    # Treat None as -1.0 so unrated items appear at the bottom
+    sorted_items = sorted(assets.items(), key=lambda item: (-item[1].score if item[1].score is not None else 1.0, item[0]))
     
     ranking = []
     for rank, (asset_id, result) in enumerate(sorted_items, start=1):

@@ -50,25 +50,23 @@ def scan_java_code(repository: str, filepath: str, code: str) -> List[FindingRec
                 algorithm=algorithm,
                 operation=operation,
                 evidence=line.strip(),
-                confidence=0.9
+                confidence=0.9,
+                extra={}
             ))
             
         # Check key size
         key_size_match = JAVA_KEY_SIZE_PATTERN.search(line)
         if key_size_match:
             key_size = key_size_match.group(1)
-            findings.append(FindingRecord(
-                asset_type=AssetType.CRYPTO_USAGE,
-                repository=repository,
-                file=filepath,
-                line=line_num,
-                language=Language.JAVA,
-                api="initialize()",
-                algorithm="rsa", # we assume RSA for now or keygen
-                operation="key_generation",
-                evidence=f"Key size {key_size}",
-                confidence=0.8,
-                extra={"key_size": int(key_size)}
-            ))
+            # Find the last key generation finding within the last 5 lines
+            for f in reversed(findings):
+                if f.asset_type == AssetType.CRYPTO_USAGE and f.operation == "key_generation":
+                    if line_num - f.line <= 5:
+                        if not f.extra:
+                            f.extra = {}
+                        if "key_size" not in f.extra:
+                            f.extra["key_size"] = int(key_size)
+                            f.evidence = f"{f.evidence} ... Key size {key_size}"
+                            break
             
     return findings

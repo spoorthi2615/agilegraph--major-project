@@ -9,18 +9,25 @@ import hashlib
 from Crypto.Cipher import DES
 from hashlib import sha1
 import rsa
+import hashlib as h
+import Cryptodome.Cipher.AES
+from cryptography.hazmat.primitives.asymmetric.rsa import generate_private_key
 
 def hash_data():
     h1 = hashlib.md5()
     h2 = hashlib.new("sha1")
     h3 = sha1(b"test")
-    return h1, h2, h3
+    h4 = h.sha256()
+    return h1, h2, h3, h4
 
 def encrypt_data():
     cipher = DES.new(b'12345678', DES.MODE_ECB)
+    cipher2 = Cryptodome.Cipher.AES.new()
     
 def gen_key():
-    private_key, public_key = rsa.generate_private_key(key_size=1024)
+    private_key = rsa.generate_private_key(65537, 1024)
+    pk2 = generate_private_key(key_size=2048)
+    pk3 = rsa.newkeys(512)
 """
     findings = scan_python_code("test", "test.py", code)
     
@@ -29,10 +36,14 @@ def gen_key():
     assert "md5" in algorithms
     assert "sha1" in algorithms
     assert "des" in algorithms
+    assert "aes" in algorithms
     assert "rsa" in algorithms
+    assert "sha256" in algorithms
     
     key_sizes = [f.extra.get("key_size") for f in findings if f.extra and "key_size" in f.extra]
     assert 1024 in key_sizes
+    assert 2048 in key_sizes
+    assert 512 in key_sizes
 
 def test_java_scanner_coverage():
     code = """
@@ -48,6 +59,10 @@ public class Test {
         
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
         keyGen.initialize(1024);
+        
+        // false positive check
+        SomeClass obj = new SomeClass();
+        obj.initialize(512); // should not be associated with RSA
     }
 }
 """
@@ -61,6 +76,7 @@ public class Test {
     
     key_sizes = [f.extra.get("key_size") for f in findings if f.extra and "key_size" in f.extra]
     assert 1024 in key_sizes
+    assert 512 not in key_sizes
 
 def test_go_scanner_coverage():
     code = """

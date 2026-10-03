@@ -44,14 +44,7 @@ def trigger_scan(request: ScanRequest):
     req_root = os.path.realpath(request.repository_path)
     
     try:
-        if os.path.commonpath([allowed_root, req_root]) != allowed_root:
-            raise HTTPException(status_code=403, detail="Path is outside allowed scan root.")
-    except ValueError:
-        # Happens on Windows if paths are on different drives
-        raise HTTPException(status_code=403, detail="Path is outside allowed scan root.")
-        
-    try:
-        result = run_pipeline(request.repository_path, request.project_id, "RENORMALIZE")
+        result = run_pipeline(req_root, request.project_id, "RENORMALIZE", allowed_root=allowed_root)
         project_cache[request.project_id] = result
         
         return ScanResponse(
@@ -60,6 +53,10 @@ def trigger_scan(request: ScanRequest):
             message="Scan completed successfully.",
             asset_count=len(result["graph"].nodes)
         )
+    except ValueError as e:
+        if "outside allowed scan root" in str(e):
+            raise HTTPException(status_code=403, detail=str(e))
+        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

@@ -18,7 +18,7 @@ class FactorContribution(BaseModel):
 
 class RiskScore(BaseModel):
     asset_id: str
-    score: float
+    score: Optional[float] = None
     scale: str = "0.0-1.0"
     formula_version: Optional[str] = None
     weights: Optional[Dict[str, float]] = None

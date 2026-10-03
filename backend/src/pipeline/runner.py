@@ -11,8 +11,18 @@ from src.scanners.java.scanner import scan_java_code
 from src.scanners.go.scanner import scan_go_code
 from src.scanners.dependencies.scanner import scan_manifest
 
-def run_pipeline(repository_path: str, project_id: str, missing_data_policy: str = "RENORMALIZE"):
-    if not os.path.exists(repository_path):
+def run_pipeline(repository_path: str, project_id: str, missing_data_policy: str = "RENORMALIZE", allowed_root: str = None):
+    # Establish canonical root for scan
+    canonical_repo = os.path.realpath(repository_path)
+    if allowed_root:
+        canonical_allowed = os.path.realpath(allowed_root)
+        try:
+            if os.path.commonpath([canonical_allowed, canonical_repo]) != canonical_allowed:
+                raise ValueError("Repository path is outside allowed scan root.")
+        except ValueError:
+            raise ValueError("Repository path is outside allowed scan root.")
+            
+    if not os.path.exists(canonical_repo):
         raise ValueError("Repository path does not exist.")
         
     policy = MissingDataPolicy(missing_data_policy)
@@ -21,10 +31,21 @@ def run_pipeline(repository_path: str, project_id: str, missing_data_policy: str
     scanned_files_count = 0
     scanner_errors = []
     
-    for root, _, files in os.walk(repository_path):
+    for root, _, files in os.walk(canonical_repo):
         for file in files:
             path = os.path.join(root, file)
-            rel_path = os.path.relpath(path, repository_path).replace("\\", "/")
+            canonical_file = os.path.realpath(path)
+            
+            # File-level symlink escape protection
+            try:
+                if os.path.commonpath([canonical_repo, canonical_file]) != canonical_repo:
+                    scanner_errors.append({"file": file, "error": "Symlink escape detected"})
+                    continue
+            except ValueError:
+                scanner_errors.append({"file": file, "error": "Symlink escape detected"})
+                continue
+                
+            rel_path = os.path.relpath(path, canonical_repo).replace("\\", "/")
             
             scanned_files_count += 1
             
