@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pydantic
+pydantic-settings
+pytest
+httpx
+networkx
+torch
+torch_geometric
+scikit-learn
