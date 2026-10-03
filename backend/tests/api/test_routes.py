@@ -20,6 +20,10 @@ def test_scan_nonexistent_repo():
 
 def test_scan_and_fetch():
     with tempfile.TemporaryDirectory() as temp_dir:
+        # Create a test python file so the scanner finds a node
+        with open(os.path.join(temp_dir, "main.py"), "w") as f:
+            f.write("import hashlib\nm = hashlib.md5()\n")
+            
         # Trigger scan
         scan_res = client.post("/api/v1/scan", json={
             "repository_path": temp_dir,

@@ -11,7 +11,12 @@ from src.risk.heuristic import calculate_heuristic_score
 from src.risk.factors import RiskFactors, FactorValue
 from src.risk.weights import HeuristicWeights
 from src.risk.score import MissingDataPolicy
+from src.risk.factor_extractor import FactorExtractor
 from src.dataset.manager import DatasetManager
+from src.scanners.python.scanner import scan_python_code
+from src.scanners.java.scanner import scan_java_code
+from src.scanners.go.scanner import scan_go_code
+from src.scanners.dependencies.scanner import scan_manifest
 
 router = APIRouter()
 
@@ -34,46 +39,63 @@ def trigger_scan(request: ScanRequest):
         raise HTTPException(status_code=400, detail="Repository path does not exist.")
         
     try:
-        # Mocking the orchestrator for the endpoint response integration.
+        findings = []
+        for root, _, files in os.walk(request.repository_path):
+            for file in files:
+                path = os.path.join(root, file)
+                rel_path = os.path.relpath(path, request.repository_path).replace("\\", "/")
+                
+                try:
+                    with open(path, "r", encoding="utf-8") as f:
+                        content = f.read()
+                        
+                    if file.endswith(".py"):
+                        findings.extend(scan_python_code(request.project_id, rel_path, content))
+                    elif file.endswith(".java"):
+                        findings.extend(scan_java_code(request.project_id, rel_path, content))
+                    elif file.endswith(".go"):
+                        findings.extend(scan_go_code(request.project_id, rel_path, content))
+                        
+                    if file in ["requirements.txt", "pom.xml", "build.gradle", "go.mod"]:
+                        findings.extend(scan_manifest(request.project_id, file, content))
+                except Exception:
+                    pass
+                    
         agile_graph = AgileGraph()
         builder = GraphBuilder(agile_graph)
-        
-        agile_graph.add_node(GraphNode(id="file_1", category="file", properties={}))
-        agile_graph.add_node(GraphNode(id="lib_1", category="library", properties={}))
-        agile_graph.add_edge(GraphEdge(source_id="file_1", target_id="lib_1", relationship="imports"))
-        
+        builder.build_from_normalized_records(findings)
         g = agile_graph.G
         
-        # In a full scan, we extract factors. Here we mock extracted factors for integration.
-        factors = RiskFactors(
-            data_sensitivity=FactorValue(value=None, source="mock", confidence=0.0),
-            asset_criticality=FactorValue(value=None, source="mock", confidence=0.0),
-            internet_exposure=FactorValue(value=None, source="mock", confidence=0.0),
-            crypto_weakness=FactorValue(value=None, source="mock", confidence=0.0),
-            cve_risk=FactorValue(value=None, source="mock", confidence=0.0),
-            library_centrality=FactorValue(value=1.0, source="mock", confidence=1.0),
-            migration_difficulty=FactorValue(value=None, source="mock", confidence=0.0)
-        )
-        weights = HeuristicWeights(
-            data_sensitivity=0.2,
-            asset_criticality=0.2,
-            internet_exposure=0.1,
-            crypto_weakness=0.2,
-            cve_risk=0.1,
-            library_centrality=0.1,
-            migration_difficulty=0.1
-        )
-        score_res = calculate_heuristic_score(factors, weights, policy=MissingDataPolicy.RENORMALIZE)
+        extractor = FactorExtractor(agile_graph)
+        scores = []
         
+        # Heuristic weights sum to 1.0
+        w = 1.0 / 7.0
+        weights = HeuristicWeights(
+            data_sensitivity=w, asset_criticality=w, internet_exposure=w,
+            crypto_weakness=w, cve_risk=w, library_centrality=w, migration_difficulty=w
+        )
+
+        for node, data in g.nodes(data=True):
+            if data.get("category") == "file":
+                factors = extractor.extract(node, {}, {}, {})
+                try:
+                    score_res = calculate_heuristic_score(factors, weights, policy=MissingDataPolicy.RENORMALIZE)
+                    scores.append({
+                        "asset_id": node,
+                        "score": score_res.score,
+                        "library_centrality": factors.library_centrality.value or 0.0
+                    })
+                except ValueError:
+                    pass
+
         project_cache[request.project_id] = {
             "graph": g,
-            "scores": [
-                {
-                    "asset_id": "file_1", 
-                    "score": score_res.score,
-                    "library_centrality": 1.0
-                }
-            ]
+            "scores": scores,
+            "provenance": {
+                "scanned_files": len(findings),
+                "is_mock": False
+            }
         }
         
         return ScanResponse(
