@@ -25,6 +25,7 @@ CANONICAL_FAMILY_MAP = {
     "arc4":       1.0,
     "arcfour":    1.0,
     "chacha20":   0.05,
+    "none":       1.0,   # Unsigned JWTs or explicitly no algorithm (Signature bypass)
     # Asymmetric
     "rsa":        0.9,
     "dsa":        0.9,
@@ -65,6 +66,19 @@ ALIAS_MAP = {
     "sha-256":       "sha256",
     "sha-384":       "sha384",
     "sha-512":       "sha512",
+    # JWT algorithms
+    "hs256":         "sha256",
+    "hs384":         "sha384",
+    "hs512":         "sha512",
+    "rs256":         "rsa",
+    "rs384":         "rsa",
+    "rs512":         "rsa",
+    "es256":         "ecdsa",
+    "es384":         "ecdsa",
+    "es512":         "ecdsa",
+    "ps256":         "rsa",
+    "ps384":         "rsa",
+    "ps512":         "rsa",
     # EC variants
     "ec":            "ec",
     # PQC — NIST final names (strip hyphens and digits to get family)

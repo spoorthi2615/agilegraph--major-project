@@ -109,3 +109,21 @@ def test_factor_extractor_graph_traversal_aes_and_rsa():
     # AES (0.3) < RSA-1024 (1.0), so 1.0 should be chosen
     assert factors.crypto_weakness.value == 1.0
     assert "rsa" in factors.crypto_weakness.source.lower()
+
+def test_factor_extractor_graph_traversal_aes_and_none():
+    ag = AgileGraph()
+    ag.add_node(GraphNode(id="file1", category="file"))
+    ag.add_node(GraphNode(id="usage_aes", category="crypto_usage", properties={"algorithm": "aes"}))
+    ag.add_node(GraphNode(id="usage_none", category="crypto_usage", properties={"algorithm": "none"}))
+    
+    from src.graph.schema import GraphEdge
+    ag.add_edge(GraphEdge(source_id="file1", target_id="usage_aes", relationship="CONTAINS"))
+    ag.add_edge(GraphEdge(source_id="file1", target_id="usage_none", relationship="CONTAINS"))
+    
+    extractor = FactorExtractor(ag)
+    factors = extractor.extract("file1", {}, {}, {})
+    
+    # none (1.0) > AES (0.3), so 1.0 should be chosen, ensuring none isn't masked
+    assert factors.crypto_weakness.value == 1.0
+    assert "none" in factors.crypto_weakness.source.lower()
+

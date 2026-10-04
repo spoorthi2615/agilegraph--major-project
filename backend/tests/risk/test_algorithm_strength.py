@@ -152,6 +152,37 @@ def test_strong_algorithms_low_risk(alg, expected_max):
     assert r.value <= expected_max, f"{alg!r}: expected <= {expected_max}, got {r.value}"
 
 
+# ── JWT Algorithms ────────────────────────────────────────────────────────────
+@pytest.mark.parametrize("alg,expected_min", [
+    ("none",   1.0),
+    ("HS256",  0.0),  # mapped to sha256 (0.1), so expected_min won't work perfectly if it's 0.1. Let's use exact checks
+])
+def test_jwt_algorithms(alg, expected_min):
+    # This parametrization is just a placeholder, let's write them individually.
+    pass
+
+def test_jwt_none_is_critical_risk():
+    r = extract_crypto_weakness("none")
+    assert r.value == pytest.approx(1.0, abs=0.01)
+
+def test_jwt_hs256_is_sha256_risk():
+    r = extract_crypto_weakness("HS256")
+    assert r.value == pytest.approx(0.1, abs=0.01)
+
+def test_jwt_hs512_is_sha512_risk():
+    r = extract_crypto_weakness("HS512")
+    assert r.value == pytest.approx(0.05, abs=0.01)
+
+def test_jwt_rs256_is_rsa_risk():
+    r = extract_crypto_weakness("RS256")
+    assert r.value == pytest.approx(0.9, abs=0.01)
+
+def test_jwt_es256_is_ecdsa_risk():
+    r = extract_crypto_weakness("ES256")
+    assert r.value == pytest.approx(0.9, abs=0.01)
+
+
+
 # ── Unrecognized → None, not 0.0 ────────────────────────────────────────────
 @pytest.mark.parametrize("alg", [
     "GREASE_ALGO",

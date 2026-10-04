@@ -11,7 +11,7 @@ AgileGraph translates cryptographic footprints into asset-level migration priori
 ## Architecture
 
 1. **Scanners** (`IMPLEMENTED` / `PARTIALLY IMPLEMENTED` / `INFRASTRUCTURE ONLY`):
-   - Language source extraction via regex/per-line patterns (Python, Java, Go) is `IMPLEMENTED`.
+   - Language source extraction via AST (Python) and regex/per-line patterns (Java, Go) is `IMPLEMENTED`.
    - Dependency manifest parsing is `IMPLEMENTED`. However, CVE/CBOM enrichment is not currently available through CBOMkit (`UNAVAILABLE`). Unavailable CVE information remains missing/unavailable; unavailable CVE information is NOT interpreted as zero risk.
    - Certificate/TLS scanning infrastructure exists (`INFRASTRUCTURE ONLY`). Active external TLS scanning is authorization-gated. Current TLS functionality has only been verified against the permitted/local development scenario, and broad Internet TLS coverage has not been empirically demonstrated.
 2. **Graph Construction** (`IMPLEMENTED`): Constructs a NetworkX graph based on the authoritative six-node ontology: `File`, `CryptoUsage`, `Certificate`, `Endpoint`, `Library`, `SensitiveData`.
@@ -79,7 +79,7 @@ Continuous Integration (CI) is configured via GitHub Actions in `.github/workflo
 
 ## Current Status and Limitations
 
-- **IMPLEMENTED**: CLI, Dashboard, Heuristic Risk Engine, Scanners (regex-based Python/Java/Go), Graph Ontology, Dependency Manifest Parsing.
+- **IMPLEMENTED**: CLI, Dashboard, Heuristic Risk Engine, Scanners (AST-based Python, regex-based Java/Go), Graph Ontology, Dependency Manifest Parsing.
 - **TESTED**: Backend test suite, CLI commands, Frontend build.
 - **PARTIALLY IMPLEMENTED**: Dependency intelligence (CVE/CBOM is unavailable).
 - **INFRASTRUCTURE ONLY**: Certificate/TLS Scanner, GATv2 architecture, leakage ablation, baseline comparison, expert validation schema.
@@ -90,8 +90,8 @@ Continuous Integration (CI) is configured via GitHub Actions in `.github/workflo
   - Certificate, Endpoint, and SensitiveData nodes (ontology supports them, but current scanners do not extract them).
   - Mosca visualization and migration-priority tracking interfaces are not implemented in the frontend.
 - **SCANNER LIMITATIONS**:
-  - Scanner recall is limited to recognized regex/line-based API patterns. Known misses exist in Java (e.g., `SecureRandom`) and Go (e.g., standard `RSA/ECDSA` usage outside specific generator patterns).
-  - Coverage claims are restricted strictly to "within the evaluated regex API patterns", not comprehensive cryptographic discovery.
+  - Scanner recall is limited to recognized API patterns (via AST for Python, regex for Java/Go). Known misses exist in Java (e.g., `SecureRandom`) and Go (e.g., standard `RSA/ECDSA` usage outside specific generator patterns).
+  - Coverage claims are restricted strictly to "within the evaluated AST/regex API patterns", not comprehensive cryptographic discovery.
 - **PENDING**: Genuine expert annotation import.
 - **BLOCKED**: GATv2 training, Empirical evaluation, Statistical inference.
 
