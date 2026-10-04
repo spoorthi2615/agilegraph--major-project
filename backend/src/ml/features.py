@@ -17,12 +17,19 @@ class TargetLabel(BaseModel):
 
 class FeatureConfig(BaseModel):
     include_base_risk: bool = False
+    structure_only: bool = False
 
 def extract_node_features(properties: dict, config: FeatureConfig) -> torch.Tensor:
     """
     Extracts the 7 context factors and their missingness masks into a feature tensor.
+    CRITICAL: If structure_only=True, strictly NO semantic properties or risks are included.
     CRITICAL: base_risk is strictly excluded unless include_base_risk=True
     """
+    if config.structure_only:
+        # Strict ablation: no algorithm, no risk, no heuristic.
+        # Just return a dummy feature so the GNN can learn from topology/node-types.
+        return torch.ones(1, dtype=torch.float)
+
     factors = properties.get("risk_factors", {})
     keys = [
         "data_sensitivity", "asset_criticality", "internet_exposure", 

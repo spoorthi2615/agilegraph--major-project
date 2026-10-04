@@ -1,14 +1,22 @@
 import os
 import json
 import random
+import argparse
+import subprocess
 from src.pipeline.runner import run_pipeline
 import networkx as nx
 
-def generate_package():
+def generate_package(out_path: str, version: str):
     corpus_dir = "dataset/corpus"
     if not os.path.exists(corpus_dir):
         print("Corpus directory not found.")
         return
+
+    # Get current implementation SHA
+    try:
+        sha = subprocess.check_output(["git", "rev-parse", "HEAD"]).decode("utf-8").strip()
+    except Exception:
+        sha = "unknown"
 
     # Seed for determinism
     random.seed(42)
@@ -78,16 +86,16 @@ def generate_package():
     # Final package
     package = {
         "metadata": {
-            "implementation_sha": "632e54a2e46dba9f440e2be6468a460495c87553",
+            "implementation_sha": sha,
             "protocol_version": "1.1.1",
+            "package_version": version,
             "total_assets": len(all_assets)
         },
         "instructions": "Determine the migration priority (HIGH, MEDIUM, LOW, UNKNOWN) based strictly on the provided evidence.",
         "assets": all_assets
     }
     
-    os.makedirs("dataset/artifacts", exist_ok=True)
-    out_path = "dataset/artifacts/expert_annotation_package_v1.2.0.json"
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(package, f, indent=2)
         
@@ -106,4 +114,8 @@ def generate_package():
     print(f"Assets with no direct scanner evidence: {missing_evidence}")
 
 if __name__ == "__main__":
-    generate_package()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--output", required=True)
+    parser.add_argument("--version", required=True)
+    args = parser.parse_args()
+    generate_package(args.output, args.version)

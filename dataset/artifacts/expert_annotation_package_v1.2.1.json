@@ -1,7 +1,8 @@
 {
   "metadata": {
-    "implementation_sha": "632e54a2e46dba9f440e2be6468a460495c87553",
+    "implementation_sha": "35df5c5d3de7dc51ff90bcd016e2ff66a1f0b55f",
     "protocol_version": "1.1.1",
+    "package_version": "1.2.1",
     "total_assets": 165
   },
   "instructions": "Determine the migration priority (HIGH, MEDIUM, LOW, UNKNOWN) based strictly on the provided evidence.",

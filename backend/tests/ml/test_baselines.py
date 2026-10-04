@@ -17,14 +17,17 @@ def test_heuristic_baseline_determinism():
 def test_rule_based_baseline():
     ag = AgileGraph()
     ag.G.add_node("file1", category="file", properties={})
+    ag.G.add_node("usage1", category="crypto_usage", properties={"algorithm": "md5"})
+    ag.G.add_edge("file1", "usage1", relationship="CONTAINS")
     
     config = RuleConfig(version="1.0", rules=["rule_A"])
     baseline = RuleBasedBaseline(ag, config)
     res = baseline.evaluate()
     
     assert "file1" in res.scores
+    assert res.scores["file1"] == 0.9
     assert res.audit_trail["config_version"] == "1.0"
-    assert "example_rule" in res.audit_trail["hits"]["file1"]
+    assert "HIGH_RISK_ALGO(md5)" in res.audit_trail["hits"]["file1"]
 
 def test_cbomkit_baseline():
     baseline = CBOMkitBaseline()

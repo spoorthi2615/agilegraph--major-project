@@ -32,6 +32,23 @@ def test_feature_extraction_with_base_risk():
     assert feat[7].item() == 0.75 # base_risk is at index 7
     assert feat[15].item() == 0.0 # base_risk mask is at index 15
 
+def test_feature_extraction_structure_only():
+    props = {
+        "risk_factors": {"crypto_weakness": 0.9, "library_centrality": 1.0},
+        "base_risk": 0.9
+    }
+    config = FeatureConfig(structure_only=True)
+    feat = extract_node_features(props, config)
+    
+    # Assert it returns a dummy feature of size 1 with no semantic crypto information
+    assert feat.shape == (1,)
+    assert feat[0].item() == 1.0
+    
+    # Ensure none of the semantic values leaked through
+    feat_list = feat.tolist()
+    assert 0.9 not in feat_list
+    assert 1.0 in feat_list # The dummy feature is 1.0, but it doesn't represent library_centrality
+
 def test_target_label_extraction_expert():
     props = {"expert_label": {"class_idx": 2, "confidence": 1.0}}
     label = extract_target_label(props)
