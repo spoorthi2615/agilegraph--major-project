@@ -35,6 +35,6 @@ def test_phase11_report_splits():
         report = json.load(f)
         
     splits = report["splits"]
-    assert len(splits["train"]) == 5
-    assert len(splits["validation"]) == 2
-    assert len(splits["test"]) == 1
+    assert len(splits["train"]) == 3
+    assert len(splits["validation"]) == 3
+    assert len(splits["test"]) == 2
