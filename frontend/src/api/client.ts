@@ -65,5 +65,44 @@ export const apiClient = {
     const res = await fetch(`${API_BASE}/projects/${project_id}/risk`);
     if (!res.ok) throw new Error(await res.text());
     return res.json();
+  },
+
+  getPqcReadiness: async (project_id: string): Promise<any> => {
+    const res = await fetch(`${API_BASE}/product/${project_id}/pqc-readiness`);
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  },
+
+  evaluateMosca: async (req: {x: number, y: number, z: number}): Promise<any> => {
+    const res = await fetch(`${API_BASE}/product/mosca`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(req)
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  },
+
+  getMigrationPriority: async (project_id: string, asset_id: string, mosca_status: string = "NOT_AT_RISK"): Promise<any> => {
+    const res = await fetch(`${API_BASE}/product/${project_id}/assets/${asset_id}/priority?mosca_status=${mosca_status}`);
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  },
+
+  getRoadmapState: async (project_id: string, asset_id: string): Promise<any> => {
+    const res = await fetch(`${API_BASE}/product/${project_id}/assets/${asset_id}/roadmap`);
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  },
+
+  transitionRoadmapState: async (project_id: string, asset_id: string, requested_state: string): Promise<any> => {
+    const res = await fetch(`${API_BASE}/product/${project_id}/assets/${asset_id}/roadmap`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ requested_state })
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
   }
 };
+

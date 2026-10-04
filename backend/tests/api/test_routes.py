@@ -18,6 +18,24 @@ def test_scan_nonexistent_repo():
     })
     assert response.status_code == 400
 
+def test_scan_quotes_stripped(monkeypatch):
+    with tempfile.TemporaryDirectory() as temp_dir:
+        # Pass a path with surrounding quotes to ensure they are stripped
+        response = client.post("/api/v1/scan", json={
+            "repository_path": f'"{temp_dir}"',
+            "project_id": "test_proj_quotes"
+        })
+        # If quotes are stripped, it finds the temp dir and succeeds.
+        assert response.status_code == 200
+
+def test_scan_github_url_rejected():
+    response = client.post("/api/v1/scan", json={
+        "repository_path": "https://github.com/org/repo",
+        "project_id": "test_proj"
+    })
+    assert response.status_code == 400
+    assert "remote URL" in response.json()["detail"]
+
 def test_scan_and_fetch(monkeypatch):
     with tempfile.TemporaryDirectory() as temp_dir:
         monkeypatch.setenv("AGILEGRAPH_SCAN_ROOT", temp_dir)

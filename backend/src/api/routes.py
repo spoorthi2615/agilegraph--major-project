@@ -38,10 +38,21 @@ def get_mosca_readiness_index(confidentiality: int = 10, migration: int = 5, qua
 
 @router.post("/scan", response_model=ScanResponse)
 def trigger_scan(request: ScanRequest):
-    if not os.path.exists(request.repository_path):
+    repo_path = request.repository_path.strip().strip('"').strip("'")
+    if repo_path.startswith("http://") or repo_path.startswith("https://") or "github.com" in repo_path:
+        raise HTTPException(status_code=400, detail="The AgileGraph scanner requires a local filesystem path, not a remote URL. The current architecture does not clone remote repositories.")
+    if repo_path.startswith("file:///"):
+        repo_path = repo_path[8:]
+    elif repo_path.startswith("file://"):
+        repo_path = repo_path[7:]
+
+    if not os.path.exists(repo_path):
         raise HTTPException(status_code=400, detail="Repository path does not exist.")
-    allowed_root = os.path.realpath(os.environ.get("AGILEGRAPH_SCAN_ROOT", os.getcwd()))
-    req_root = os.path.realpath(request.repository_path)
+        
+    allowed_root_env = os.environ.get("AGILEGRAPH_SCAN_ROOT")
+    allowed_root = os.path.realpath(allowed_root_env) if allowed_root_env else None
+    
+    req_root = os.path.realpath(repo_path)
     
     try:
         result = run_pipeline(req_root, request.project_id, "RENORMALIZE", allowed_root=allowed_root)
