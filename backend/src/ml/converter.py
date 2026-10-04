@@ -69,4 +69,8 @@ def convert_agilegraph_to_pyg(ag: AgileGraph, config: FeatureConfig) -> HeteroDa
     for triplet, edge_index in edge_lists.items():
         data[triplet].edge_index = torch.tensor(edge_index, dtype=torch.long)
         
+    # The GNN needs information to flow from neighbors (libraries, cryptousage) back to the file node
+    import torch_geometric.transforms as T
+    data = T.ToUndirected()(data)
+        
     return data

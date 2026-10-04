@@ -23,16 +23,16 @@ from src.ml.converter import convert_agilegraph_to_pyg
 from src.ml.features import FeatureConfig
 from src.ml.pipeline import set_seed
 
-# The target repositories
+# The target repositories with pinned SHAs for reproducibility
 REPOS = [
-    {"id": "python_itsdangerous", "url": "https://github.com/pallets/itsdangerous", "lang": Language.PYTHON, "size": SizeTier.SMALL},
-    {"id": "python_bcrypt", "url": "https://github.com/pyca/bcrypt", "lang": Language.PYTHON, "size": SizeTier.SMALL},
-    {"id": "python_cryptography", "url": "https://github.com/pyca/cryptography", "lang": Language.PYTHON, "size": SizeTier.LARGE},
-    {"id": "java_java_jwt", "url": "https://github.com/auth0/java-jwt", "lang": Language.JAVA, "size": SizeTier.SMALL},
-    {"id": "java_jjwt", "url": "https://github.com/jwtk/jjwt", "lang": Language.JAVA, "size": SizeTier.LARGE}, # Setting one as large for distribution
-    {"id": "go_jwt", "url": "https://github.com/golang-jwt/jwt", "lang": Language.GO, "size": SizeTier.SMALL},
-    {"id": "go_jwt_go", "url": "https://github.com/dgrijalva/jwt-go", "lang": Language.GO, "size": SizeTier.SMALL},
-    {"id": "go_crypto", "url": "https://github.com/golang/crypto", "lang": Language.GO, "size": SizeTier.LARGE}
+    {"id": "python_itsdangerous", "url": "https://github.com/pallets/itsdangerous", "sha": "672971d66a2ef9f85151e53283113f33d642dabd", "lang": Language.PYTHON, "size": SizeTier.SMALL},
+    {"id": "python_bcrypt", "url": "https://github.com/pyca/bcrypt", "sha": "59b41aaa24c025d1cd231c37d2755b94184a3e67", "lang": Language.PYTHON, "size": SizeTier.SMALL},
+    {"id": "python_cryptography", "url": "https://github.com/pyca/cryptography", "sha": "f0ba3000a365d44db153362e847c88339c9231f4", "lang": Language.PYTHON, "size": SizeTier.LARGE},
+    {"id": "java_java_jwt", "url": "https://github.com/auth0/java-jwt", "sha": "29f252b2d6fea74df6576803d5fce5f6d6799cf3", "lang": Language.JAVA, "size": SizeTier.SMALL},
+    {"id": "java_jjwt", "url": "https://github.com/jwtk/jjwt", "sha": "fb71496164c71442d08adec4571d9616ed5e1b8d", "lang": Language.JAVA, "size": SizeTier.LARGE},
+    {"id": "go_jwt", "url": "https://github.com/golang-jwt/jwt", "sha": "73c870b18e68b6e654b2b03f485aa3c9fab32cea", "lang": Language.GO, "size": SizeTier.SMALL},
+    {"id": "go_jwt_go", "url": "https://github.com/dgrijalva/jwt-go", "sha": "9742bd7fca1c67ba2eb793750f56ee3094d1b04f", "lang": Language.GO, "size": SizeTier.SMALL},
+    {"id": "go_crypto", "url": "https://github.com/golang/crypto", "sha": "b39ff6d641ecc5bb4b241737cb0c6b646f3e12a9", "lang": Language.GO, "size": SizeTier.LARGE}
 ]
 
 CORPUS_DIR = "dataset/corpus"
@@ -48,8 +48,13 @@ def clone_and_get_sha(repo):
     repo_dir = os.path.join(CORPUS_DIR, repo["id"])
     if not os.path.exists(repo_dir):
         print(f"Cloning {repo['url']}...")
-        run_cmd(f"git clone --depth 1 {repo['url']} {repo['id']}", cwd=CORPUS_DIR)
+        run_cmd(f"git clone {repo['url']} {repo['id']}", cwd=CORPUS_DIR)
     
+    # Checkout the pinned SHA
+    pinned_sha = repo.get("sha")
+    if pinned_sha:
+        run_cmd(f"git checkout {pinned_sha}", cwd=repo_dir)
+        
     sha = run_cmd("git rev-parse HEAD", cwd=repo_dir)
     return sha, repo_dir
 
@@ -153,7 +158,8 @@ def main():
             extractor = FactorExtractor(ag)
             for node, data in ag.G.nodes(data=True):
                 if data.get("category") == "file":
-                    factors = extractor.extract(node, {}, {}, {})
+                    props = data.get("properties", {})
+                    factors = extractor.extract(node, props, {}, {})
                     # Convert factors to dict for properties
                     props = data.setdefault("properties", {})
                     props["risk_factors"] = {k: getattr(factors, k).value for k in factors.model_fields.keys() if getattr(factors, k).value is not None}
@@ -207,10 +213,10 @@ def main():
     with open(os.path.join(ARTIFACTS_DIR, "manifest.json"), "w") as f:
         f.write(manifest.model_dump_json(indent=2))
         
-    # Splits (Dummy repository-level split logic)
-    train_ids = [p.project_id for p in projects[:5]]
-    val_ids = [p.project_id for p in projects[5:7]]
-    test_ids = [p.project_id for p in projects[7:]]
+    # Stratified Split by Language (Prevent Language Confounding)
+    train_ids = ["python_cryptography", "java_jjwt", "go_crypto"]
+    val_ids = ["python_bcrypt", "java_java_jwt", "go_jwt"]
+    test_ids = ["python_itsdangerous", "go_jwt_go"]
     
     report["splits"] = {
         "train": train_ids,

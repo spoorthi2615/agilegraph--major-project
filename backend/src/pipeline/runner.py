@@ -107,7 +107,8 @@ def run_pipeline(repository_path: str, project_id: str, missing_data_policy: str
 
     for node, data in g.nodes(data=True):
         if data.get("category") == "file":
-            factors = extractor.extract(node, {}, {}, {})
+            props = data.get("properties", {})
+            factors = extractor.extract(node, props, {}, {})
             try:
                 score_res = calculate_heuristic_score(factors, weights, policy=policy)
                 score_dict = score_res.model_dump()

@@ -1,6 +1,6 @@
 {
   "manifest_id": "phase11_corpus",
-  "created_at": "2026-10-03T14:34:56.788255",
+  "created_at": "2026-10-04T07:41:08.045753",
   "dataset_generation_version": "1.0",
   "projects": [
     {
@@ -11,7 +11,7 @@
       "size_tier": "SMALL",
       "origin": "PUBLIC_OPEN_SOURCE",
       "status": "READY_FOR_MODELING",
-      "checkout_timestamp": "2026-10-03T14:34:55.385178Z",
+      "checkout_timestamp": "2026-10-04T07:41:05.702577Z",
       "scanner_provenance": {
         "scanner_version": "1.0",
         "dependency_scan_version": "1.0"
@@ -30,7 +30,7 @@
       "size_tier": "SMALL",
       "origin": "PUBLIC_OPEN_SOURCE",
       "status": "READY_FOR_MODELING",
-      "checkout_timestamp": "2026-10-03T14:34:55.465373Z",
+      "checkout_timestamp": "2026-10-04T07:41:05.886944Z",
       "scanner_provenance": {
         "scanner_version": "1.0",
         "dependency_scan_version": "1.0"
@@ -49,7 +49,7 @@
       "size_tier": "LARGE",
       "origin": "PUBLIC_OPEN_SOURCE",
       "status": "READY_FOR_MODELING",
-      "checkout_timestamp": "2026-10-03T14:34:55.533160Z",
+      "checkout_timestamp": "2026-10-04T07:41:06.058583Z",
       "scanner_provenance": {
         "scanner_version": "1.0",
         "dependency_scan_version": "1.0"
@@ -68,7 +68,7 @@
       "size_tier": "SMALL",
       "origin": "PUBLIC_OPEN_SOURCE",
       "status": "READY_FOR_MODELING",
-      "checkout_timestamp": "2026-10-03T14:34:56.305914Z",
+      "checkout_timestamp": "2026-10-04T07:41:07.032027Z",
       "scanner_provenance": {
         "scanner_version": "1.0",
         "dependency_scan_version": "1.0"
@@ -87,7 +87,7 @@
       "size_tier": "LARGE",
       "origin": "PUBLIC_OPEN_SOURCE",
       "status": "READY_FOR_MODELING",
-      "checkout_timestamp": "2026-10-03T14:34:56.383888Z",
+      "checkout_timestamp": "2026-10-04T07:41:07.242296Z",
       "scanner_provenance": {
         "scanner_version": "1.0",
         "dependency_scan_version": "1.0"
@@ -106,7 +106,7 @@
       "size_tier": "SMALL",
       "origin": "PUBLIC_OPEN_SOURCE",
       "status": "READY_FOR_MODELING",
-      "checkout_timestamp": "2026-10-03T14:34:56.528598Z",
+      "checkout_timestamp": "2026-10-04T07:41:07.604805Z",
       "scanner_provenance": {
         "scanner_version": "1.0",
         "dependency_scan_version": "1.0"
@@ -125,7 +125,7 @@
       "size_tier": "SMALL",
       "origin": "PUBLIC_OPEN_SOURCE",
       "status": "READY_FOR_MODELING",
-      "checkout_timestamp": "2026-10-03T14:34:56.597224Z",
+      "checkout_timestamp": "2026-10-04T07:41:07.755016Z",
       "scanner_provenance": {
         "scanner_version": "1.0",
         "dependency_scan_version": "1.0"
@@ -144,7 +144,7 @@
       "size_tier": "LARGE",
       "origin": "PUBLIC_OPEN_SOURCE",
       "status": "READY_FOR_MODELING",
-      "checkout_timestamp": "2026-10-03T14:34:56.667233Z",
+      "checkout_timestamp": "2026-10-04T07:41:07.912335Z",
       "scanner_provenance": {
         "scanner_version": "1.0",
         "dependency_scan_version": "1.0"

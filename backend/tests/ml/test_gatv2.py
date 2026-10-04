@@ -77,3 +77,41 @@ def test_gatv2_six_categories_regression():
             assert out[category].shape == (2, 3)
         else:
             assert out[category].shape == (1, 3)
+
+def test_gatv2_topology_neighbor_perturbation():
+    """
+    Proves that perturbing a neighbor's features actually changes the target file node's output.
+    """
+    import torch_geometric.transforms as T
+    from torch_geometric.data import HeteroData
+    
+    # 1. Setup Data with directed edges
+    data = HeteroData()
+    data["file"].x = torch.ones((1, 14))
+    data["cryptousage"].x = torch.ones((1, 14))
+    
+    data["file", "USES", "cryptousage"].edge_index = torch.tensor([[0], [0]], dtype=torch.long)
+    
+    # 2. Make Undirected (this is what converter.py now does)
+    data = T.ToUndirected()(data)
+    
+    # 3. Create Model
+    model = create_hetero_gatv2(data.metadata(), hidden_channels=8, out_channels=3, num_heads=2)
+    model.eval()
+    
+    # 4. Forward pass baseline
+    with torch.no_grad():
+        out_baseline = model(data.x_dict, data.edge_index_dict)
+        baseline_file_repr = out_baseline["file"].clone()
+        
+    # 5. Perturb neighbor (cryptousage)
+    data["cryptousage"].x = torch.randn((1, 14)) * 100
+    
+    # 6. Forward pass perturbed
+    with torch.no_grad():
+        out_perturbed = model(data.x_dict, data.edge_index_dict)
+        perturbed_file_repr = out_perturbed["file"].clone()
+        
+    # 7. Assert file representation changed
+    assert not torch.allclose(baseline_file_repr, perturbed_file_repr), "GNN failed to propagate neighbor features to file node"
+

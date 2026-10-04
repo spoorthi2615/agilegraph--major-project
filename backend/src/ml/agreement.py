@@ -23,11 +23,13 @@ class AgreementMetrics:
         enc1 = AgreementMetrics._encode_labels([p[0] for p in valid_pairs])
         enc2 = AgreementMetrics._encode_labels([p[1] for p in valid_pairs])
         
-        # Simplified placeholder for actual sklearn/statsmodels calculation
-        matches = sum(1 for a, b in zip(enc1, enc2) if a == b)
+        from sklearn.metrics import cohen_kappa_score
+        
+        # Explicit check for pure agreement and disagreement cases handled by sklearn
+        score = cohen_kappa_score(enc1, enc2, weights=weights)
         return {
             "status": "COMPUTED",
-            "statistic": float(matches / len(enc1))
+            "statistic": float(score)
         }
 
     @staticmethod
@@ -60,9 +62,40 @@ class AgreementMetrics:
                 "message": "Insufficient raters or categories."
             }
             
-        # Simplified infra returning 1.0 for perfect agreement, 0.5 otherwise
-        val = 1.0 if np.all(ratings_matrix == ratings_matrix[0]) else 0.5
+        # Fleiss' Kappa mathematically correct implementation
+        # N = n_assets, n = n_raters, k = n_cat
+        # P_i = 1 / (n * (n - 1)) * sum(n_ij * (n_ij - 1))
+        # P_bar = sum(P_i) / N
+        # p_j = sum(n_ij) / (N * n)
+        # P_e_bar = sum(p_j^2)
+        # kappa = (P_bar - P_e_bar) / (1 - P_e_bar)
+        
+        N = n_assets
+        n = n_raters
+        
+        if n <= 1:
+            return {
+                "status": "NOT_IMPLEMENTED",
+                "statistic": None,
+                "message": "Fleiss kappa requires at least 2 raters."
+            }
+            
+        P_i = np.sum(ratings_matrix * (ratings_matrix - 1), axis=1) / (n * (n - 1))
+        P_bar = np.mean(P_i)
+        
+        p_j = np.sum(ratings_matrix, axis=0) / (N * n)
+        P_e_bar = np.sum(p_j ** 2)
+        
+        if P_e_bar == 1.0:
+            # If P_e_bar is 1, then all raters agreed completely on one category.
+            return {
+                "status": "COMPUTED",
+                "statistic": 1.0
+            }
+            
+        kappa = (P_bar - P_e_bar) / (1 - P_e_bar)
+        
         return {
             "status": "COMPUTED",
-            "statistic": val
+            "statistic": float(kappa)
         }

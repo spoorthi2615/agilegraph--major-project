@@ -10,16 +10,16 @@
     "SMALL": 5,
     "LARGE": 3
   },
-  "findings": 1357,
+  "findings": 1760,
   "graphs": 8,
   "failed_scans": 0,
   "details": [
     {
       "id": "python_itsdangerous",
       "sha": "672971d66a2ef9f85151e53283113f33d642dabd",
-      "nodes": 8,
-      "edges": 5,
-      "findings": 4
+      "nodes": 6,
+      "edges": 6,
+      "findings": 5
     },
     {
       "id": "python_bcrypt",
@@ -31,60 +31,60 @@
     {
       "id": "python_cryptography",
       "sha": "f0ba3000a365d44db153362e847c88339c9231f4",
-      "nodes": 764,
-      "edges": 198,
-      "findings": 585
+      "nodes": 546,
+      "edges": 913,
+      "findings": 943
     },
     {
       "id": "java_java_jwt",
       "sha": "29f252b2d6fea74df6576803d5fce5f6d6799cf3",
-      "nodes": 113,
-      "edges": 66,
-      "findings": 66
+      "nodes": 50,
+      "edges": 69,
+      "findings": 69
     },
     {
       "id": "java_jjwt",
       "sha": "fb71496164c71442d08adec4571d9616ed5e1b8d",
-      "nodes": 702,
-      "edges": 453,
-      "findings": 474
+      "nodes": 254,
+      "edges": 458,
+      "findings": 479
     },
     {
       "id": "go_jwt",
       "sha": "73c870b18e68b6e654b2b03f485aa3c9fab32cea",
-      "nodes": 30,
+      "nodes": 17,
       "edges": 14,
       "findings": 14
     },
     {
       "id": "go_jwt_go",
       "sha": "9742bd7fca1c67ba2eb793750f56ee3094d1b04f",
-      "nodes": 22,
+      "nodes": 12,
       "edges": 10,
       "findings": 10
     },
     {
       "id": "go_crypto",
       "sha": "b39ff6d641ecc5bb4b241737cb0c6b646f3e12a9",
-      "nodes": 283,
-      "edges": 198,
-      "findings": 203
+      "nodes": 182,
+      "edges": 234,
+      "findings": 239
     }
   ],
   "splits": {
     "train": [
-      "python_itsdangerous",
-      "python_bcrypt",
       "python_cryptography",
-      "java_java_jwt",
-      "java_jjwt"
+      "java_jjwt",
+      "go_crypto"
     ],
     "validation": [
-      "go_jwt",
-      "go_jwt_go"
+      "python_bcrypt",
+      "java_java_jwt",
+      "go_jwt"
     ],
     "test": [
-      "go_crypto"
+      "python_itsdangerous",
+      "go_jwt_go"
     ]
   }
 }

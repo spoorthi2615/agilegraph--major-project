@@ -68,6 +68,9 @@ def calculate_heuristic_score(
         "Initial AgileGraph Heuristic Risk Score - NOT EXPERT-VALIDATED",
         "Acts as weak supervision signal, not ground truth"
     ]
+    if len(valid_factors) < len(factors_dict):
+        assumptions.append(f"PRELIMINARY SCORE: Only {len(valid_factors)}/{len(factors_dict)} factors computed. Missing: {missing_factors}")
+        
     if policy == MissingDataPolicy.RENORMALIZE and missing_factors:
         assumptions.append(f"Renormalized due to missing factors: {missing_factors}")
         

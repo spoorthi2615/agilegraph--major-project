@@ -11,6 +11,28 @@ def test_cohens_kappa_insufficient_data():
     assert res["status"] == "PENDING_EXPERT_LABELS"
     assert res["statistic"] is None
         
+def test_cohens_kappa_perfect_agreement():
+    y1 = [ExpertLabelClass.HIGH, ExpertLabelClass.MEDIUM, ExpertLabelClass.LOW]
+    y2 = [ExpertLabelClass.HIGH, ExpertLabelClass.MEDIUM, ExpertLabelClass.LOW]
+    res = AgreementMetrics.cohens_kappa(y1, y2)
+    assert res["status"] == "COMPUTED"
+    assert res["statistic"] == pytest.approx(1.0)
+
+def test_cohens_kappa_disagreement():
+    y1 = [ExpertLabelClass.HIGH, ExpertLabelClass.HIGH, ExpertLabelClass.HIGH]
+    y2 = [ExpertLabelClass.LOW, ExpertLabelClass.LOW, ExpertLabelClass.LOW]
+    res = AgreementMetrics.cohens_kappa(y1, y2)
+    assert res["status"] == "COMPUTED"
+    assert res["statistic"] <= 0.0
+
+def test_cohens_kappa_partial():
+    y1 = [ExpertLabelClass.HIGH, ExpertLabelClass.MEDIUM, ExpertLabelClass.LOW, ExpertLabelClass.HIGH, ExpertLabelClass.LOW]
+    y2 = [ExpertLabelClass.HIGH, ExpertLabelClass.LOW, ExpertLabelClass.LOW, ExpertLabelClass.MEDIUM, ExpertLabelClass.LOW]
+    res = AgreementMetrics.cohens_kappa(y1, y2)
+    assert res["status"] == "COMPUTED"
+    # Expected value depends on exact formulation, but should be between 0 and 1
+    assert 0.0 < res["statistic"] < 1.0
+        
 def test_fleiss_kappa():
     # 2 assets, 3 raters, 3 categories
     matrix = np.array([
@@ -21,6 +43,17 @@ def test_fleiss_kappa():
     res = AgreementMetrics.fleiss_kappa(matrix)
     assert res["status"] == "COMPUTED"
     assert res["statistic"] == 1.0
+
+def test_fleiss_kappa_disagreement():
+    # 2 assets, 3 raters, 3 categories
+    matrix = np.array([
+        [1, 1, 1],
+        [1, 1, 1]
+    ])
+    res = AgreementMetrics.fleiss_kappa(matrix)
+    assert res["status"] == "COMPUTED"
+    # perfect disagreement => negative or zero kappa depending on p_e
+    assert res["statistic"] <= 0.0
 
 def test_fleiss_kappa_insufficient_data():
     res = AgreementMetrics.fleiss_kappa(np.array([]))
