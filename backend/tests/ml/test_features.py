@@ -42,13 +42,42 @@ def test_feature_extraction_structure_only():
     
     # Assert it returns a dummy feature of size 1 with no semantic crypto information
     assert feat.shape == (1,)
-    assert feat[0].item() == 1.0
+    assert feat[0].item() == 0.0
     
     # Ensure none of the semantic values leaked through
     feat_list = feat.tolist()
     assert 0.9 not in feat_list
-    assert 1.0 in feat_list # The dummy feature is 1.0, but it doesn't represent library_centrality
+    assert 1.0 not in feat_list
 
+def test_ablation_independence():
+    # Prove that changing semantic evidence explicitly changes normal features,
+    # but does NOT change structure-only features.
+    props_low_risk = {
+        "risk_factors": {"crypto_weakness": 0.1, "library_centrality": 0.2},
+        "base_risk": 0.1
+    }
+    props_high_risk = {
+        "risk_factors": {"crypto_weakness": 1.0, "library_centrality": 0.9},
+        "base_risk": 0.9
+    }
+    
+    config_normal = FeatureConfig(structure_only=False)
+    config_ablation = FeatureConfig(structure_only=True)
+    
+    # 1. Normal features MUST be different
+    feat_low_norm = extract_node_features(props_low_risk, config_normal)
+    feat_high_norm = extract_node_features(props_high_risk, config_normal)
+    assert not torch.allclose(feat_low_norm, feat_high_norm), "Semantic features failed to change!"
+    
+    # 2. Ablation features MUST be identical
+    feat_low_abl = extract_node_features(props_low_risk, config_ablation)
+    feat_high_abl = extract_node_features(props_high_risk, config_ablation)
+    assert torch.allclose(feat_low_abl, feat_high_abl), "Ablation leaked semantic features!"
+    
+    # 3. Ablation features MUST NOT contain the semantic values
+    assert 0.1 not in feat_low_abl.tolist()
+    assert 1.0 not in feat_low_abl.tolist()
+    
 def test_target_label_extraction_expert():
     props = {"expert_label": {"class_idx": 2, "confidence": 1.0}}
     label = extract_target_label(props)

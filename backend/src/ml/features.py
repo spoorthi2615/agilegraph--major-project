@@ -28,7 +28,7 @@ def extract_node_features(properties: dict, config: FeatureConfig) -> torch.Tens
     if config.structure_only:
         # Strict ablation: no algorithm, no risk, no heuristic.
         # Just return a dummy feature so the GNN can learn from topology/node-types.
-        return torch.ones(1, dtype=torch.float)
+        return torch.zeros(1, dtype=torch.float)
 
     factors = properties.get("risk_factors", {})
     keys = [
