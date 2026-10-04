@@ -21,7 +21,11 @@ JAVA_VARNAME_PATTERN = re.compile(
 )
 
 # String variable declarations to resolve variables in getInstance
-JAVA_STRING_VAR_PATTERN = re.compile(r'\bString\s+(\w+)\s*=\s*"([^"]+)"\s*;')
+# Matches local variables and static final constants
+JAVA_STRING_VAR_PATTERN = re.compile(r'\b(?:private\s+|public\s+|static\s+|final\s+)*String\s+(\w+)\s*=\s*"([^"]+)"\s*;')
+
+# jjwt SignatureAlgorithm enum usage
+JAVA_JJWT_ENUM_PATTERN = re.compile(r'\bSignatureAlgorithm\.([A-Z0-9_]+)\b')
 
 # .initialize(N) — we need the variable it's called on
 JAVA_INIT_PATTERN = re.compile(r'\b(\w+)\.initialize\s*\(\s*(\d+)\s*\)')
@@ -119,5 +123,22 @@ def scan_java_code(repository: str, filepath: str, code: str) -> List[FindingRec
                     f.evidence = f"{f.evidence} ... Key size {key_size}"
             # If var is not a tracked keygen variable, we ignore the initialize() call.
             # This prevents "pool.initialize(8)" from attaching to an unrelated RSA finding.
+            
+        # ── jjwt enum algorithm usages ─────────────────────────────────────
+        for enum_match in JAVA_JJWT_ENUM_PATTERN.finditer(line):
+            algo = enum_match.group(1)
+            findings.append(FindingRecord(
+                asset_type=AssetType.CRYPTO_USAGE,
+                repository=repository,
+                file=filepath,
+                line=line_num,
+                language=Language.JAVA,
+                api="SignatureAlgorithm",
+                algorithm=algo,
+                operation="signature",
+                evidence=line.strip(),
+                confidence=0.9,
+                extra={}
+            ))
 
     return findings

@@ -206,6 +206,16 @@ class PythonCryptoVisitor(ast.NodeVisitor):
                     self._emit_crypto(node, _HASHLIB_ATTRS[attr], "hashing", full_name, base)
             return
 
+        # ── jwt.encode(..., algorithm="HS256") ──────────────────────────
+        if base == "jwt" or (base in self.module_alias and self.module_alias[base] == "jwt"):
+            if len(parts) >= 2 and parts[-1].lower() in ("encode", "decode"):
+                alg = "UNKNOWN_ALGORITHM"
+                for kw in node.keywords:
+                    if kw.arg == "algorithm" and isinstance(kw.value, ast.Constant):
+                        alg = str(kw.value.value)
+                self._emit_crypto(node, alg, "signature", full_name, base)
+            return
+
         # ── Direct name from import: sha1(), DES.new(), rsa.generate() ──
         if base in self.name_to_algo:
             algo_op = self.name_to_algo[base]
@@ -233,6 +243,16 @@ class PythonCryptoVisitor(ast.NodeVisitor):
                     self._emit_crypto(node, "ecdsa", "key_generation", full_name, src_mod.split(".")[0])
                 elif "dsa" in src_mod.lower():
                     self._emit_crypto(node, "dsa", "key_generation", full_name, src_mod.split(".")[0])
+            return
+            
+        # ── cryptography hazmat Hash(hashes.SHA256()) ──────────────────────────
+        if base == "Hash" or (base in self.module_alias and self.module_alias[base] == "Hash"):
+            if node.args and isinstance(node.args[0], ast.Call):
+                alg_func = self._get_full_name(node.args[0].func)
+                if alg_func:
+                    lower_alg = alg_func.lower().replace("hashes.", "")
+                    if lower_alg in _HASHLIB_ATTRS:
+                        self._emit_crypto(node, _HASHLIB_ATTRS[lower_alg], "hashing", full_name, "cryptography")
             return
 
         # ── rsa.generate_private_key(65537, 1024) ───────────────────────

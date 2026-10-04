@@ -3,8 +3,9 @@ from typing import List
 from src.scanners.common.models import FindingRecord
 from src.scanners.common.enums import AssetType, Language
 
-GO_IMPORT_PATTERN = re.compile(r'"(crypto/(md5|sha1|des|rsa|ecdsa|ed25519|aes|cipher|sha256|sha512|hmac|tls))"')
-GO_CRYPTO_USAGE_PATTERN = re.compile(r'(md5\.New|sha1\.New|des\.NewCipher|rsa\.GenerateKey|ecdsa\.GenerateKey|ed25519\.GenerateKey|aes\.NewCipher|sha256\.New|sha512\.New|hmac\.New|tls\.Config)\s*\(')
+GO_IMPORT_PATTERN = re.compile(r'"(crypto/(md5|sha1|des|rsa|ecdsa|ed25519|aes|cipher|sha256|sha512|hmac|tls)|github\.com/dgrijalva/jwt-go|github\.com/golang-jwt/jwt)"')
+GO_CRYPTO_USAGE_PATTERN = re.compile(r'(md5\.New|sha1\.New|des\.NewCipher|rsa\.GenerateKey|ecdsa\.GenerateKey|ed25519\.GenerateKey|aes\.NewCipher|sha256\.New|sha512\.New|hmac\.New|tls\.Config|ecdsa\.Verify)\s*\(')
+GO_JWT_SIGNING_METHOD_PATTERN = re.compile(r'\b(jwt\.SigningMethod[A-Za-z0-9_]+)\b')
 GO_RSA_KEY_SIZE_PATTERN = re.compile(r'rsa\.GenerateKey\([^,]+,\s*(\d+)\)')
 
 def scan_go_code(repository: str, filepath: str, code: str) -> List[FindingRecord]:
@@ -61,6 +62,23 @@ def scan_go_code(repository: str, filepath: str, code: str) -> List[FindingRecor
                 evidence=line.strip(),
                 confidence=0.9,
                 extra=extra
+            ))
+            
+        # Check jwt signing methods
+        for jwt_match in GO_JWT_SIGNING_METHOD_PATTERN.finditer(line):
+            api = jwt_match.group(1)
+            findings.append(FindingRecord(
+                asset_type=AssetType.CRYPTO_USAGE,
+                repository=repository,
+                file=filepath,
+                line=line_num,
+                language=Language.GO,
+                api=api,
+                algorithm=api.replace("jwt.SigningMethod", ""),
+                operation="signature",
+                evidence=line.strip(),
+                confidence=0.9,
+                extra={}
             ))
             
     return findings
