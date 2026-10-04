@@ -16,8 +16,8 @@ AgileGraph translates cryptographic footprints into asset-level migration priori
    - Certificate/TLS scanning infrastructure exists (`INFRASTRUCTURE ONLY`). Active external TLS scanning is authorization-gated. Current TLS functionality has only been verified against the permitted/local development scenario, and broad Internet TLS coverage has not been empirically demonstrated.
 2. **Graph Construction** (`IMPLEMENTED`): Constructs a NetworkX graph based on the authoritative six-node ontology: `File`, `CryptoUsage`, `Certificate`, `Endpoint`, `Library`, `SensitiveData`. 
    *Note: The ontology supports six node types, but the current real corpus does not necessarily instantiate every category. The absence of observed instances must not be represented as evidence that the scanner discovered those categories.*
-3. **Heuristic Risk Engine** (`IMPLEMENTED`): Evaluates seven factors (e.g., `crypto_weakness`, `library_centrality`, `migration_difficulty`) using a renormalized weighting system (handling unavailable contexts like CVE risk without treating them as zero risk).
-4. **Dashboard** (`IMPLEMENTED`): A React application offering interactive visualization, graph-table interaction, and explainability.
+3. **Heuristic Risk Engine** (`IMPLEMENTED`): Evaluates a subset of seven factors (e.g., `crypto_weakness`, `library_centrality`). The score is preliminary as multiple metadata pipelines (e.g., data sensitivity, internet exposure, cve risk) remain unimplemented. Unavailable contexts are renormalized.
+4. **Dashboard** (`PARTIALLY IMPLEMENTED`): A React application offering interactive visualization, graph-table interaction, and explainability. Note: the Mosca network view and the migration-priority/risk-reduction planning interfaces promised in the synopsis are currently **NOT IMPLEMENTED**.
 
 ## Reproducibility & CLI
 
@@ -88,6 +88,10 @@ Continuous Integration (CI) is configured via GitHub Actions in `.github/workflo
   - Semgrep (not utilized in the current scanner implementation).
   - CT (Certificate Transparency) / passive certificates (not implemented).
   - Certificate, Endpoint, and SensitiveData nodes (ontology supports them, but current scanners do not extract them).
+  - Mosca visualization and migration-priority tracking interfaces are not implemented in the frontend.
+- **SCANNER LIMITATIONS**:
+  - Scanner recall is limited to recognized AST patterns. Known misses exist in Java (e.g., `Mac`, `KeyFactory`, `KeyAgreement`, `SecureRandom`) and Go (e.g., HMAC, standard `RSA/ECDSA` usage outside specific generator patterns). 
+  - Coverage claims are restricted strictly to "within the evaluated AST API patterns", not comprehensive cryptographic discovery.
 - **PENDING**: Genuine expert annotation import.
 - **BLOCKED**: GATv2 training, Empirical evaluation, Statistical inference.
 
