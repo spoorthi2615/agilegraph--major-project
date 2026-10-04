@@ -1,11 +1,56 @@
 import type { RiskResponse, GraphResponse } from '../api/client';
-import { AlertTriangle, Info, FileCode } from 'lucide-react';
+import { AlertTriangle, Info, FileCode, HelpCircle } from 'lucide-react';
 
 interface RiskTableProps {
   data: RiskResponse;
   graphData: GraphResponse | null;
   selectedAssetId: string | null;
   onRowClick: (assetId: string) => void;
+}
+
+/** Render a score badge, handling null (unrated) safely */
+function ScoreBadge({ score }: { score: number | null }) {
+  if (score === null || score === undefined) {
+    return (
+      <span className="px-2 py-0.5 rounded-full text-xs bg-slate-500/20 text-slate-400 flex items-center gap-1">
+        <HelpCircle className="w-3 h-3" />
+        Unrated
+      </span>
+    );
+  }
+  const colorClass =
+    score > 0.7 ? 'bg-red-500/20 text-red-400' :
+    score > 0.4 ? 'bg-amber-500/20 text-amber-400' :
+                  'bg-emerald-500/20 text-emerald-400';
+  return (
+    <span className={`px-2 py-0.5 rounded-full text-xs ${colorClass}`}>
+      {score.toFixed(4)}
+    </span>
+  );
+}
+
+/** Summary banner when some assets are unrated or files were skipped */
+function ScanIntegritySummary({ data }: { data: RiskResponse }) {
+  const unrated = data.assets.filter(a => a.score === null || a.score === undefined).length;
+  const scored  = data.assets.filter(a => a.score !== null && a.score !== undefined).length;
+
+  if (unrated === 0) return null;
+
+  return (
+    <div className="mb-3 p-3 bg-amber-950/40 border border-amber-700/50 rounded-lg text-xs text-amber-400">
+      <p className="font-semibold flex items-center gap-1 mb-1">
+        <AlertTriangle className="w-3 h-3" /> Scan Integrity Notice
+      </p>
+      <p>
+        {scored} asset{scored !== 1 ? 's' : ''} scored · {unrated} unrated
+        (insufficient scoring evidence — not equivalent to low risk).
+      </p>
+      <p className="mt-1 text-amber-500/70">
+        Unrated assets must be reviewed manually. They are not included in
+        vulnerability counts.
+      </p>
+    </div>
+  );
 }
 
 export default function RiskTable({ data, graphData, selectedAssetId, onRowClick }: RiskTableProps) {
@@ -41,6 +86,8 @@ export default function RiskTable({ data, graphData, selectedAssetId, onRowClick
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
+      <ScanIntegritySummary data={data} />
+
       <div className="overflow-auto flex-1 border-b border-slate-700/50">
         <table className="w-full text-left text-sm whitespace-nowrap">
           <thead className="bg-slate-900/50 text-slate-400 font-medium sticky top-0 z-10 backdrop-blur">
@@ -53,25 +100,24 @@ export default function RiskTable({ data, graphData, selectedAssetId, onRowClick
           <tbody className="divide-y divide-slate-700/50">
             {data.assets.map((asset) => {
               const isSelected = asset.asset_id === selectedAssetId;
+              const isUnrated = asset.score === null || asset.score === undefined;
               const hasMissing = asset.missing_factors && asset.missing_factors.length > 0;
               return (
                 <tr 
                   key={asset.asset_id} 
                   onClick={() => onRowClick(asset.asset_id)}
-                  className={`cursor-pointer transition-colors ${isSelected ? 'bg-blue-900/30 border-l-2 border-blue-500' : 'hover:bg-slate-700/30 border-l-2 border-transparent'}`}
+                  className={`cursor-pointer transition-colors ${isSelected ? 'bg-blue-900/30 border-l-2 border-blue-500' : 'hover:bg-slate-700/30 border-l-2 border-transparent'} ${isUnrated ? 'opacity-70' : ''}`}
                 >
                   <td className="px-3 py-2 font-mono text-slate-300 truncate max-w-xs" title={asset.asset_id}>{asset.asset_id}</td>
                   <td className="px-3 py-2 text-right font-medium">
-                    <span className={`px-2 py-0.5 rounded-full text-xs ${
-                      asset.score > 0.7 ? 'bg-red-500/20 text-red-400' :
-                      asset.score > 0.4 ? 'bg-amber-500/20 text-amber-400' :
-                      'bg-emerald-500/20 text-emerald-400'
-                    }`}>
-                      {asset.score.toFixed(4)}
-                    </span>
+                    <ScoreBadge score={asset.score} />
                   </td>
                   <td className="px-3 py-2 text-right">
-                    {hasMissing ? (
+                    {isUnrated ? (
+                      <span className="text-xs bg-slate-700/50 text-slate-400 px-2 py-0.5 rounded flex items-center gap-1 w-max ml-auto">
+                        <HelpCircle className="w-3 h-3" /> UNRATED
+                      </span>
+                    ) : hasMissing ? (
                       <span className="text-xs bg-amber-900/40 text-amber-500 px-2 py-0.5 rounded flex items-center gap-1 w-max ml-auto">
                         <AlertTriangle className="w-3 h-3" /> RENORMALIZED
                       </span>
@@ -93,10 +139,24 @@ export default function RiskTable({ data, graphData, selectedAssetId, onRowClick
           <h3 className="text-sm font-bold text-slate-200 mb-2 truncate" title={selectedAsset.asset_id}>
             Details: {selectedAsset.asset_id}
           </h3>
+
+          {/* Unrated notice */}
+          {(selectedAsset.score === null || selectedAsset.score === undefined) && (
+            <div className="mb-4 bg-slate-900/60 border border-slate-600/50 p-3 rounded text-xs text-slate-400">
+              <p className="font-semibold mb-1 flex items-center gap-1">
+                <HelpCircle className="w-4 h-4" /> Unrated Asset
+              </p>
+              <p>
+                This asset has insufficient scoring evidence. Unrated does not
+                mean low risk — it means the heuristic engine could not produce
+                a valid score. Manual review is required.
+              </p>
+            </div>
+          )}
           
           {selectedAsset.missing_factors && selectedAsset.missing_factors.length > 0 && (
             <div className="mb-4 bg-amber-950/30 border border-amber-900/50 p-3 rounded text-xs text-amber-400/90">
-              <p className="font-semibold mb-1 flex items-center gap-1"><AlertTriangle className="w-4 h-4"/> Missing Factors Detected</p>
+              <p className="font-semibold mb-1 flex items-center gap-1"><AlertTriangle className="w-4 h-4"/>Missing Factors Detected</p>
               <p className="mb-1">Policy: <span className="font-mono bg-slate-900 px-1 rounded">{selectedAsset.missing_data_policy}</span></p>
               <p className="mb-1">The following factors were unavailable and their weights redistributed (CVE unavailable ≠ CVE risk zero):</p>
               <ul className="list-disc pl-4 mt-1 font-mono">
@@ -112,8 +172,8 @@ export default function RiskTable({ data, graphData, selectedAssetId, onRowClick
                 <div key={factor} className="flex justify-between items-center mb-1 text-xs">
                   <span className="text-slate-300 font-mono capitalize">{factor.replace('_', ' ')}</span>
                   <div className="text-right">
-                    <span className="text-slate-400 mr-2">val: {contrib.value?.toFixed(2)}</span>
-                    <span className="text-emerald-400">+{contrib.contribution?.toFixed(3)}</span>
+                    <span className="text-slate-400 mr-2">val: {contrib.value?.toFixed(2) ?? 'N/A'}</span>
+                    <span className="text-emerald-400">+{contrib.contribution?.toFixed(3) ?? 'N/A'}</span>
                   </div>
                 </div>
               ))}
@@ -124,7 +184,7 @@ export default function RiskTable({ data, graphData, selectedAssetId, onRowClick
               {selectedAsset.weights && Object.entries(selectedAsset.weights).map(([factor, weight]) => (
                 <div key={factor} className="flex justify-between items-center mb-1 text-xs">
                   <span className="text-slate-300 font-mono capitalize">{factor.replace('_', ' ')}</span>
-                  <span className="text-blue-400 font-mono">{(weight * 100).toFixed(1)}%</span>
+                  <span className="text-blue-400 font-mono">{((weight as number) * 100).toFixed(1)}%</span>
                 </div>
               ))}
             </div>

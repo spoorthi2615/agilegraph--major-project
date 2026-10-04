@@ -10,6 +10,9 @@ class ScanResponse(BaseModel):
     status: str
     message: str
     asset_count: Optional[int] = None
+    scored_assets: Optional[int] = None
+    unrated_assets: Optional[int] = None
+    skipped_files: Optional[int] = None
 
 class FactorContribution(BaseModel):
     value: float

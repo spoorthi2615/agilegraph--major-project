@@ -46,12 +46,16 @@ def trigger_scan(request: ScanRequest):
     try:
         result = run_pipeline(req_root, request.project_id, "RENORMALIZE", allowed_root=allowed_root)
         project_cache[request.project_id] = result
+        prov = result["provenance"]
         
         return ScanResponse(
             project_id=request.project_id,
             status="success",
             message="Scan completed successfully.",
-            asset_count=len(result["graph"].nodes)
+            asset_count=len(result["graph"].nodes),
+            scored_assets=prov.get("scored_assets", 0),
+            unrated_assets=prov.get("unrated_assets", 0),
+            skipped_files=prov.get("skipped_files", 0),
         )
     except ValueError as e:
         if "outside allowed scan root" in str(e):
