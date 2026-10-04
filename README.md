@@ -85,9 +85,11 @@ Continuous Integration (CI) is configured via GitHub Actions in `.github/workflo
 - **INFRASTRUCTURE ONLY**: Certificate/TLS Scanner, GATv2 architecture, leakage ablation, baseline comparison, expert validation schema.
 - **UNAVAILABLE / NOT INCLUDED**:
   - CBOMkit/CVE enrichment (unavailable).
+  - Python AES mode-of-operation detection (e.g. ECB, CBC) is strictly outside declared scope; the scanner extracts the cipher algorithm (AES) but does not compute mode-specific risk.
+  - Certificate, Endpoint, and SensitiveData nodes (ontology supports them, but current scanners do not extract them).
+  - TLS version detection (e.g. TLSv1) is outside current scanner scope; external TLS infrastructure exists but is authorization-gated and not implemented.
   - Semgrep (not utilized in the current scanner implementation).
   - CT (Certificate Transparency) / passive certificates (not implemented).
-  - Certificate, Endpoint, and SensitiveData nodes (ontology supports them, but current scanners do not extract them).
   - Mosca visualization and migration-priority tracking interfaces are not implemented in the frontend.
 - **SCANNER LIMITATIONS**:
   - Scanner recall is limited to recognized API patterns (via AST for Python, regex for Java/Go). Known misses exist in Java (e.g., `SecureRandom`) and Go (e.g., standard `RSA/ECDSA` usage outside specific generator patterns).

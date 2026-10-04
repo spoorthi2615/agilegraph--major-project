@@ -4,7 +4,7 @@ from src.scanners.common.models import FindingRecord
 from src.scanners.common.enums import AssetType, Language
 
 GO_IMPORT_PATTERN = re.compile(r'"(crypto/(md5|sha1|des|rsa|ecdsa|ed25519|aes|cipher|sha256|sha512|hmac|tls)|github\.com/dgrijalva/jwt-go|github\.com/golang-jwt/jwt)"')
-GO_CRYPTO_USAGE_PATTERN = re.compile(r'(md5\.New|sha1\.New|des\.NewCipher|rsa\.GenerateKey|ecdsa\.GenerateKey|ed25519\.GenerateKey|aes\.NewCipher|sha256\.New|sha512\.New|hmac\.New|tls\.Config|ecdsa\.Verify)\s*\(')
+GO_CRYPTO_USAGE_PATTERN = re.compile(r'(md5\.New|md5\.Sum|sha1\.New|sha1\.Sum|des\.NewCipher|rsa\.GenerateKey|ecdsa\.GenerateKey|ed25519\.GenerateKey|aes\.NewCipher|sha256\.New|sha256\.Sum256|sha512\.New|sha512\.Sum512|hmac\.New|tls\.Config|ecdsa\.Verify)\s*\(')
 GO_JWT_SIGNING_METHOD_PATTERN = re.compile(r'\b(jwt\.SigningMethod[A-Za-z0-9_]+)\b')
 GO_RSA_KEY_SIZE_PATTERN = re.compile(r'rsa\.GenerateKey\([^,]+,\s*(\d+)\)')
 

@@ -165,13 +165,15 @@ def test_jwt_none_is_critical_risk():
     r = extract_crypto_weakness("none")
     assert r.value == pytest.approx(1.0, abs=0.01)
 
-def test_jwt_hs256_is_sha256_risk():
+def test_jwt_hs256_is_hmacsha256_risk():
     r = extract_crypto_weakness("HS256")
     assert r.value == pytest.approx(0.1, abs=0.01)
+    assert "hmacsha256" in r.source
 
-def test_jwt_hs512_is_sha512_risk():
+def test_jwt_hs512_is_hmacsha512_risk():
     r = extract_crypto_weakness("HS512")
     assert r.value == pytest.approx(0.05, abs=0.01)
+    assert "hmacsha512" in r.source
 
 def test_jwt_rs256_is_rsa_risk():
     r = extract_crypto_weakness("RS256")
@@ -181,13 +183,23 @@ def test_jwt_es256_is_ecdsa_risk():
     r = extract_crypto_weakness("ES256")
     assert r.value == pytest.approx(0.9, abs=0.01)
 
+def test_jwt_es256k_is_ecdsa_risk():
+    r = extract_crypto_weakness("ES256K")
+    assert r.value == pytest.approx(0.9, abs=0.01)
+
+def test_eddsa_is_asymmetric_risk():
+    r1 = extract_crypto_weakness("EdDSA")
+    r2 = extract_crypto_weakness("Ed25519")
+    r3 = extract_crypto_weakness("x25519")
+    assert r1.value == pytest.approx(0.9, abs=0.01)
+    assert r2.value == pytest.approx(0.9, abs=0.01)
+    assert r3.value == pytest.approx(0.9, abs=0.01)
 
 
 # ── Unrecognized → None, not 0.0 ────────────────────────────────────────────
 @pytest.mark.parametrize("alg", [
     "GREASE_ALGO",
     "XChaCha20-Poly1305",   # not in map yet
-    "ed25519",              # not in current map
     "",
 ])
 def test_unrecognized_returns_none_not_zero(alg):
