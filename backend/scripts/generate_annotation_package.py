@@ -36,8 +36,8 @@ def generate_package():
         # Shuffle deterministically
         random.shuffle(file_nodes)
         
-        # Pick up to 50 files per repository to reach 150-200 assets
-        selected_nodes = file_nodes[:50]
+        # Pick up to 35 files per repository to reach 150-200 assets
+        selected_nodes = file_nodes[:35]
         
         for file_node in selected_nodes:
             # Find associated factors from scores
@@ -78,7 +78,7 @@ def generate_package():
     # Final package
     package = {
         "metadata": {
-            "implementation_sha": "689ae7fc92bd25f61138a5362171804ced83137f",
+            "implementation_sha": "632e54a2e46dba9f440e2be6468a460495c87553",
             "protocol_version": "1.1.1",
             "total_assets": len(all_assets)
         },
@@ -87,7 +87,7 @@ def generate_package():
     }
     
     os.makedirs("dataset/artifacts", exist_ok=True)
-    out_path = "dataset/artifacts/expert_annotation_package_v1.1.1.json"
+    out_path = "dataset/artifacts/expert_annotation_package_v1.2.0.json"
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(package, f, indent=2)
         
