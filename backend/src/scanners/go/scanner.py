@@ -3,8 +3,8 @@ from typing import List
 from src.scanners.common.models import FindingRecord
 from src.scanners.common.enums import AssetType, Language
 
-GO_IMPORT_PATTERN = re.compile(r'"(crypto/(md5|sha1|des|rsa|ecdsa|ed25519|aes|cipher|sha256|sha512|tls))"')
-GO_CRYPTO_USAGE_PATTERN = re.compile(r'(md5\.New|sha1\.New|des\.NewCipher|rsa\.GenerateKey|ecdsa\.GenerateKey|ed25519\.GenerateKey|aes\.NewCipher|sha256\.New|sha512\.New|tls\.Config)\s*\(')
+GO_IMPORT_PATTERN = re.compile(r'"(crypto/(md5|sha1|des|rsa|ecdsa|ed25519|aes|cipher|sha256|sha512|hmac|tls))"')
+GO_CRYPTO_USAGE_PATTERN = re.compile(r'(md5\.New|sha1\.New|des\.NewCipher|rsa\.GenerateKey|ecdsa\.GenerateKey|ed25519\.GenerateKey|aes\.NewCipher|sha256\.New|sha512\.New|hmac\.New|tls\.Config)\s*\(')
 GO_RSA_KEY_SIZE_PATTERN = re.compile(r'rsa\.GenerateKey\([^,]+,\s*(\d+)\)')
 
 def scan_go_code(repository: str, filepath: str, code: str) -> List[FindingRecord]:
@@ -38,7 +38,7 @@ def scan_go_code(repository: str, filepath: str, code: str) -> List[FindingRecor
                 operation = "tls_config"
             elif "GenerateKey" in api:
                 operation = "key_generation"
-            elif algorithm in ("md5", "sha1", "sha256", "sha512"):
+            elif algorithm in ("md5", "sha1", "sha256", "sha512", "hmac"):
                 operation = "hashing"
             else:
                 operation = "encryption"

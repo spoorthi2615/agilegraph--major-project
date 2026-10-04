@@ -132,3 +132,32 @@ public class Test {
     assert rsa
     rsa_size = rsa[0].extra.get("key_size") if rsa[0].extra else None
     assert rsa_size is None, f"No initialize() → key_size should be None, got {rsa_size}"
+
+def test_java_variable_resolution_resolvable():
+    code = """
+import java.security.Signature;
+public class Test {
+    public void test() throws Exception {
+        String algo = "SHA256withRSA";
+        Signature sig = Signature.getInstance(algo);
+    }
+}
+"""
+    findings = scan_java_code("test", "Test.java", code)
+    sig_findings = [f for f in findings if f.operation == "signature"]
+    assert sig_findings
+    assert any(f.algorithm == "SHA256withRSA" for f in sig_findings)
+
+def test_java_variable_resolution_unresolvable():
+    code = """
+import java.security.Signature;
+public class Test {
+    public void test(String algorithm) throws Exception {
+        Signature sig = Signature.getInstance(algorithm);
+    }
+}
+"""
+    findings = scan_java_code("test", "Test.java", code)
+    sig_findings = [f for f in findings if f.operation == "signature"]
+    assert sig_findings
+    assert any(f.algorithm == "UNKNOWN_ALGORITHM" for f in sig_findings)

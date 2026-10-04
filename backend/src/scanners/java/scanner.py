@@ -9,16 +9,19 @@ JAVA_IMPORT_PATTERN = re.compile(
 
 # Capture class=api, algorithm string
 JAVA_ALGO_PATTERN = re.compile(
-    r'\b(Cipher|MessageDigest|KeyPairGenerator|KeyGenerator|Signature)\b'
+    r'\b(Cipher|MessageDigest|KeyPairGenerator|KeyGenerator|Signature|Mac|KeyAgreement|KeyFactory)\b'
     r'\.getInstance\s*\(\s*([^)]+)\s*\)'
 )
 
 # Variable declaration: <Type> <varName> = <class>.getInstance(...)
 # We track variable name → crypto class name
 JAVA_VARNAME_PATTERN = re.compile(
-    r'\b(Cipher|MessageDigest|KeyPairGenerator|KeyGenerator|Signature)\b'
+    r'\b(Cipher|MessageDigest|KeyPairGenerator|KeyGenerator|Signature|Mac|KeyAgreement|KeyFactory)\b'
     r'\s+(\w+)\s*='
 )
+
+# String variable declarations to resolve variables in getInstance
+JAVA_STRING_VAR_PATTERN = re.compile(r'\bString\s+(\w+)\s*=\s*"([^"]+)"\s*;')
 
 # .initialize(N) — we need the variable it's called on
 JAVA_INIT_PATTERN = re.compile(r'\b(\w+)\.initialize\s*\(\s*(\d+)\s*\)')
@@ -32,8 +35,16 @@ def scan_java_code(repository: str, filepath: str, code: str) -> List[FindingRec
     # so we can do context-aware key-size association.
     keygen_vars: dict[str, FindingRecord] = {}
 
+    # Map: String variable name -> value
+    string_vars: dict[str, str] = {}
+
     for i, line in enumerate(lines):
         line_num = i + 1
+
+        # Track string variables
+        str_match = JAVA_STRING_VAR_PATTERN.search(line)
+        if str_match:
+            string_vars[str_match.group(1)] = str_match.group(2)
 
         # ── imports ─────────────────────────────────────────────────────────
         import_match = JAVA_IMPORT_PATTERN.search(line)
@@ -58,11 +69,17 @@ def scan_java_code(repository: str, filepath: str, code: str) -> List[FindingRec
         if usage_match:
             api_class = usage_match.group(1)
             algorithm_raw = usage_match.group(2).strip()
-            algorithm = algorithm_raw.strip('"\'')
+
+            if algorithm_raw.startswith('"') and algorithm_raw.endswith('"'):
+                algorithm = algorithm_raw.strip('"')
+            elif algorithm_raw in string_vars:
+                algorithm = string_vars[algorithm_raw]
+            else:
+                algorithm = "UNKNOWN_ALGORITHM"
 
             operation = (
                 "encryption"     if "Cipher"          in api_class else
-                "hashing"        if "MessageDigest"   in api_class else
+                "hashing"        if "MessageDigest"   in api_class or "Mac" in api_class else
                 "key_generation" if "Key"             in api_class else
                 "signature"
             )

@@ -98,7 +98,7 @@ class EvaluationMetrics:
             if diff >= obs_diff:
                 count += 1
                 
-        p_value = count / n_permutations
+        p_value = (count + 1) / (n_permutations + 1)
         return {
             "status": "COMPUTED",
             "statistic": float(obs_diff),

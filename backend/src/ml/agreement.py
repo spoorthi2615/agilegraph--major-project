@@ -46,16 +46,23 @@ class AgreementMetrics:
             }
             
         n_assets, n_cat = ratings_matrix.shape
-        if n_assets == 0:
+        if n_assets == 0 or n_cat == 0:
              return {
                 "status": "PENDING_EXPERT_LABELS",
                 "statistic": None,
                 "message": "Insufficient raters or categories."
             }
-            
-        n_raters = np.sum(ratings_matrix[0, :])
+
+        if np.any(ratings_matrix < 0):
+            raise ValueError("Ratings matrix cannot contain negative counts.")
+
+        raters_per_item = np.sum(ratings_matrix, axis=1)
+        if not np.all(raters_per_item == raters_per_item[0]):
+            raise ValueError("Number of raters per item must be equal across all items.")
+
+        n_raters = raters_per_item[0]
         
-        if n_raters == 0 or n_cat == 0:
+        if n_raters == 0:
             return {
                 "status": "PENDING_EXPERT_LABELS",
                 "statistic": None,

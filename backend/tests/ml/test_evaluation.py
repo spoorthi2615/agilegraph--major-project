@@ -46,5 +46,7 @@ def test_permutation_test_computed():
     pval = EvaluationMetrics.paired_permutation_test(y_true, y_pred_a, y_pred_b, n_permutations=100)
     assert pval["status"] == "COMPUTED"
     assert pval["statistic"] == 1.0  # 1.0 - 0.0
-    # p-value should be extremely small (0.0 basically)
+    # p-value should be extremely small (0.0 basically), but min is 1/(n_permutations+1)
+    min_pval = 1.0 / (100 + 1)
+    assert pval["p_value"] >= min_pval
     assert pval["p_value"] < 0.05
