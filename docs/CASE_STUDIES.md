@@ -1,7 +1,11 @@
 # AgileGraph Architectural Case Studies
 
-This document presents four representative case studies illustrating AgileGraph's property-graph discovery,
-heuristic factor scoring, and downstream migration triage across diverse cryptographic archetypes.
+> [!IMPORTANT]
+> **Scope & Methodological Note:**
+> These case studies illustrate AgileGraph's property-graph discovery, heuristic factor weighting, and migration triage logic across four representative cryptographic archetypes drawn from the pinned benchmark repositories.
+> The repository names, file paths, and cryptographic algorithms represent actual open-source components scanned in the benchmark corpus.
+> **The numerical factor scores, composite risk scores, and Mosca planning horizons ($x, y, z$) are illustrative scenario assumptions** designed to exercise the triage decision matrix across distinct operational risk profiles.
+> They are **not dynamically generated pipeline extractions or empirically validated ground-truth measurements**.
 
 ---
 
@@ -12,14 +16,15 @@ heuristic factor scoring, and downstream migration triage across diverse cryptog
 - **Asset Identifier**: `python_cryptography:src/cryptography/hazmat/primitives/asymmetric/rsa.py`
 - **Algorithm / Primitive**: `RSA` (key_generation)
 - **Network Exposure**: `INTERNET_FACING`
-- **Mosca Readiness Assumption**: `AT_RISK (x=36, y=24, z=36 -> U=1.67)`
-- **Base Heuristic Risk Score**: **0.88** / 1.00
+- **Mosca Readiness Assumption**: `AT_RISK (x=36, y=24, z=36 -> U=1.67)` *(Illustrative planning parameters)*
+- **Base Heuristic Risk Score**: **0.88** / 1.00 *(Illustrative scenario score)*
 - **Migration Triage Priority**: **`HIGH`**
+- **Data Status**: *Illustrative scenario assumption (not dynamically generated pipeline output)*
 
 ### Architectural Context & Narrative
 Direct RSA asymmetric private key generation. Under Shor's algorithm on a CRQC, integer factorization is solved in polynomial time O((log N)^3). Combined with exposure to calling endpoints, this represents critical migration urgency.
 
-### Factor Breakdown
+### Factor Breakdown (Illustrative Scenario)
 | Factor | Value | Rationale |
 | :--- | :---: | :--- |
 | `crypto_weakness` | `0.90` | RSA-2048 Shor-vulnerable |
@@ -41,14 +46,15 @@ Direct RSA asymmetric private key generation. Under Shor's algorithm on a CRQC, 
 - **Asset Identifier**: `python_itsdangerous:src/itsdangerous/signer.py`
 - **Algorithm / Primitive**: `MD5` (hashing)
 - **Network Exposure**: `INTERNAL`
-- **Mosca Readiness Assumption**: `URGENT (x=12, y=12, z=30 -> U=0.80)`
-- **Base Heuristic Risk Score**: **0.79** / 1.00
+- **Mosca Readiness Assumption**: `URGENT (x=12, y=12, z=30 -> U=0.80)` *(Illustrative planning parameters)*
+- **Base Heuristic Risk Score**: **0.79** / 1.00 *(Illustrative scenario score)*
 - **Migration Triage Priority**: **`HIGH`**
+- **Data Status**: *Illustrative scenario assumption (not dynamically generated pipeline output)*
 
 ### Architectural Context & Narrative
 MD5 cryptographic hash utilized in legacy message signing. MD5 is classically broken via practical collision attacks (Wang et al.) and disallowed under NIST SP 800-131A. Must be deprecated regardless of quantum timeline.
 
-### Factor Breakdown
+### Factor Breakdown (Illustrative Scenario)
 | Factor | Value | Rationale |
 | :--- | :---: | :--- |
 | `crypto_weakness` | `1.00` | MD5 classically broken collision resistance |
@@ -70,14 +76,15 @@ MD5 cryptographic hash utilized in legacy message signing. MD5 is classically br
 - **Asset Identifier**: `go_crypto:ssh/common.go`
 - **Algorithm / Primitive**: `ECDSA` (signature)
 - **Network Exposure**: `INTERNET_FACING`
-- **Mosca Readiness Assumption**: `URGENT (x=24, y=12, z=40 -> U=0.90)`
-- **Base Heuristic Risk Score**: **0.81** / 1.00
+- **Mosca Readiness Assumption**: `URGENT (x=24, y=12, z=40 -> U=0.90)` *(Illustrative planning parameters)*
+- **Base Heuristic Risk Score**: **0.81** / 1.00 *(Illustrative scenario score)*
 - **Migration Triage Priority**: **`HIGH`**
+- **Data Status**: *Illustrative scenario assumption (not dynamically generated pipeline output)*
 
 ### Architectural Context & Narrative
 Shared SSH transport negotiation module with in-degree >= 12 across the repository. High centrality amplifies blast radius; migration requires coordinated protocol upgrades.
 
-### Factor Breakdown
+### Factor Breakdown (Illustrative Scenario)
 | Factor | Value | Rationale |
 | :--- | :---: | :--- |
 | `crypto_weakness` | `0.90` | ECDSA P-256 Shor-vulnerable |
@@ -99,14 +106,15 @@ Shared SSH transport negotiation module with in-degree >= 12 across the reposito
 - **Asset Identifier**: `java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/AesGcmKeyAlgorithm.java`
 - **Algorithm / Primitive**: `AES` (encryption)
 - **Network Exposure**: `INTERNAL`
-- **Mosca Readiness Assumption**: `SAFE (x=12, y=6, z=60 -> U=0.30)`
-- **Base Heuristic Risk Score**: **0.32** / 1.00
+- **Mosca Readiness Assumption**: `SAFE (x=12, y=6, z=60 -> U=0.30)` *(Illustrative planning parameters)*
+- **Base Heuristic Risk Score**: **0.32** / 1.00 *(Illustrative scenario score)*
 - **Migration Triage Priority**: **`LOW`**
+- **Data Status**: *Illustrative scenario assumption (not dynamically generated pipeline output)*
 
 ### Architectural Context & Narrative
 Modern AES-256 authenticated encryption in Galois/Counter Mode. Under Grover's algorithm, effective key search complexity is 2^128, which strictly satisfies NIST/CNSA 2.0 post-quantum requirements.
 
-### Factor Breakdown
+### Factor Breakdown (Illustrative Scenario)
 | Factor | Value | Rationale |
 | :--- | :---: | :--- |
 | `crypto_weakness` | `0.10` | AES-256 resilient to Grover (128-bit quantum margin) |

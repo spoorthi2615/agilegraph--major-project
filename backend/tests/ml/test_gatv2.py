@@ -115,3 +115,55 @@ def test_gatv2_topology_neighbor_perturbation():
     # 7. Assert file representation changed
     assert not torch.allclose(baseline_file_repr, perturbed_file_repr), "GNN failed to propagate neighbor features to file node"
 
+
+def test_gatv2_gradient_feature_importance_synthetic():
+    """
+    Isolated unit test verifying compute_gradient_feature_importance on synthetic graph data.
+    Verifies finite attribution dictionary structure and error handling without depending
+    on archived expert annotations, human labels, or supervised evaluation pipelines.
+    """
+    import math
+    from torch_geometric.data import HeteroData
+    import torch_geometric.transforms as T
+    from src.ml.explainability import compute_gradient_feature_importance
+
+    # 1. Setup synthetic HeteroData with 14 features (7 factors + 7 masks)
+    data = HeteroData()
+    torch.manual_seed(42)
+    data["file"].x = torch.randn((2, 14), dtype=torch.float)
+    data["library"].x = torch.randn((1, 14), dtype=torch.float)
+    data["file", "IMPORTS", "library"].edge_index = torch.tensor([[0, 1], [0, 0]], dtype=torch.long)
+    data = T.ToUndirected()(data)
+
+    model = create_hetero_gatv2(data.metadata(), hidden_channels=16, out_channels=3, num_heads=2)
+
+    # 2. Compute saliency for target node
+    res = compute_gradient_feature_importance(
+        model=model,
+        pyg_data=data,
+        target_node_category="file",
+        target_node_idx=0,
+        target_class_idx=1
+    )
+
+    assert res["status"] == "COMPUTED"
+    assert res["method"] == "INTEGRATED_INPUT_X_GRADIENT"
+    assert res["target_node_category"] == "file"
+    assert res["target_node_idx"] == 0
+    assert res["predicted_class"] == 1
+    assert "feature_attributions" in res
+    assert len(res["feature_attributions"]) == 14
+    for fname, val in res["feature_attributions"].items():
+        assert isinstance(val, float)
+        assert math.isfinite(val)
+    assert "caveat" in res
+
+    # 3. Test unavailable / error handling paths:
+    # Invalid category
+    with pytest.raises(ValueError, match="Category 'unknown_cat' not in model outputs"):
+        compute_gradient_feature_importance(model, data, target_node_category="unknown_cat", target_node_idx=0)
+
+    # Node index out of range
+    with pytest.raises(IndexError, match="out of range"):
+        compute_gradient_feature_importance(model, data, target_node_category="file", target_node_idx=999)
+

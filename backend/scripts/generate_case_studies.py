@@ -33,6 +33,10 @@ def generate_case_studies():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     
     # Representative case study assets curated from benchmark scans
+    # Note: Repository names, file paths, and algorithms correspond to actual scanned assets.
+    # Numerical factor scores and Mosca planning parameters (x, y, z) are illustrative scenario
+    # assumptions demonstrating downstream triage across distinct risk archetypes, not dynamically
+    # queried pipeline extractions or empirical ground-truth measurements.
     case_studies = [
         {
             "case_id": "CASE-01",
@@ -40,6 +44,8 @@ def generate_case_studies():
             "repository": "python_cryptography",
             "asset_id": "python_cryptography:src/cryptography/hazmat/primitives/asymmetric/rsa.py",
             "archetype": "High Quantum Vulnerability + External Exposure",
+            "data_status": "ILLUSTRATIVE_SCENARIO_ASSUMPTION",
+            "data_provenance": "Scanned repository asset archetype; numerical factor values and Mosca parameters are illustrative scenario assumptions.",
             "narrative": (
                 "Direct RSA asymmetric private key generation. Under Shor's algorithm on a CRQC, "
                 "integer factorization is solved in polynomial time O((log N)^3). "
@@ -69,6 +75,8 @@ def generate_case_studies():
             "repository": "python_itsdangerous",
             "asset_id": "python_itsdangerous:src/itsdangerous/signer.py",
             "archetype": "Classically Broken Hash Function",
+            "data_status": "ILLUSTRATIVE_SCENARIO_ASSUMPTION",
+            "data_provenance": "Scanned repository asset archetype; numerical factor values and Mosca parameters are illustrative scenario assumptions.",
             "narrative": (
                 "MD5 cryptographic hash utilized in legacy message signing. MD5 is classically broken "
                 "via practical collision attacks (Wang et al.) and disallowed under NIST SP 800-131A. "
@@ -98,6 +106,8 @@ def generate_case_studies():
             "repository": "go_crypto",
             "asset_id": "go_crypto:ssh/common.go",
             "archetype": "High Centrality Architectural Dependency",
+            "data_status": "ILLUSTRATIVE_SCENARIO_ASSUMPTION",
+            "data_provenance": "Scanned repository asset archetype; numerical factor values and Mosca parameters are illustrative scenario assumptions.",
             "narrative": (
                 "Shared SSH transport negotiation module with in-degree >= 12 across the repository. "
                 "High centrality amplifies blast radius; migration requires coordinated protocol upgrades."
@@ -126,6 +136,8 @@ def generate_case_studies():
             "repository": "java_jjwt",
             "asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/AesGcmKeyAlgorithm.java",
             "archetype": "Quantum-Resilient Symmetric Encryption",
+            "data_status": "ILLUSTRATIVE_SCENARIO_ASSUMPTION",
+            "data_provenance": "Scanned repository asset archetype; numerical factor values and Mosca parameters are illustrative scenario assumptions.",
             "narrative": (
                 "Modern AES-256 authenticated encryption in Galois/Counter Mode. Under Grover's algorithm, "
                 "effective key search complexity is 2^128, which strictly satisfies NIST/CNSA 2.0 post-quantum requirements."
@@ -169,8 +181,12 @@ def generate_markdown_report(cases: List[Dict[str, Any]]) -> str:
     lines = [
         "# AgileGraph Architectural Case Studies",
         "",
-        "This document presents four representative case studies illustrating AgileGraph's property-graph discovery,",
-        "heuristic factor scoring, and downstream migration triage across diverse cryptographic archetypes.",
+        "> [!IMPORTANT]",
+        "> **Scope & Methodological Note:**",
+        "> These case studies illustrate AgileGraph's property-graph discovery, heuristic factor weighting, and migration triage logic across four representative cryptographic archetypes drawn from the pinned benchmark repositories.",
+        "> The repository names, file paths, and cryptographic algorithms represent actual open-source components scanned in the benchmark corpus.",
+        "> **The numerical factor scores, composite risk scores, and Mosca planning horizons ($x, y, z$) are illustrative scenario assumptions** designed to exercise the triage decision matrix across distinct operational risk profiles.",
+        "> They are **not dynamically generated pipeline extractions or empirically validated ground-truth measurements**.",
         "",
         "---",
         ""
@@ -185,14 +201,15 @@ def generate_markdown_report(cases: List[Dict[str, Any]]) -> str:
             f"- **Asset Identifier**: `{c['asset_id']}`",
             f"- **Algorithm / Primitive**: `{c['algorithm'].upper()}` ({c['operation']})",
             f"- **Network Exposure**: `{c['exposure_posture']}`",
-            f"- **Mosca Readiness Assumption**: `{c['mosca_planning']}`",
-            f"- **Base Heuristic Risk Score**: **{c['base_risk']:.2f}** / 1.00",
+            f"- **Mosca Readiness Assumption**: `{c['mosca_planning']}` *(Illustrative planning parameters)*",
+            f"- **Base Heuristic Risk Score**: **{c['base_risk']:.2f}** / 1.00 *(Illustrative scenario score)*",
             f"- **Migration Triage Priority**: **`{c['priority']}`**",
+            f"- **Data Status**: *Illustrative scenario assumption (not dynamically generated pipeline output)*",
             "",
             "### Architectural Context & Narrative",
             c["narrative"],
             "",
-            "### Factor Breakdown",
+            "### Factor Breakdown (Illustrative Scenario)",
             "| Factor | Value | Rationale |",
             "| :--- | :---: | :--- |"
         ])

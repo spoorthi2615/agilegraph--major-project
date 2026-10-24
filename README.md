@@ -49,12 +49,17 @@ The property graph schema strictly enforces 6 canonical node types and legal edg
 
 | Source Node | Edge Relationship | Target Node | Semantics |
 | :--- | :--- | :--- | :--- |
-| `File` | `CONTAINS` | `CryptoUsage` | Source file instantiates or invokes a cryptographic algorithm / API |
-| `File` | `IMPORTS` | `Library` | Source file imports a dependency library |
-| `File` | `CALLS` | `Endpoint` | Source file connects to or references a network endpoint |
-| `File` | `USES_CERT` | `Certificate` | Source file bundles or references a certificate or private key |
-| `File` | `PROTECTS` | `SensitiveData` | Cryptographic routine protects sensitive data or credentials |
-| `Library` | `DEPENDS_ON` | `Library` | Upstream library depends on a transitive library dependency |
+| `File` | `CONTAINS` | `CryptoUsage` | Source file declares or instantiates cryptographic usage |
+| `File` | `CONTAINS` | `Certificate` | Source file bundles or embeds a certificate or private key |
+| `File` | `CONTAINS` | `SensitiveData` | Source file defines or references sensitive data / credentials |
+| `File` | `IMPORTS` | `Library` | Source file imports a software dependency |
+| `File` | `DEPENDS_ON` | `Library` | Source file or manifest declares a dependency on a library |
+| `File` | `CALLS` | `Endpoint` | Source file invokes or connects to a network endpoint |
+| `Endpoint` | `EXPOSES` | `CryptoUsage` | Network endpoint exposes cryptographic functionality |
+| `CryptoUsage` | `PROTECTS` | `SensitiveData` | Cryptographic operation encrypts, hashes, or protects sensitive data |
+| `CryptoUsage` | `CALLS` | `Library` | Cryptographic routine directly invokes an underlying library API |
+| `CryptoUsage` | `USES_CERT` | `Certificate` | Cryptographic routine uses or binds a certificate/key |
+| `Endpoint` | `USES_CERT` | `Certificate` | Network endpoint uses or binds a certificate for TLS/HTTPS |
 
 ---
 
