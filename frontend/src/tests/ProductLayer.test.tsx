@@ -1,5 +1,4 @@
 // @ts-nocheck
-/// <reference types="@testing-library/jest-dom" />
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
@@ -19,6 +18,11 @@ vi.mock('../api/client', () => ({
     getRoadmapState: vi.fn(),
     transitionRoadmapState: vi.fn(),
   }
+}));
+
+vi.mock('../context/ProjectContext', () => ({
+  useProject: () => ({ projectId: 'demo-project', setProjectId: vi.fn() }),
+  ProjectProvider: ({ children }: any) => <>{children}</>
 }));
 
 describe('Product Layer Components', () => {
@@ -140,35 +144,35 @@ describe('Product Layer Components', () => {
   describe('MigrationRoadmap', () => {
     it('7. Roadmap valid transition works', async () => {
       vi.mocked(apiClient.getRisk).mockResolvedValue({ assets: [{ asset_id: "a1" }] } as any);
-      vi.mocked(apiClient.getRoadmapState).mockResolvedValue({ current_state: "NOT_ASSESSED" });
-      vi.mocked(apiClient.transitionRoadmapState).mockResolvedValue({ current_state: "ASSESSMENT_REQUIRED" });
+      vi.mocked(apiClient.getRoadmapState).mockResolvedValue({ current_state: "DISCOVERED" });
+      vi.mocked(apiClient.transitionRoadmapState).mockResolvedValue({ current_state: "EVALUATED" });
 
       render(<MigrationRoadmap />);
 
       await waitFor(() => {
-        expect(screen.getAllByText('NOT_ASSESSED').length).toBeGreaterThan(0);
+        expect(screen.getAllByText('DISCOVERED').length).toBeGreaterThan(0);
       });
 
-      const btn = await screen.findByRole('button', { name: 'ASSESSMENT_REQUIRED' });
+      const btn = await screen.findByRole('button', { name: 'EVALUATED' });
       fireEvent.click(btn);
 
       await waitFor(() => {
-        expect(apiClient.transitionRoadmapState).toHaveBeenCalledWith('demo-project', 'a1', 'ASSESSMENT_REQUIRED');
+        expect(apiClient.transitionRoadmapState).toHaveBeenCalledWith('demo-project', 'a1', 'EVALUATED');
       });
     });
 
     it('8. Invalid transition displays an error', async () => {
       vi.mocked(apiClient.getRisk).mockResolvedValue({ assets: [{ asset_id: "a1" }] } as any);
-      vi.mocked(apiClient.getRoadmapState).mockResolvedValue({ current_state: "NOT_ASSESSED" });
+      vi.mocked(apiClient.getRoadmapState).mockResolvedValue({ current_state: "DISCOVERED" });
       vi.mocked(apiClient.transitionRoadmapState).mockRejectedValue(new Error("Invalid state transition"));
 
       render(<MigrationRoadmap />);
 
       await waitFor(() => {
-        expect(screen.queryAllByRole('button', { name: 'VERIFIED' }).length).toBeGreaterThan(0);
+        expect(screen.queryAllByRole('button', { name: 'VALIDATED' }).length).toBeGreaterThan(0);
       });
 
-      const btns = screen.getAllByRole('button', { name: 'VERIFIED' });
+      const btns = screen.getAllByRole('button', { name: 'VALIDATED' });
       fireEvent.click(btns[0]);
 
       await waitFor(() => {
@@ -177,22 +181,21 @@ describe('Product Layer Components', () => {
       });
     });
 
-    it('9. MIGRATED and VERIFIED are distinct', async () => {
+    it('9. IN_MIGRATION and VALIDATED are distinct', async () => {
       vi.mocked(apiClient.getRisk).mockResolvedValue({ assets: [{ asset_id: "a1" }, { asset_id: "a2" }] } as any);
       vi.mocked(apiClient.getRoadmapState).mockImplementation(async (_, id) => {
-        return { current_state: id === "a1" ? "MIGRATED" : "VERIFIED" };
+        return { current_state: id === "a1" ? "IN_MIGRATION" : "VALIDATED" };
       });
 
       render(<MigrationRoadmap />);
 
       await waitFor(() => {
-        expect(screen.queryAllByRole('button', { name: 'VERIFIED' }).length).toBeGreaterThan(0);
+        expect(screen.queryAllByRole('button', { name: 'VALIDATED' }).length).toBeGreaterThan(0);
       });
 
-      const migratedSpans = screen.getAllByText('MIGRATED', { selector: 'span' });
-      const verifiedSpans = screen.getAllByText('VERIFIED', { selector: 'span' });
-      // The last ones in the DOM are the actual pills (after the disclaimer)
-      expect(migratedSpans[migratedSpans.length - 1].className).not.toEqual(verifiedSpans[verifiedSpans.length - 1].className);
+      const migrationSpans = screen.getAllByText('IN_MIGRATION', { selector: 'span' });
+      const validatedSpans = screen.getAllByText('VALIDATED', { selector: 'span' });
+      expect(migrationSpans[migrationSpans.length - 1].className).not.toEqual(validatedSpans[validatedSpans.length - 1].className);
     });
   });
 });

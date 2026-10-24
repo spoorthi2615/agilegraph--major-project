@@ -32,7 +32,7 @@ def test_training_refusal_without_expert_labels():
     )
     trainer = ModelTrainer(manifest)
     res = trainer.run_training_loop()
-    assert res["status"] == "PENDING_EXPERT_LABELS"
+    assert res["status"] == "NOT_APPLICABLE"
     
 def test_synthetic_smoke_test():
     manifest = ExperimentManifest(

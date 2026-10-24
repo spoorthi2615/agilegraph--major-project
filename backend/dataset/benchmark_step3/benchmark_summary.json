@@ -1,0 +1,896 @@
+{
+  "python_itsdangerous": {
+    "metadata": {
+      "repository_url": "https://github.com/pallets/itsdangerous",
+      "commit_sha": "672971d66a2ef9f85151e53283113f33d642dabd",
+      "language": "PYTHON",
+      "size_tier": "SMALL",
+      "license": "BSD-3-Clause",
+      "selection_rationale": "Cryptographic signing and token serialization library used widely across Flask/Pallets.",
+      "scan_date": "2026-10-24T07:38:18.026968+00:00",
+      "scan_duration_seconds": 0.05
+    },
+    "file_accounting": {
+      "committed_files_git": 50,
+      "eligible_files_by_rules": 15,
+      "excluded_by_extension_rules": 35,
+      "scanned_files_walk": 50,
+      "files_producing_graph_nodes": 7,
+      "eligible_files_without_findings": 8,
+      "scan_errors": 0
+    },
+    "provenance": {
+      "scanned_files": 50,
+      "findings_count": 14,
+      "scored_assets": 7,
+      "unrated_assets": 0,
+      "skipped_files": 0,
+      "errors": 0,
+      "error_details": [],
+      "is_mock": false
+    },
+    "node_counts": {
+      "file": 7,
+      "crypto_usage": 1,
+      "certificate": 0,
+      "endpoint": 0,
+      "library": 2,
+      "sensitive_data": 9
+    },
+    "relationship_counts": {
+      "CONTAINS": 10,
+      "IMPORTS": 4,
+      "CALLS": 1,
+      "USES_CERT": 0,
+      "EXPOSES": 0,
+      "PROTECTS": 2,
+      "DEPENDS_ON": 0
+    },
+    "semantic_details": {
+      "certificates": {
+        "parsed_x509_identities": 0,
+        "raw_cert_files": 0,
+        "code_loading_patterns": 0
+      },
+      "endpoints": {
+        "total_endpoints": 0,
+        "internet_facing": 0,
+        "internal_or_restricted": 0,
+        "unknown_exposure": 0
+      }
+    },
+    "asset_counts": {
+      "total_scored_or_unrated": 7,
+      "rated_assets": 7,
+      "unrated_assets": 0
+    },
+    "factor_population_counts": {
+      "crypto_weakness": 1,
+      "data_sensitivity": 7,
+      "asset_criticality": 5,
+      "internet_exposure": 0,
+      "cve_risk": 3,
+      "library_centrality": 0,
+      "migration_difficulty": 3
+    },
+    "baselines": {
+      "heuristic_rated_count": 7,
+      "rule_based_rated_count": 3,
+      "comparable_assets_count": 3,
+      "ndcg_k_status": "NOT_AVAILABLE (requires external ground-truth relevance labels; heuristic scores cannot serve as ground truth)",
+      "correlation_statistics": {
+        "status": "DEFINED",
+        "comparable_assets_count": 3,
+        "spearman_rho": 1.0,
+        "spearman_pvalue": 0.0,
+        "kendall_tau": 1.0,
+        "kendall_pvalue": 0.157299,
+        "bootstrap_ci_spearman_95": [
+          1.0,
+          1.0
+        ],
+        "paired_permutation_pvalue": 0.252775,
+        "permutation_test_details": {
+          "null_hypothesis": "E[s_heuristic - s_rule] = 0 under paired sign exchangeability",
+          "test_statistic": "|mean(s_heuristic - s_rule)|",
+          "observed_statistic": 0.2793,
+          "num_permutations": 10000,
+          "extreme_outcomes_count": 2527,
+          "finite_sample_corrected_pvalue": 0.252775
+        },
+        "mean_score_difference": -0.2793
+      }
+    }
+  },
+  "python_bcrypt": {
+    "metadata": {
+      "repository_url": "https://github.com/pyca/bcrypt",
+      "commit_sha": "59b41aaa24c025d1cd231c37d2755b94184a3e67",
+      "language": "PYTHON",
+      "size_tier": "SMALL",
+      "license": "Apache-2.0",
+      "selection_rationale": "Password-hashing cryptographic library binding native C implementations.",
+      "scan_date": "2026-10-24T07:38:18.026968+00:00",
+      "scan_duration_seconds": 0.02
+    },
+    "file_accounting": {
+      "committed_files_git": 23,
+      "eligible_files_by_rules": 5,
+      "excluded_by_extension_rules": 18,
+      "scanned_files_walk": 23,
+      "files_producing_graph_nodes": 2,
+      "eligible_files_without_findings": 3,
+      "scan_errors": 0
+    },
+    "provenance": {
+      "scanned_files": 23,
+      "findings_count": 2,
+      "scored_assets": 2,
+      "unrated_assets": 0,
+      "skipped_files": 0,
+      "errors": 0,
+      "error_details": [],
+      "is_mock": false
+    },
+    "node_counts": {
+      "file": 2,
+      "crypto_usage": 0,
+      "certificate": 0,
+      "endpoint": 0,
+      "library": 1,
+      "sensitive_data": 1
+    },
+    "relationship_counts": {
+      "CONTAINS": 1,
+      "IMPORTS": 0,
+      "CALLS": 0,
+      "USES_CERT": 0,
+      "EXPOSES": 0,
+      "PROTECTS": 0,
+      "DEPENDS_ON": 1
+    },
+    "semantic_details": {
+      "certificates": {
+        "parsed_x509_identities": 0,
+        "raw_cert_files": 0,
+        "code_loading_patterns": 0
+      },
+      "endpoints": {
+        "total_endpoints": 0,
+        "internet_facing": 0,
+        "internal_or_restricted": 0,
+        "unknown_exposure": 0
+      }
+    },
+    "asset_counts": {
+      "total_scored_or_unrated": 2,
+      "rated_assets": 2,
+      "unrated_assets": 0
+    },
+    "factor_population_counts": {
+      "crypto_weakness": 0,
+      "data_sensitivity": 1,
+      "asset_criticality": 1,
+      "internet_exposure": 0,
+      "cve_risk": 1,
+      "library_centrality": 0,
+      "migration_difficulty": 1
+    },
+    "baselines": {
+      "heuristic_rated_count": 2,
+      "rule_based_rated_count": 1,
+      "comparable_assets_count": 1,
+      "ndcg_k_status": "NOT_AVAILABLE (requires external ground-truth relevance labels; heuristic scores cannot serve as ground truth)",
+      "correlation_statistics": {
+        "status": "UNDEFINED",
+        "comparable_assets_count": 1,
+        "spearman_rho": null,
+        "spearman_pvalue": null,
+        "kendall_tau": null,
+        "kendall_pvalue": null,
+        "bootstrap_ci_spearman_95": null,
+        "paired_permutation_pvalue": null,
+        "reason": "Sample size N < 2 is insufficient for rank correlation."
+      }
+    }
+  },
+  "python_cryptography": {
+    "metadata": {
+      "repository_url": "https://github.com/pyca/cryptography",
+      "commit_sha": "f0ba3000a365d44db153362e847c88339c9231f4",
+      "language": "PYTHON",
+      "size_tier": "LARGE",
+      "license": "Apache-2.0 / BSD-3-Clause",
+      "selection_rationale": "De-facto standard Python cryptographic primitives and hazmat library.",
+      "scan_date": "2026-10-24T07:38:18.026968+00:00",
+      "scan_duration_seconds": 2.65
+    },
+    "file_accounting": {
+      "committed_files_git": 3072,
+      "eligible_files_by_rules": 1522,
+      "excluded_by_extension_rules": 1550,
+      "scanned_files_walk": 3072,
+      "files_producing_graph_nodes": 1013,
+      "eligible_files_without_findings": 509,
+      "scan_errors": 0
+    },
+    "provenance": {
+      "scanned_files": 3072,
+      "findings_count": 2114,
+      "scored_assets": 1013,
+      "unrated_assets": 0,
+      "skipped_files": 0,
+      "errors": 0,
+      "error_details": [],
+      "is_mock": false
+    },
+    "node_counts": {
+      "file": 1013,
+      "crypto_usage": 372,
+      "certificate": 1076,
+      "endpoint": 0,
+      "library": 17,
+      "sensitive_data": 72
+    },
+    "relationship_counts": {
+      "CONTAINS": 1520,
+      "IMPORTS": 199,
+      "CALLS": 365,
+      "USES_CERT": 1623,
+      "EXPOSES": 0,
+      "PROTECTS": 443,
+      "DEPENDS_ON": 0
+    },
+    "semantic_details": {
+      "certificates": {
+        "parsed_x509_identities": 124,
+        "raw_cert_files": 708,
+        "code_loading_patterns": 244
+      },
+      "endpoints": {
+        "total_endpoints": 0,
+        "internet_facing": 0,
+        "internal_or_restricted": 0,
+        "unknown_exposure": 0
+      }
+    },
+    "asset_counts": {
+      "total_scored_or_unrated": 1013,
+      "rated_assets": 1013,
+      "unrated_assets": 0
+    },
+    "factor_population_counts": {
+      "crypto_weakness": 30,
+      "data_sensitivity": 39,
+      "asset_criticality": 346,
+      "internet_exposure": 0,
+      "cve_risk": 183,
+      "library_centrality": 0,
+      "migration_difficulty": 1012
+    },
+    "baselines": {
+      "heuristic_rated_count": 1013,
+      "rule_based_rated_count": 183,
+      "comparable_assets_count": 183,
+      "ndcg_k_status": "NOT_AVAILABLE (requires external ground-truth relevance labels; heuristic scores cannot serve as ground truth)",
+      "correlation_statistics": {
+        "status": "DEFINED",
+        "comparable_assets_count": 183,
+        "spearman_rho": 0.5543,
+        "spearman_pvalue": 0.0,
+        "kendall_tau": 0.4883,
+        "kendall_pvalue": 0.0,
+        "bootstrap_ci_spearman_95": [
+          0.4536,
+          0.6458
+        ],
+        "paired_permutation_pvalue": 0.035296,
+        "permutation_test_details": {
+          "null_hypothesis": "E[s_heuristic - s_rule] = 0 under paired sign exchangeability",
+          "test_statistic": "|mean(s_heuristic - s_rule)|",
+          "observed_statistic": 0.0225,
+          "num_permutations": 10000,
+          "extreme_outcomes_count": 352,
+          "finite_sample_corrected_pvalue": 0.035296
+        },
+        "mean_score_difference": -0.0225
+      }
+    }
+  },
+  "java_java_jwt": {
+    "metadata": {
+      "repository_url": "https://github.com/auth0/java-jwt",
+      "commit_sha": "29f252b2d6fea74df6576803d5fce5f6d6799cf3",
+      "language": "JAVA",
+      "size_tier": "SMALL",
+      "license": "MIT",
+      "selection_rationale": "Standard Auth0 JSON Web Token implementation in Java.",
+      "scan_date": "2026-10-24T07:38:18.026968+00:00",
+      "scan_duration_seconds": 0.32
+    },
+    "file_accounting": {
+      "committed_files_git": 134,
+      "eligible_files_by_rules": 92,
+      "excluded_by_extension_rules": 42,
+      "scanned_files_walk": 134,
+      "files_producing_graph_nodes": 34,
+      "eligible_files_without_findings": 58,
+      "scan_errors": 0
+    },
+    "provenance": {
+      "scanned_files": 134,
+      "findings_count": 136,
+      "scored_assets": 30,
+      "unrated_assets": 4,
+      "skipped_files": 0,
+      "errors": 0,
+      "error_details": [],
+      "is_mock": false
+    },
+    "node_counts": {
+      "file": 34,
+      "crypto_usage": 27,
+      "certificate": 15,
+      "endpoint": 0,
+      "library": 29,
+      "sensitive_data": 28
+    },
+    "relationship_counts": {
+      "CONTAINS": 70,
+      "IMPORTS": 66,
+      "CALLS": 0,
+      "USES_CERT": 0,
+      "EXPOSES": 0,
+      "PROTECTS": 91,
+      "DEPENDS_ON": 0
+    },
+    "semantic_details": {
+      "certificates": {
+        "parsed_x509_identities": 0,
+        "raw_cert_files": 15,
+        "code_loading_patterns": 0
+      },
+      "endpoints": {
+        "total_endpoints": 0,
+        "internet_facing": 0,
+        "internal_or_restricted": 0,
+        "unknown_exposure": 0
+      }
+    },
+    "asset_counts": {
+      "total_scored_or_unrated": 34,
+      "rated_assets": 30,
+      "unrated_assets": 4
+    },
+    "factor_population_counts": {
+      "crypto_weakness": 0,
+      "data_sensitivity": 13,
+      "asset_criticality": 34,
+      "internet_exposure": 0,
+      "cve_risk": 18,
+      "library_centrality": 0,
+      "migration_difficulty": 33
+    },
+    "baselines": {
+      "heuristic_rated_count": 30,
+      "rule_based_rated_count": 18,
+      "comparable_assets_count": 14,
+      "ndcg_k_status": "NOT_AVAILABLE (requires external ground-truth relevance labels; heuristic scores cannot serve as ground truth)",
+      "correlation_statistics": {
+        "status": "UNDEFINED",
+        "comparable_assets_count": 14,
+        "spearman_rho": null,
+        "spearman_pvalue": null,
+        "kendall_tau": null,
+        "kendall_pvalue": null,
+        "bootstrap_ci_spearman_95": null,
+        "paired_permutation_pvalue": 0.0007,
+        "permutation_test_details": {
+          "null_hypothesis": "E[s_heuristic - s_rule] = 0 under paired sign exchangeability",
+          "test_statistic": "|mean(s_heuristic - s_rule)|",
+          "observed_statistic": 0.1686,
+          "num_permutations": 10000,
+          "extreme_outcomes_count": 6,
+          "finite_sample_corrected_pvalue": 0.0007
+        },
+        "mean_score_difference": -0.1686,
+        "reason": "Zero variance (constant score vector) in: rule_scores. Rank correlation is mathematically undefined."
+      }
+    }
+  },
+  "java_jjwt": {
+    "metadata": {
+      "repository_url": "https://github.com/jwtk/jjwt",
+      "commit_sha": "fb71496164c71442d08adec4571d9616ed5e1b8d",
+      "language": "JAVA",
+      "size_tier": "LARGE",
+      "license": "Apache-2.0",
+      "selection_rationale": "Extensive enterprise Java JWT library supporting diverse signature and encryption algorithms.",
+      "scan_date": "2026-10-24T07:38:18.026968+00:00",
+      "scan_duration_seconds": 0.71
+    },
+    "file_accounting": {
+      "committed_files_git": 733,
+      "eligible_files_by_rules": 455,
+      "excluded_by_extension_rules": 278,
+      "scanned_files_walk": 733,
+      "files_producing_graph_nodes": 212,
+      "eligible_files_without_findings": 243,
+      "scan_errors": 0
+    },
+    "provenance": {
+      "scanned_files": 733,
+      "findings_count": 586,
+      "scored_assets": 210,
+      "unrated_assets": 2,
+      "skipped_files": 0,
+      "errors": 0,
+      "error_details": [],
+      "is_mock": false
+    },
+    "node_counts": {
+      "file": 212,
+      "crypto_usage": 11,
+      "certificate": 41,
+      "endpoint": 0,
+      "library": 81,
+      "sensitive_data": 33
+    },
+    "relationship_counts": {
+      "CONTAINS": 85,
+      "IMPORTS": 453,
+      "CALLS": 0,
+      "USES_CERT": 16,
+      "EXPOSES": 0,
+      "PROTECTS": 10,
+      "DEPENDS_ON": 21
+    },
+    "semantic_details": {
+      "certificates": {
+        "parsed_x509_identities": 13,
+        "raw_cert_files": 26,
+        "code_loading_patterns": 2
+      },
+      "endpoints": {
+        "total_endpoints": 0,
+        "internet_facing": 0,
+        "internal_or_restricted": 0,
+        "unknown_exposure": 0
+      }
+    },
+    "asset_counts": {
+      "total_scored_or_unrated": 212,
+      "rated_assets": 210,
+      "unrated_assets": 2
+    },
+    "factor_population_counts": {
+      "crypto_weakness": 1,
+      "data_sensitivity": 22,
+      "asset_criticality": 45,
+      "internet_exposure": 0,
+      "cve_risk": 170,
+      "library_centrality": 0,
+      "migration_difficulty": 209
+    },
+    "baselines": {
+      "heuristic_rated_count": 210,
+      "rule_based_rated_count": 170,
+      "comparable_assets_count": 168,
+      "ndcg_k_status": "NOT_AVAILABLE (requires external ground-truth relevance labels; heuristic scores cannot serve as ground truth)",
+      "correlation_statistics": {
+        "status": "UNDEFINED",
+        "comparable_assets_count": 168,
+        "spearman_rho": null,
+        "spearman_pvalue": null,
+        "kendall_tau": null,
+        "kendall_pvalue": null,
+        "bootstrap_ci_spearman_95": null,
+        "paired_permutation_pvalue": 0.0001,
+        "permutation_test_details": {
+          "null_hypothesis": "E[s_heuristic - s_rule] = 0 under paired sign exchangeability",
+          "test_statistic": "|mean(s_heuristic - s_rule)|",
+          "observed_statistic": 0.3965,
+          "num_permutations": 10000,
+          "extreme_outcomes_count": 0,
+          "finite_sample_corrected_pvalue": 0.0001
+        },
+        "mean_score_difference": -0.3965,
+        "reason": "Zero variance (constant score vector) in: rule_scores. Rank correlation is mathematically undefined."
+      }
+    }
+  },
+  "go_jwt": {
+    "metadata": {
+      "repository_url": "https://github.com/golang-jwt/jwt",
+      "commit_sha": "73c870b18e68b6e654b2b03f485aa3c9fab32cea",
+      "language": "GO",
+      "size_tier": "SMALL",
+      "license": "MIT",
+      "selection_rationale": "Primary community-maintained Golang implementation of JSON Web Tokens.",
+      "scan_date": "2026-10-24T07:38:18.026968+00:00",
+      "scan_duration_seconds": 0.11
+    },
+    "file_accounting": {
+      "committed_files_git": 77,
+      "eligible_files_by_rules": 57,
+      "excluded_by_extension_rules": 20,
+      "scanned_files_walk": 77,
+      "files_producing_graph_nodes": 30,
+      "eligible_files_without_findings": 27,
+      "scan_errors": 0
+    },
+    "provenance": {
+      "scanned_files": 77,
+      "findings_count": 125,
+      "scored_assets": 29,
+      "unrated_assets": 1,
+      "skipped_files": 0,
+      "errors": 0,
+      "error_details": [],
+      "is_mock": false
+    },
+    "node_counts": {
+      "file": 30,
+      "crypto_usage": 89,
+      "certificate": 12,
+      "endpoint": 2,
+      "library": 5,
+      "sensitive_data": 3
+    },
+    "relationship_counts": {
+      "CONTAINS": 104,
+      "IMPORTS": 19,
+      "CALLS": 2,
+      "USES_CERT": 0,
+      "EXPOSES": 0,
+      "PROTECTS": 6,
+      "DEPENDS_ON": 0
+    },
+    "semantic_details": {
+      "certificates": {
+        "parsed_x509_identities": 0,
+        "raw_cert_files": 10,
+        "code_loading_patterns": 2
+      },
+      "endpoints": {
+        "total_endpoints": 2,
+        "internet_facing": 0,
+        "internal_or_restricted": 0,
+        "unknown_exposure": 2
+      }
+    },
+    "asset_counts": {
+      "total_scored_or_unrated": 30,
+      "rated_assets": 29,
+      "unrated_assets": 1
+    },
+    "factor_population_counts": {
+      "crypto_weakness": 13,
+      "data_sensitivity": 3,
+      "asset_criticality": 24,
+      "internet_exposure": 0,
+      "cve_risk": 14,
+      "library_centrality": 0,
+      "migration_difficulty": 30
+    },
+    "baselines": {
+      "heuristic_rated_count": 29,
+      "rule_based_rated_count": 20,
+      "comparable_assets_count": 19,
+      "ndcg_k_status": "NOT_AVAILABLE (requires external ground-truth relevance labels; heuristic scores cannot serve as ground truth)",
+      "correlation_statistics": {
+        "status": "DEFINED",
+        "comparable_assets_count": 19,
+        "spearman_rho": 0.621,
+        "spearman_pvalue": 0.004546,
+        "kendall_tau": 0.5241,
+        "kendall_pvalue": 0.008423,
+        "bootstrap_ci_spearman_95": [
+          0.2819,
+          0.846
+        ],
+        "paired_permutation_pvalue": 0.0001,
+        "permutation_test_details": {
+          "null_hypothesis": "E[s_heuristic - s_rule] = 0 under paired sign exchangeability",
+          "test_statistic": "|mean(s_heuristic - s_rule)|",
+          "observed_statistic": 0.3557,
+          "num_permutations": 10000,
+          "extreme_outcomes_count": 0,
+          "finite_sample_corrected_pvalue": 0.0001
+        },
+        "mean_score_difference": -0.3557
+      }
+    }
+  },
+  "go_jwt_go": {
+    "metadata": {
+      "repository_url": "https://github.com/dgrijalva/jwt-go",
+      "commit_sha": "9742bd7fca1c67ba2eb793750f56ee3094d1b04f",
+      "language": "GO",
+      "size_tier": "SMALL",
+      "license": "MIT",
+      "selection_rationale": "Historical Golang JWT library with diverse cryptographic test fixtures.",
+      "scan_date": "2026-10-24T07:38:18.026968+00:00",
+      "scan_duration_seconds": 0.06
+    },
+    "file_accounting": {
+      "committed_files_git": 51,
+      "eligible_files_by_rules": 41,
+      "excluded_by_extension_rules": 10,
+      "scanned_files_walk": 51,
+      "files_producing_graph_nodes": 26,
+      "eligible_files_without_findings": 15,
+      "scan_errors": 0
+    },
+    "provenance": {
+      "scanned_files": 51,
+      "findings_count": 70,
+      "scored_assets": 25,
+      "unrated_assets": 1,
+      "skipped_files": 0,
+      "errors": 0,
+      "error_details": [],
+      "is_mock": false
+    },
+    "node_counts": {
+      "file": 26,
+      "crypto_usage": 29,
+      "certificate": 9,
+      "endpoint": 2,
+      "library": 5,
+      "sensitive_data": 3
+    },
+    "relationship_counts": {
+      "CONTAINS": 41,
+      "IMPORTS": 27,
+      "CALLS": 2,
+      "USES_CERT": 0,
+      "EXPOSES": 0,
+      "PROTECTS": 5,
+      "DEPENDS_ON": 0
+    },
+    "semantic_details": {
+      "certificates": {
+        "parsed_x509_identities": 0,
+        "raw_cert_files": 7,
+        "code_loading_patterns": 2
+      },
+      "endpoints": {
+        "total_endpoints": 2,
+        "internet_facing": 0,
+        "internal_or_restricted": 0,
+        "unknown_exposure": 2
+      }
+    },
+    "asset_counts": {
+      "total_scored_or_unrated": 26,
+      "rated_assets": 25,
+      "unrated_assets": 1
+    },
+    "factor_population_counts": {
+      "crypto_weakness": 9,
+      "data_sensitivity": 3,
+      "asset_criticality": 21,
+      "internet_exposure": 0,
+      "cve_risk": 19,
+      "library_centrality": 0,
+      "migration_difficulty": 26
+    },
+    "baselines": {
+      "heuristic_rated_count": 25,
+      "rule_based_rated_count": 19,
+      "comparable_assets_count": 18,
+      "ndcg_k_status": "NOT_AVAILABLE (requires external ground-truth relevance labels; heuristic scores cannot serve as ground truth)",
+      "correlation_statistics": {
+        "status": "DEFINED",
+        "comparable_assets_count": 18,
+        "spearman_rho": 0.1032,
+        "spearman_pvalue": 0.683521,
+        "kendall_tau": 0.0876,
+        "kendall_pvalue": 0.670345,
+        "bootstrap_ci_spearman_95": [
+          -0.4126,
+          0.5528
+        ],
+        "paired_permutation_pvalue": 0.022498,
+        "permutation_test_details": {
+          "null_hypothesis": "E[s_heuristic - s_rule] = 0 under paired sign exchangeability",
+          "test_statistic": "|mean(s_heuristic - s_rule)|",
+          "observed_statistic": 0.1261,
+          "num_permutations": 10000,
+          "extreme_outcomes_count": 224,
+          "finite_sample_corrected_pvalue": 0.022498
+        },
+        "mean_score_difference": -0.1261
+      }
+    }
+  },
+  "go_crypto": {
+    "metadata": {
+      "repository_url": "https://github.com/golang/crypto",
+      "commit_sha": "b39ff6d641ecc5bb4b241737cb0c6b646f3e12a9",
+      "language": "GO",
+      "size_tier": "LARGE",
+      "license": "BSD-3-Clause",
+      "selection_rationale": "Official Go supplementary cryptography packages covering SSH, OpenPGP, and diverse ciphers.",
+      "scan_date": "2026-10-24T07:38:18.026968+00:00",
+      "scan_duration_seconds": 1.68
+    },
+    "file_accounting": {
+      "committed_files_git": 418,
+      "eligible_files_by_rules": 337,
+      "excluded_by_extension_rules": 81,
+      "scanned_files_walk": 418,
+      "files_producing_graph_nodes": 134,
+      "eligible_files_without_findings": 203,
+      "scan_errors": 0
+    },
+    "provenance": {
+      "scanned_files": 418,
+      "findings_count": 590,
+      "scored_assets": 123,
+      "unrated_assets": 11,
+      "skipped_files": 0,
+      "errors": 0,
+      "error_details": [],
+      "is_mock": false
+    },
+    "node_counts": {
+      "file": 134,
+      "crypto_usage": 216,
+      "certificate": 37,
+      "endpoint": 1,
+      "library": 25,
+      "sensitive_data": 52
+    },
+    "relationship_counts": {
+      "CONTAINS": 305,
+      "IMPORTS": 239,
+      "CALLS": 1,
+      "USES_CERT": 109,
+      "EXPOSES": 0,
+      "PROTECTS": 52,
+      "DEPENDS_ON": 9
+    },
+    "semantic_details": {
+      "certificates": {
+        "parsed_x509_identities": 3,
+        "raw_cert_files": 1,
+        "code_loading_patterns": 33
+      },
+      "endpoints": {
+        "total_endpoints": 1,
+        "internet_facing": 0,
+        "internal_or_restricted": 0,
+        "unknown_exposure": 1
+      }
+    },
+    "asset_counts": {
+      "total_scored_or_unrated": 134,
+      "rated_assets": 123,
+      "unrated_assets": 11
+    },
+    "factor_population_counts": {
+      "crypto_weakness": 46,
+      "data_sensitivity": 36,
+      "asset_criticality": 73,
+      "internet_exposure": 0,
+      "cve_risk": 111,
+      "library_centrality": 0,
+      "migration_difficulty": 116
+    },
+    "baselines": {
+      "heuristic_rated_count": 123,
+      "rule_based_rated_count": 111,
+      "comparable_assets_count": 100,
+      "ndcg_k_status": "NOT_AVAILABLE (requires external ground-truth relevance labels; heuristic scores cannot serve as ground truth)",
+      "correlation_statistics": {
+        "status": "DEFINED",
+        "comparable_assets_count": 100,
+        "spearman_rho": 0.674,
+        "spearman_pvalue": 0.0,
+        "kendall_tau": 0.5296,
+        "kendall_pvalue": 0.0,
+        "bootstrap_ci_spearman_95": [
+          0.5383,
+          0.7736
+        ],
+        "paired_permutation_pvalue": 0.0001,
+        "permutation_test_details": {
+          "null_hypothesis": "E[s_heuristic - s_rule] = 0 under paired sign exchangeability",
+          "test_statistic": "|mean(s_heuristic - s_rule)|",
+          "observed_statistic": 0.3658,
+          "num_permutations": 10000,
+          "extreme_outcomes_count": 0,
+          "finite_sample_corrected_pvalue": 0.0001
+        },
+        "mean_score_difference": -0.3658
+      }
+    }
+  },
+  "__corpus_aggregate__": {
+    "total_repositories": 8,
+    "total_comparable_assets": 506,
+    "ndcg_k_status": "NOT_AVAILABLE (requires external ground-truth relevance labels; heuristic scores cannot serve as ground truth)",
+    "pooled_statistics": {
+      "status": "DEFINED",
+      "comparable_assets_count": 506,
+      "spearman_rho": 0.364,
+      "spearman_pvalue": 0.0,
+      "kendall_tau": 0.3001,
+      "kendall_pvalue": 0.0,
+      "bootstrap_ci_spearman_95": [
+        0.3013,
+        0.421
+      ],
+      "paired_permutation_pvalue": 0.0001,
+      "permutation_test_details": {
+        "null_hypothesis": "E[s_heuristic - s_rule] = 0 under paired sign exchangeability",
+        "test_statistic": "|mean(s_heuristic - s_rule)|",
+        "observed_statistic": 0.2371,
+        "num_permutations": 10000,
+        "extreme_outcomes_count": 0,
+        "finite_sample_corrected_pvalue": 0.0001
+      },
+      "mean_score_difference": -0.2371
+    },
+    "repository_clustered_statistics": {
+      "defined_repositories_count": 5,
+      "undefined_repositories_count": 3,
+      "unweighted_mean_spearman_rho": 0.5905,
+      "weighted_mean_spearman_rho": 0.5743,
+      "clustered_bootstrap_ci_spearman_95": [
+        0.3103,
+        0.8457
+      ],
+      "limitations_note": "Inference across K=6 usable repository clusters is constrained by small sample size; cluster bootstrap interval reflects high inter-repository variance.",
+      "defined_repository_contributions": [
+        {
+          "repository": "python_itsdangerous",
+          "comparable_assets": 3,
+          "spearman_rho": 1.0
+        },
+        {
+          "repository": "python_cryptography",
+          "comparable_assets": 183,
+          "spearman_rho": 0.5543
+        },
+        {
+          "repository": "go_jwt",
+          "comparable_assets": 19,
+          "spearman_rho": 0.621
+        },
+        {
+          "repository": "go_jwt_go",
+          "comparable_assets": 18,
+          "spearman_rho": 0.1032
+        },
+        {
+          "repository": "go_crypto",
+          "comparable_assets": 100,
+          "spearman_rho": 0.674
+        }
+      ],
+      "excluded_undefined_repositories": [
+        {
+          "repository": "python_bcrypt",
+          "comparable_assets": 1,
+          "status": "UNDEFINED",
+          "reason": "Sample size N < 2 is insufficient for rank correlation."
+        },
+        {
+          "repository": "java_java_jwt",
+          "comparable_assets": 14,
+          "status": "UNDEFINED",
+          "reason": "Zero variance (constant score vector) in: rule_scores. Rank correlation is mathematically undefined."
+        },
+        {
+          "repository": "java_jjwt",
+          "comparable_assets": 168,
+          "status": "UNDEFINED",
+          "reason": "Zero variance (constant score vector) in: rule_scores. Rank correlation is mathematically undefined."
+        }
+      ]
+    }
+  }
+}

@@ -42,11 +42,14 @@ def setup_mock_project():
     }
     
     roadmap_state_store.clear()
+    from src.core.storage import default_storage
+    default_storage.delete_project("test_proj")
     
     yield
     
     project_cache.clear()
     roadmap_state_store.clear()
+    default_storage.delete_project("test_proj")
 
 
 def test_pqc_readiness_endpoint():
@@ -100,15 +103,15 @@ def test_roadmap_endpoint():
     # Initial state
     response = client.get("/api/v1/product/test_proj/assets/asset_1/roadmap")
     assert response.status_code == 200
-    assert response.json()["current_state"] == "NOT_ASSESSED"
+    assert response.json()["current_state"] == "DISCOVERED"
     
-    # Valid transition
-    response = client.post("/api/v1/product/test_proj/assets/asset_1/roadmap", json={"requested_state": "ASSESSMENT_REQUIRED"})
+    # Valid transition (DISCOVERED -> EVALUATED)
+    response = client.post("/api/v1/product/test_proj/assets/asset_1/roadmap", json={"requested_state": "EVALUATED"})
     assert response.status_code == 200
-    assert response.json()["current_state"] == "ASSESSMENT_REQUIRED"
+    assert response.json()["current_state"] == "EVALUATED"
     
-    # Invalid transition (jump)
-    response = client.post("/api/v1/product/test_proj/assets/asset_1/roadmap", json={"requested_state": "VERIFIED"})
+    # Invalid transition (jump: EVALUATED -> VALIDATED)
+    response = client.post("/api/v1/product/test_proj/assets/asset_1/roadmap", json={"requested_state": "VALIDATED"})
     assert response.status_code == 400
     assert "Invalid state transition" in response.json()["detail"]
 

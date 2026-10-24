@@ -1,62 +1,76 @@
 import pytest
 from src.models.migration_state import (
-    RoadmapState, MigrationStateRecord, is_transition_allowed, transition_state, VALID_TRANSITIONS
+    MigrationLifecycleState,
+    RoadmapState,
+    MigrationStateRecord,
+    is_transition_allowed,
+    transition_state,
+    VALID_TRANSITIONS,
+    parse_lifecycle_state
 )
 from src.risk.mosca import MoscaStatus
 from src.risk.migration_priority import PriorityLevel
 
-def test_every_valid_forward_transition():
-    # Test a full valid forward lifecycle
-    record = MigrationStateRecord(asset_id="asset1", current_state=RoadmapState.NOT_ASSESSED)
+def test_six_canonical_states_exist():
+    expected_states = {
+        "DISCOVERED", "EVALUATED", "IN_PLANNING", "IN_MIGRATION", "VALIDATED", "DECOMMISSIONED"
+    }
+    actual_states = {s.value for s in MigrationLifecycleState}
+    assert actual_states == expected_states
+
+def test_canonical_forward_lifecycle():
+    # DISCOVERED -> EVALUATED -> IN_PLANNING -> IN_MIGRATION -> VALIDATED -> DECOMMISSIONED
+    record = MigrationStateRecord(asset_id="asset1", current_state=MigrationLifecycleState.DISCOVERED)
     
-    # Forward path
     path = [
-        RoadmapState.ASSESSMENT_REQUIRED,
-        RoadmapState.MIGRATION_CANDIDATE,
-        RoadmapState.HIGH_PRIORITY,
-        RoadmapState.PLANNED,
-        RoadmapState.IN_PROGRESS,
-        RoadmapState.MIGRATED,
-        RoadmapState.VERIFIED
+        MigrationLifecycleState.EVALUATED,
+        MigrationLifecycleState.IN_PLANNING,
+        MigrationLifecycleState.IN_MIGRATION,
+        MigrationLifecycleState.VALIDATED,
+        MigrationLifecycleState.DECOMMISSIONED
     ]
     
     for next_state in path:
         assert is_transition_allowed(record.current_state, next_state) is True
         record = transition_state(record, next_state)
         assert record.current_state == next_state
-        
+
 def test_invalid_arbitrary_jumps():
-    record = MigrationStateRecord(asset_id="asset1", current_state=RoadmapState.NOT_ASSESSED)
-    assert is_transition_allowed(record.current_state, RoadmapState.IN_PROGRESS) is False
-    assert is_transition_allowed(record.current_state, RoadmapState.VERIFIED) is False
-    assert is_transition_allowed(RoadmapState.MIGRATED, RoadmapState.PLANNED) is False
+    record = MigrationStateRecord(asset_id="asset1", current_state=MigrationLifecycleState.DISCOVERED)
+    # Cannot jump directly from DISCOVERED to IN_MIGRATION or VALIDATED
+    assert is_transition_allowed(record.current_state, MigrationLifecycleState.IN_MIGRATION) is False
+    assert is_transition_allowed(record.current_state, MigrationLifecycleState.VALIDATED) is False
+    assert is_transition_allowed(MigrationLifecycleState.VALIDATED, MigrationLifecycleState.IN_PLANNING) is False
     
     with pytest.raises(ValueError, match="Invalid state transition"):
-        transition_state(record, RoadmapState.MIGRATED)
+        transition_state(record, MigrationLifecycleState.IN_MIGRATION)
 
-def test_invalid_backwards_transitions_unless_supported():
-    # Valid backwards: MIGRATED -> IN_PROGRESS
-    assert is_transition_allowed(RoadmapState.MIGRATED, RoadmapState.IN_PROGRESS) is True
+def test_valid_backwards_transitions():
+    # IN_PLANNING -> EVALUATED (cancelled plan)
+    assert is_transition_allowed(MigrationLifecycleState.IN_PLANNING, MigrationLifecycleState.EVALUATED) is True
+    # IN_MIGRATION -> IN_PLANNING (rollback)
+    assert is_transition_allowed(MigrationLifecycleState.IN_MIGRATION, MigrationLifecycleState.IN_PLANNING) is True
+    # VALIDATED -> IN_MIGRATION (post-validation regression)
+    assert is_transition_allowed(MigrationLifecycleState.VALIDATED, MigrationLifecycleState.IN_MIGRATION) is True
     
-    # Invalid backwards: VERIFIED -> IN_PROGRESS
-    assert is_transition_allowed(RoadmapState.VERIFIED, RoadmapState.IN_PROGRESS) is False
+    # Invalid backwards jump: VALIDATED -> DISCOVERED
+    assert is_transition_allowed(MigrationLifecycleState.VALIDATED, MigrationLifecycleState.DISCOVERED) is False
 
 def test_same_state_behavior():
-    record = MigrationStateRecord(asset_id="asset1", current_state=RoadmapState.PLANNED)
-    assert is_transition_allowed(RoadmapState.PLANNED, RoadmapState.PLANNED) is True
-    new_record = transition_state(record, RoadmapState.PLANNED)
-    # The record should remain unmodified
-    assert new_record.current_state == RoadmapState.PLANNED
+    record = MigrationStateRecord(asset_id="asset1", current_state=MigrationLifecycleState.IN_PLANNING)
+    assert is_transition_allowed(MigrationLifecycleState.IN_PLANNING, MigrationLifecycleState.IN_PLANNING) is True
+    new_record = transition_state(record, MigrationLifecycleState.IN_PLANNING)
+    assert new_record.current_state == MigrationLifecycleState.IN_PLANNING
     assert new_record.previous_state == record.previous_state
+
+def test_legacy_aliases_parsing():
+    assert parse_lifecycle_state("NOT_ASSESSED") == MigrationLifecycleState.DISCOVERED
+    assert parse_lifecycle_state("PLANNED") == MigrationLifecycleState.IN_PLANNING
+    assert parse_lifecycle_state("MIGRATED") == MigrationLifecycleState.VALIDATED
 
 def test_unknown_invalid_state_values():
     with pytest.raises(ValueError):
-        # Enums provide natural type safety against arbitrary strings
-        RoadmapState("INVALID_STATE_XYZ")
-
-def test_deterministic_validation():
-    assert is_transition_allowed(RoadmapState.NOT_ASSESSED, RoadmapState.MIGRATION_CANDIDATE) is True
-    assert is_transition_allowed(RoadmapState.NOT_ASSESSED, RoadmapState.MIGRATION_CANDIDATE) is True
+        parse_lifecycle_state("INVALID_STATE_XYZ")
 
 def test_state_does_not_alter_other_metrics():
     # Proof that RoadmapState is entirely decoupled from Risk, Priority, and Mosca
@@ -64,24 +78,9 @@ def test_state_does_not_alter_other_metrics():
     mock_mosca = MoscaStatus.AT_RISK
     mock_priority = PriorityLevel.HIGH
     
-    record = MigrationStateRecord(asset_id="asset1", current_state=RoadmapState.PLANNED)
-    record = transition_state(record, RoadmapState.IN_PROGRESS)
+    record = MigrationStateRecord(asset_id="asset1", current_state=MigrationLifecycleState.IN_PLANNING)
+    record = transition_state(record, MigrationLifecycleState.IN_MIGRATION)
     
-    # Asserting these are distinct models/properties and no side-effects exist
     assert mock_risk == 0.8
     assert mock_mosca == MoscaStatus.AT_RISK
     assert mock_priority == PriorityLevel.HIGH
-
-def test_migrated_does_not_imply_verified():
-    # Validates semantic rule: MIGRATED != VERIFIED
-    assert RoadmapState.MIGRATED != RoadmapState.VERIFIED
-    
-    # Needs explicit transition
-    assert is_transition_allowed(RoadmapState.MIGRATED, RoadmapState.VERIFIED) is True
-    assert RoadmapState.VERIFIED not in VALID_TRANSITIONS[RoadmapState.IN_PROGRESS]
-
-def test_verified_is_planning_assertion():
-    # Verified state is a RoadmapState planning/user assertion, not an empirical node risk score
-    record = MigrationStateRecord(asset_id="asset1", current_state=RoadmapState.VERIFIED)
-    assert isinstance(record.current_state, RoadmapState)
-    assert not hasattr(record, "risk_score") # Does not contain empirical risk

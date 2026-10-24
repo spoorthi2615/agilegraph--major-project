@@ -1,8 +1,16 @@
 from src.scanners.common.models import FindingRecord
+from src.scanners.common.enums import AssetType
 from src.graph.schema import GraphNode
 
 def normalize_to_node(record: FindingRecord) -> GraphNode:
-    node_id = f"{record.repository}:{record.file}:{record.line}:{record.api}" if record.line else f"{record.repository}:{record.file}"
+    if record.asset_type == AssetType.FILE:
+        node_id = f"{record.repository}:{record.file}"
+    else:
+        suffix = record.api or record.operation or record.asset_type.value
+        if record.line:
+            node_id = f"{record.repository}:{record.file}:{record.line}:{suffix}"
+        else:
+            node_id = f"{record.repository}:{record.file}:{record.asset_type.value}"
     properties = {
         "repository": record.repository,
         "file": record.file,

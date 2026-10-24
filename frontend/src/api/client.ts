@@ -42,6 +42,34 @@ export interface GraphResponse {
   edges: any[];
 }
 
+export interface CryptoInventoryItem {
+  asset_id: string;
+  language: string;
+  algorithm: string;
+  operation: string;
+  library: string;
+  source: string;
+  evidence_status: string;
+  risk: number | null;
+}
+
+export interface CryptoInventoryResponse {
+  project_id: string;
+  summary: {
+    total_assets: number;
+    crypto_usages: number;
+    languages: number;
+    algorithms: number;
+    libraries: number;
+  };
+  items: CryptoInventoryItem[];
+  coverage: {
+    certificates: string;
+    endpoints: string;
+    sensitive_data: string;
+  };
+}
+
 const API_BASE = "/api/v1";
 
 export const apiClient = {
@@ -101,6 +129,12 @@ export const apiClient = {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ requested_state })
     });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  },
+
+  getCryptoInventory: async (project_id: string): Promise<CryptoInventoryResponse> => {
+    const res = await fetch(`${API_BASE}/product/${project_id}/crypto-inventory`);
     if (!res.ok) throw new Error(await res.text());
     return res.json();
   }

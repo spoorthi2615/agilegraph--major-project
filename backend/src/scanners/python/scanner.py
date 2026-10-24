@@ -183,25 +183,15 @@ class PythonCryptoVisitor(ast.NodeVisitor):
         base = parts[0]
 
         # ── hashlib.md5(), hashlib.sha1(), h.sha256()  ──────────────────
-        if base in self.module_alias and self.module_alias[base] == "hashlib":
+        if (base in self.module_alias and self.module_alias[base] == "hashlib") or base == "hashlib":
             if len(parts) >= 2:
                 attr = parts[1].lower()
-                # hashlib.new("sha256")
+                # hashlib.new("sha256") or hashlib.new("unknown_algo")
                 if attr == "new" and node.args and isinstance(node.args[0], ast.Constant):
-                    alg = str(node.args[0].value).lower().replace("-", "")
-                    if alg in _HASHLIB_ATTRS:
-                        self._emit_crypto(node, _HASHLIB_ATTRS[alg], "hashing", full_name, base)
-                elif attr in _HASHLIB_ATTRS:
-                    self._emit_crypto(node, _HASHLIB_ATTRS[attr], "hashing", full_name, base)
-            return
-
-        if base == "hashlib":
-            if len(parts) >= 2:
-                attr = parts[1].lower()
-                if attr == "new" and node.args and isinstance(node.args[0], ast.Constant):
-                    alg = str(node.args[0].value).lower().replace("-", "")
-                    if alg in _HASHLIB_ATTRS:
-                        self._emit_crypto(node, _HASHLIB_ATTRS[alg], "hashing", full_name, base)
+                    raw_val = str(node.args[0].value)
+                    norm_alg = raw_val.lower().replace("-", "")
+                    alg = _HASHLIB_ATTRS.get(norm_alg, raw_val)
+                    self._emit_crypto(node, alg, "hashing", full_name, base)
                 elif attr in _HASHLIB_ATTRS:
                     self._emit_crypto(node, _HASHLIB_ATTRS[attr], "hashing", full_name, base)
             return

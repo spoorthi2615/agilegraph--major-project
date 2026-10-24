@@ -75,3 +75,45 @@ def test_fleiss_kappa_negative_counts():
     ])
     with pytest.raises(ValueError, match="Ratings matrix cannot contain negative counts"):
         AgreementMetrics.fleiss_kappa(matrix)
+
+def test_krippendorff_alpha_ordinal_perfect_agreement():
+    # 4 raters, 5 items
+    data = np.array([
+        [0, 1, 2, 0, 1],
+        [0, 1, 2, 0, 1],
+        [0, 1, 2, 0, 1],
+        [0, 1, 2, 0, 1],
+    ], dtype=float)
+    res = AgreementMetrics.krippendorff_alpha(data, level="ordinal")
+    assert res["status"] == "COMPUTED"
+    assert res["statistic"] == 1.0
+    assert res["statistic"] >= 0.80  # Meets preregistered threshold
+
+def test_krippendorff_alpha_with_missing_ratings():
+    # 4 raters, 5 items with np.nan for abstentions/missing
+    data = np.array([
+        [0, 1, np.nan, 0, 1],
+        [0, 1, 2, np.nan, 1],
+        [np.nan, 1, 2, 0, 1],
+        [0, np.nan, 2, 0, np.nan],
+    ], dtype=float)
+    res = AgreementMetrics.krippendorff_alpha(data, level="ordinal")
+    assert res["status"] == "COMPUTED"
+    assert res["statistic"] == 1.0  # Perfect agreement on all observed pairs
+
+def test_krippendorff_alpha_below_threshold():
+    # Disagreement on ordinal scale
+    data = np.array([
+        [0, 0, 0, 0],
+        [2, 2, 2, 2],
+    ], dtype=float)
+    res = AgreementMetrics.krippendorff_alpha(data, level="ordinal")
+    assert res["status"] == "COMPUTED"
+    assert res["statistic"] < 0.80  # Demonstrates detection of below-threshold agreement
+
+def test_krippendorff_alpha_insufficient_raters():
+    data = np.array([[0, 1, 2]], dtype=float)
+    res = AgreementMetrics.krippendorff_alpha(data, level="ordinal")
+    assert res["status"] == "PENDING_EXPERT_LABELS"
+    assert res["statistic"] is None
+

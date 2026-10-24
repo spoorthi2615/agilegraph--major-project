@@ -1,0 +1,466 @@
+{
+  "python_itsdangerous": {
+    "metadata": {
+      "repository_url": "https://github.com/pallets/itsdangerous",
+      "commit_sha": "672971d66a2ef9f85151e53283113f33d642dabd",
+      "language": "PYTHON",
+      "size_tier": "SMALL",
+      "license": "BSD-3-Clause",
+      "selection_rationale": "Cryptographic signing and token serialization library used widely across Flask/Pallets.",
+      "scan_date": "2026-10-11T13:27:32.649549+00:00",
+      "scan_duration_seconds": 4.18
+    },
+    "provenance": {
+      "scanned_files": 85,
+      "findings_count": 14,
+      "scored_assets": 7,
+      "unrated_assets": 0,
+      "skipped_files": 0,
+      "errors": 0,
+      "error_details": [],
+      "is_mock": false
+    },
+    "node_counts": {
+      "file": 7,
+      "crypto_usage": 1,
+      "certificate": 0,
+      "endpoint": 0,
+      "library": 2,
+      "sensitive_data": 9
+    },
+    "relationship_counts": {
+      "CONTAINS": 10,
+      "IMPORTS": 4,
+      "CALLS": 1,
+      "USES_CERT": 0,
+      "EXPOSES": 0,
+      "PROTECTS": 2,
+      "DEPENDS_ON": 0
+    },
+    "asset_counts": {
+      "total_scored_or_unrated": 7,
+      "rated_assets": 7,
+      "unrated_assets": 0
+    },
+    "factor_population_counts": {
+      "crypto_weakness": 1,
+      "data_sensitivity": 7,
+      "asset_criticality": 0,
+      "internet_exposure": 0,
+      "cve_risk": 3,
+      "library_centrality": 0,
+      "migration_difficulty": 3
+    },
+    "baselines": {
+      "heuristic_rated_count": 7,
+      "rule_based_rated_count": 3,
+      "comparable_assets_count": 3
+    }
+  },
+  "python_bcrypt": {
+    "metadata": {
+      "repository_url": "https://github.com/pyca/bcrypt",
+      "commit_sha": "59b41aaa24c025d1cd231c37d2755b94184a3e67",
+      "language": "PYTHON",
+      "size_tier": "SMALL",
+      "license": "Apache-2.0",
+      "selection_rationale": "Password-hashing cryptographic library binding native C implementations.",
+      "scan_date": "2026-10-11T13:27:32.649549+00:00",
+      "scan_duration_seconds": 2.23
+    },
+    "provenance": {
+      "scanned_files": 53,
+      "findings_count": 2,
+      "scored_assets": 2,
+      "unrated_assets": 0,
+      "skipped_files": 0,
+      "errors": 0,
+      "error_details": [],
+      "is_mock": false
+    },
+    "node_counts": {
+      "file": 2,
+      "crypto_usage": 0,
+      "certificate": 0,
+      "endpoint": 0,
+      "library": 1,
+      "sensitive_data": 1
+    },
+    "relationship_counts": {
+      "CONTAINS": 1,
+      "IMPORTS": 0,
+      "CALLS": 0,
+      "USES_CERT": 0,
+      "EXPOSES": 0,
+      "PROTECTS": 0,
+      "DEPENDS_ON": 1
+    },
+    "asset_counts": {
+      "total_scored_or_unrated": 2,
+      "rated_assets": 2,
+      "unrated_assets": 0
+    },
+    "factor_population_counts": {
+      "crypto_weakness": 0,
+      "data_sensitivity": 1,
+      "asset_criticality": 0,
+      "internet_exposure": 0,
+      "cve_risk": 1,
+      "library_centrality": 0,
+      "migration_difficulty": 1
+    },
+    "baselines": {
+      "heuristic_rated_count": 2,
+      "rule_based_rated_count": 1,
+      "comparable_assets_count": 1
+    }
+  },
+  "python_cryptography": {
+    "metadata": {
+      "repository_url": "https://github.com/pyca/cryptography",
+      "commit_sha": "f0ba3000a365d44db153362e847c88339c9231f4",
+      "language": "PYTHON",
+      "size_tier": "LARGE",
+      "license": "Apache-2.0 / BSD-3-Clause",
+      "selection_rationale": "De-facto standard Python cryptographic primitives and hazmat library.",
+      "scan_date": "2026-10-11T13:27:32.649549+00:00",
+      "scan_duration_seconds": 30.84
+    },
+    "provenance": {
+      "scanned_files": 3104,
+      "findings_count": 2113,
+      "scored_assets": 1013,
+      "unrated_assets": 0,
+      "skipped_files": 0,
+      "errors": 0,
+      "error_details": [],
+      "is_mock": false
+    },
+    "node_counts": {
+      "file": 1013,
+      "crypto_usage": 371,
+      "certificate": 1076,
+      "endpoint": 0,
+      "library": 17,
+      "sensitive_data": 72
+    },
+    "relationship_counts": {
+      "CONTAINS": 1519,
+      "IMPORTS": 199,
+      "CALLS": 365,
+      "USES_CERT": 1623,
+      "EXPOSES": 0,
+      "PROTECTS": 443,
+      "DEPENDS_ON": 0
+    },
+    "asset_counts": {
+      "total_scored_or_unrated": 1013,
+      "rated_assets": 1013,
+      "unrated_assets": 0
+    },
+    "factor_population_counts": {
+      "crypto_weakness": 29,
+      "data_sensitivity": 39,
+      "asset_criticality": 0,
+      "internet_exposure": 0,
+      "cve_risk": 183,
+      "library_centrality": 0,
+      "migration_difficulty": 1012
+    },
+    "baselines": {
+      "heuristic_rated_count": 1013,
+      "rule_based_rated_count": 183,
+      "comparable_assets_count": 183
+    }
+  },
+  "java_java_jwt": {
+    "metadata": {
+      "repository_url": "https://github.com/auth0/java-jwt",
+      "commit_sha": "29f252b2d6fea74df6576803d5fce5f6d6799cf3",
+      "language": "JAVA",
+      "size_tier": "SMALL",
+      "license": "MIT",
+      "selection_rationale": "Standard Auth0 JSON Web Token implementation in Java.",
+      "scan_date": "2026-10-11T13:27:32.649549+00:00",
+      "scan_duration_seconds": 28.41
+    },
+    "provenance": {
+      "scanned_files": 164,
+      "findings_count": 116,
+      "scored_assets": 32,
+      "unrated_assets": 2,
+      "skipped_files": 0,
+      "errors": 0,
+      "error_details": [],
+      "is_mock": false
+    },
+    "node_counts": {
+      "file": 34,
+      "crypto_usage": 7,
+      "certificate": 15,
+      "endpoint": 0,
+      "library": 29,
+      "sensitive_data": 28
+    },
+    "relationship_counts": {
+      "CONTAINS": 50,
+      "IMPORTS": 66,
+      "CALLS": 0,
+      "USES_CERT": 0,
+      "EXPOSES": 0,
+      "PROTECTS": 11,
+      "DEPENDS_ON": 0
+    },
+    "asset_counts": {
+      "total_scored_or_unrated": 34,
+      "rated_assets": 32,
+      "unrated_assets": 2
+    },
+    "factor_population_counts": {
+      "crypto_weakness": 0,
+      "data_sensitivity": 13,
+      "asset_criticality": 0,
+      "internet_exposure": 0,
+      "cve_risk": 18,
+      "library_centrality": 0,
+      "migration_difficulty": 33
+    },
+    "baselines": {
+      "heuristic_rated_count": 32,
+      "rule_based_rated_count": 18,
+      "comparable_assets_count": 16
+    }
+  },
+  "java_jjwt": {
+    "metadata": {
+      "repository_url": "https://github.com/jwtk/jjwt",
+      "commit_sha": "fb71496164c71442d08adec4571d9616ed5e1b8d",
+      "language": "JAVA",
+      "size_tier": "LARGE",
+      "license": "Apache-2.0",
+      "selection_rationale": "Extensive enterprise Java JWT library supporting diverse signature and encryption algorithms.",
+      "scan_date": "2026-10-11T13:27:32.649549+00:00",
+      "scan_duration_seconds": 93.42
+    },
+    "provenance": {
+      "scanned_files": 762,
+      "findings_count": 585,
+      "scored_assets": 211,
+      "unrated_assets": 1,
+      "skipped_files": 0,
+      "errors": 0,
+      "error_details": [],
+      "is_mock": false
+    },
+    "node_counts": {
+      "file": 212,
+      "crypto_usage": 10,
+      "certificate": 41,
+      "endpoint": 0,
+      "library": 81,
+      "sensitive_data": 33
+    },
+    "relationship_counts": {
+      "CONTAINS": 84,
+      "IMPORTS": 453,
+      "CALLS": 0,
+      "USES_CERT": 16,
+      "EXPOSES": 0,
+      "PROTECTS": 10,
+      "DEPENDS_ON": 21
+    },
+    "asset_counts": {
+      "total_scored_or_unrated": 212,
+      "rated_assets": 211,
+      "unrated_assets": 1
+    },
+    "factor_population_counts": {
+      "crypto_weakness": 1,
+      "data_sensitivity": 22,
+      "asset_criticality": 0,
+      "internet_exposure": 0,
+      "cve_risk": 170,
+      "library_centrality": 0,
+      "migration_difficulty": 209
+    },
+    "baselines": {
+      "heuristic_rated_count": 211,
+      "rule_based_rated_count": 170,
+      "comparable_assets_count": 169
+    }
+  },
+  "go_jwt": {
+    "metadata": {
+      "repository_url": "https://github.com/golang-jwt/jwt",
+      "commit_sha": "73c870b18e68b6e654b2b03f485aa3c9fab32cea",
+      "language": "GO",
+      "size_tier": "SMALL",
+      "license": "MIT",
+      "selection_rationale": "Primary community-maintained Golang implementation of JSON Web Tokens.",
+      "scan_date": "2026-10-11T13:27:32.649549+00:00",
+      "scan_duration_seconds": 4.57
+    },
+    "provenance": {
+      "scanned_files": 106,
+      "findings_count": 114,
+      "scored_assets": 29,
+      "unrated_assets": 1,
+      "skipped_files": 0,
+      "errors": 0,
+      "error_details": [],
+      "is_mock": false
+    },
+    "node_counts": {
+      "file": 30,
+      "crypto_usage": 83,
+      "certificate": 12,
+      "endpoint": 2,
+      "library": 4,
+      "sensitive_data": 3
+    },
+    "relationship_counts": {
+      "CONTAINS": 98,
+      "IMPORTS": 14,
+      "CALLS": 0,
+      "USES_CERT": 0,
+      "EXPOSES": 2,
+      "PROTECTS": 6,
+      "DEPENDS_ON": 0
+    },
+    "asset_counts": {
+      "total_scored_or_unrated": 30,
+      "rated_assets": 29,
+      "unrated_assets": 1
+    },
+    "factor_population_counts": {
+      "crypto_weakness": 10,
+      "data_sensitivity": 3,
+      "asset_criticality": 0,
+      "internet_exposure": 0,
+      "cve_risk": 14,
+      "library_centrality": 0,
+      "migration_difficulty": 30
+    },
+    "baselines": {
+      "heuristic_rated_count": 29,
+      "rule_based_rated_count": 20,
+      "comparable_assets_count": 19
+    }
+  },
+  "go_jwt_go": {
+    "metadata": {
+      "repository_url": "https://github.com/dgrijalva/jwt-go",
+      "commit_sha": "9742bd7fca1c67ba2eb793750f56ee3094d1b04f",
+      "language": "GO",
+      "size_tier": "SMALL",
+      "license": "MIT",
+      "selection_rationale": "Historical Golang JWT library with diverse cryptographic test fixtures.",
+      "scan_date": "2026-10-11T13:27:32.649549+00:00",
+      "scan_duration_seconds": 1.37
+    },
+    "provenance": {
+      "scanned_files": 80,
+      "findings_count": 62,
+      "scored_assets": 25,
+      "unrated_assets": 1,
+      "skipped_files": 0,
+      "errors": 0,
+      "error_details": [],
+      "is_mock": false
+    },
+    "node_counts": {
+      "file": 26,
+      "crypto_usage": 24,
+      "certificate": 9,
+      "endpoint": 2,
+      "library": 4,
+      "sensitive_data": 3
+    },
+    "relationship_counts": {
+      "CONTAINS": 36,
+      "IMPORTS": 24,
+      "CALLS": 0,
+      "USES_CERT": 0,
+      "EXPOSES": 2,
+      "PROTECTS": 5,
+      "DEPENDS_ON": 0
+    },
+    "asset_counts": {
+      "total_scored_or_unrated": 26,
+      "rated_assets": 25,
+      "unrated_assets": 1
+    },
+    "factor_population_counts": {
+      "crypto_weakness": 7,
+      "data_sensitivity": 3,
+      "asset_criticality": 0,
+      "internet_exposure": 0,
+      "cve_risk": 19,
+      "library_centrality": 0,
+      "migration_difficulty": 26
+    },
+    "baselines": {
+      "heuristic_rated_count": 25,
+      "rule_based_rated_count": 19,
+      "comparable_assets_count": 18
+    }
+  },
+  "go_crypto": {
+    "metadata": {
+      "repository_url": "https://github.com/golang/crypto",
+      "commit_sha": "b39ff6d641ecc5bb4b241737cb0c6b646f3e12a9",
+      "language": "GO",
+      "size_tier": "LARGE",
+      "license": "BSD-3-Clause",
+      "selection_rationale": "Official Go supplementary cryptography packages covering SSH, OpenPGP, and diverse ciphers.",
+      "scan_date": "2026-10-11T13:27:32.649549+00:00",
+      "scan_duration_seconds": 22.43
+    },
+    "provenance": {
+      "scanned_files": 447,
+      "findings_count": 413,
+      "scored_assets": 102,
+      "unrated_assets": 6,
+      "skipped_files": 0,
+      "errors": 0,
+      "error_details": [],
+      "is_mock": false
+    },
+    "node_counts": {
+      "file": 108,
+      "crypto_usage": 124,
+      "certificate": 37,
+      "endpoint": 1,
+      "library": 21,
+      "sensitive_data": 52
+    },
+    "relationship_counts": {
+      "CONTAINS": 213,
+      "IMPORTS": 153,
+      "CALLS": 0,
+      "USES_CERT": 70,
+      "EXPOSES": 1,
+      "PROTECTS": 28,
+      "DEPENDS_ON": 9
+    },
+    "asset_counts": {
+      "total_scored_or_unrated": 108,
+      "rated_assets": 102,
+      "unrated_assets": 6
+    },
+    "factor_population_counts": {
+      "crypto_weakness": 38,
+      "data_sensitivity": 36,
+      "asset_criticality": 0,
+      "internet_exposure": 0,
+      "cve_risk": 80,
+      "library_centrality": 0,
+      "migration_difficulty": 85
+    },
+    "baselines": {
+      "heuristic_rated_count": 102,
+      "rule_based_rated_count": 80,
+      "comparable_assets_count": 74
+    }
+  }
+}

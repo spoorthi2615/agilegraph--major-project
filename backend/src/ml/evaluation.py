@@ -7,7 +7,7 @@ class EvaluationMetrics:
         """Calculates macro-F1, precision, recall, and accuracy."""
         if len(y_true) == 0 or len(y_pred) == 0:
             return {
-                "status": "PENDING_EXPERT_LABELS",
+                "status": "NOT_APPLICABLE",
                 "macro_f1": None,
                 "macro_precision": None,
                 "macro_recall": None,
@@ -50,7 +50,7 @@ class EvaluationMetrics:
         """Calculates bootstrap confidence interval for accuracy."""
         if len(y_true) == 0 or len(y_pred) == 0:
             return {
-                "status": "PENDING_EXPERT_LABELS",
+                "status": "NOT_APPLICABLE",
                 "confidence_interval": None
             }
         
@@ -76,7 +76,7 @@ class EvaluationMetrics:
         """Calculates paired permutation test for difference in accuracy."""
         if len(y_true) == 0 or len(y_pred_a) == 0 or len(y_pred_b) == 0:
             return {
-                "status": "PENDING_EXPERT_LABELS",
+                "status": "NOT_APPLICABLE",
                 "statistic": None,
                 "p_value": None
             }

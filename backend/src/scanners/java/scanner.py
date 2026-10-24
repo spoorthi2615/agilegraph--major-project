@@ -9,14 +9,16 @@ JAVA_IMPORT_PATTERN = re.compile(
 
 # Capture class=api, algorithm string
 JAVA_ALGO_PATTERN = re.compile(
-    r'\b(Cipher|MessageDigest|KeyPairGenerator|KeyGenerator|Signature|Mac|KeyAgreement|KeyFactory)\b'
+    r'\b(Cipher|MessageDigest|KeyPairGenerator|KeyGenerator|Signature|Mac|KeyAgreement|KeyFactory|SecureRandom)\b'
     r'\.getInstance\s*\(\s*([^)]+)\s*\)'
 )
 
+# Direct constructor instantiation for SecureRandom
+JAVA_SECURE_RANDOM_NEW_PATTERN = re.compile(r'\bnew\s+SecureRandom\s*\(')
+
 # Variable declaration: <Type> <varName> = <class>.getInstance(...)
-# We track variable name → crypto class name
 JAVA_VARNAME_PATTERN = re.compile(
-    r'\b(Cipher|MessageDigest|KeyPairGenerator|KeyGenerator|Signature|Mac|KeyAgreement|KeyFactory)\b'
+    r'\b(Cipher|MessageDigest|KeyPairGenerator|KeyGenerator|Signature|Mac|KeyAgreement|KeyFactory|SecureRandom)\b'
     r'\s+(\w+)\s*='
 )
 
@@ -35,15 +37,14 @@ def scan_java_code(repository: str, filepath: str, code: str) -> List[FindingRec
     findings = []
     lines = code.split('\n')
 
-    # Map: variable_name → most-recent FindingRecord with operation==key_generation
-    # so we can do context-aware key-size association.
     keygen_vars: dict[str, FindingRecord] = {}
-
-    # Map: String variable name -> value
     string_vars: dict[str, str] = {}
 
     for i, line in enumerate(lines):
         line_num = i + 1
+        stripped = line.strip()
+        if stripped.startswith("//") or stripped.startswith("/*") or stripped.startswith("*"):
+            continue
 
         # Track string variables
         str_match = JAVA_STRING_VAR_PATTERN.search(line)
@@ -68,7 +69,23 @@ def scan_java_code(repository: str, filepath: str, code: str) -> List[FindingRec
         # ── variable declarations (track which var holds which keygen) ───────
         varname_match = JAVA_VARNAME_PATTERN.search(line)
 
-        # ── algorithm usages ─────────────────────────────────────────────────
+        # ── direct new SecureRandom() instantiation ──────────────────────────
+        if JAVA_SECURE_RANDOM_NEW_PATTERN.search(line):
+            findings.append(FindingRecord(
+                asset_type=AssetType.CRYPTO_USAGE,
+                repository=repository,
+                file=filepath,
+                line=line_num,
+                language=Language.JAVA,
+                api="new SecureRandom()",
+                algorithm="SecureRandom",
+                operation="random",
+                evidence=line.strip(),
+                confidence=0.9,
+                extra={}
+            ))
+
+        # ── algorithm usages via getInstance() ──────────────────────────────
         usage_match = JAVA_ALGO_PATTERN.search(line)
         if usage_match:
             api_class = usage_match.group(1)
@@ -81,12 +98,16 @@ def scan_java_code(repository: str, filepath: str, code: str) -> List[FindingRec
             else:
                 algorithm = "UNKNOWN_ALGORITHM"
 
-            operation = (
-                "encryption"     if "Cipher"          in api_class else
-                "hashing"        if "MessageDigest"   in api_class or "Mac" in api_class else
-                "key_generation" if "Key"             in api_class else
-                "signature"
-            )
+            if "Cipher" in api_class:
+                operation = "encryption"
+            elif "MessageDigest" in api_class or "Mac" in api_class:
+                operation = "hashing"
+            elif "Key" in api_class:
+                operation = "key_generation"
+            elif "SecureRandom" in api_class:
+                operation = "random"
+            else:
+                operation = "signature"
 
             finding = FindingRecord(
                 asset_type=AssetType.CRYPTO_USAGE,
@@ -103,27 +124,23 @@ def scan_java_code(repository: str, filepath: str, code: str) -> List[FindingRec
             )
             findings.append(finding)
 
-            # Track which variable holds this keygen finding
             if operation == "key_generation" and varname_match:
                 var = varname_match.group(2)
                 keygen_vars[var] = finding
 
-        # ── initialize(N) — associate with the *specific* variable ──────────
+        # ── initialize(N) — associate with the specific variable ────────────
         for init_match in JAVA_INIT_PATTERN.finditer(line):
             var = init_match.group(1)
             key_size = int(init_match.group(2))
 
             if var in keygen_vars:
-                # Only associate with that specific variable's finding
                 f = keygen_vars[var]
                 if not f.extra:
                     f.extra = {}
                 if "key_size" not in f.extra:
                     f.extra["key_size"] = key_size
                     f.evidence = f"{f.evidence} ... Key size {key_size}"
-            # If var is not a tracked keygen variable, we ignore the initialize() call.
-            # This prevents "pool.initialize(8)" from attaching to an unrelated RSA finding.
-            
+
         # ── jjwt enum algorithm usages ─────────────────────────────────────
         for enum_match in JAVA_JJWT_ENUM_PATTERN.finditer(line):
             algo = enum_match.group(1)

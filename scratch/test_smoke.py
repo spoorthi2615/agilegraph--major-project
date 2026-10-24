@@ -21,6 +21,11 @@ res = client.get("/api/v1/projects/smoke-test/risk")
 print(res.status_code, "assets:", len(res.json().get('assets', [])))
 assert res.status_code == 200
 
+print("3.5. Crypto Inventory")
+res = client.get("/api/v1/product/smoke-test/crypto-inventory")
+print(res.status_code, "items:", len(res.json().get('items', [])))
+assert res.status_code == 200
+
 assets = res.json().get('assets', [])
 if not assets:
     print("No assets found, passing anyway")

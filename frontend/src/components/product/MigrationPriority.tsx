@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useProject } from '../../context/ProjectContext';
 import { apiClient } from '../../api/client';
 import { List, AlertCircle, Info } from 'lucide-react';
 
 export default function MigrationPriority() {
-  const [projectId, setProjectId] = useState('demo-project');
+  const { projectId, setProjectId } = useProject();
   const [moscaStatus, setMoscaStatus] = useState('NOT_AT_RISK');
   const [assetsPriority, setAssetsPriority] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -28,7 +29,7 @@ export default function MigrationPriority() {
           try {
             const p = await apiClient.getMigrationPriority(projectId, asset.asset_id, moscaStatus);
             return { asset_id: asset.asset_id, ...p };
-          } catch (e) {
+          } catch {
             return { asset_id: asset.asset_id, priority: 'NOT_ASSESSED', rationale: 'Failed to fetch priority' };
           }
         })
@@ -54,8 +55,12 @@ export default function MigrationPriority() {
   };
 
   useEffect(() => {
-    fetchPriorities();
-  }, []);
+    if (projectId) {
+      fetchPriorities();
+    } else {
+      setAssetsPriority([]);
+    }
+  }, [projectId]);
 
   return (
     <div className="flex flex-col gap-6 w-full">

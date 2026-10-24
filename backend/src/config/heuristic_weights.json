@@ -1,0 +1,40 @@
+{
+  "weights": {
+    "crypto_weakness": {
+      "weight": 0.25,
+      "rationale": "Primary technical driver of post-quantum vulnerability; Shor's algorithm completely breaks classical asymmetric primitives (RSA, ECC, DSA) and Grover's algorithm halves symmetric security (AES-128)."
+    },
+    "asset_criticality": {
+      "weight": 0.15,
+      "rationale": "Systemic architectural importance; core cryptographic engines, authentication modules, and shared dependencies have high blast radius."
+    },
+    "data_sensitivity": {
+      "weight": 0.15,
+      "rationale": "Sensitivity classification of protected data; long-term secrets, root keys, and credentials face immediate Store Now Decrypt Later (SNDL) threat."
+    },
+    "internet_exposure": {
+      "weight": 0.15,
+      "rationale": "Attack surface exposure; internet-facing endpoints and public services are directly accessible to remote quantum-capable adversaries."
+    },
+    "migration_difficulty": {
+      "weight": 0.10,
+      "rationale": "Operational transition friction based on call site volume, certificate replacements, infrastructure modifications, and dependencies."
+    },
+    "library_centrality": {
+      "weight": 0.10,
+      "rationale": "Graph in-degree centrality; widely imported utility libraries require coordinated updates across multiple dependent modules."
+    },
+    "cve_risk": {
+      "weight": 0.10,
+      "rationale": "Known software vulnerabilities disclosed in the OSV database for third-party cryptographic dependencies."
+    }
+  },
+  "metadata": {
+    "sum": 1.0,
+    "scale": "0.0-1.0",
+    "supported_missing_evidence_policies": [
+      "RENORMALIZE",
+      "CONSERVATIVE"
+    ]
+  }
+}

@@ -1,85 +1,116 @@
 from enum import Enum
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict
-from datetime import datetime
+from datetime import datetime, timezone
 
-class RoadmapState(str, Enum):
-    NOT_ASSESSED = "NOT_ASSESSED"
-    ASSESSMENT_REQUIRED = "ASSESSMENT_REQUIRED"
-    MIGRATION_CANDIDATE = "MIGRATION_CANDIDATE"
-    HIGH_PRIORITY = "HIGH_PRIORITY"
-    PLANNED = "PLANNED"
-    IN_PROGRESS = "IN_PROGRESS"
-    MIGRATED = "MIGRATED"
-    VERIFIED = "VERIFIED"
+class MigrationLifecycleState(str, Enum):
+    DISCOVERED = "DISCOVERED"
+    EVALUATED = "EVALUATED"
+    IN_PLANNING = "IN_PLANNING"
+    IN_MIGRATION = "IN_MIGRATION"
+    VALIDATED = "VALIDATED"
+    DECOMMISSIONED = "DECOMMISSIONED"
 
-# Define the valid transition matrix
-VALID_TRANSITIONS: Dict[RoadmapState, List[RoadmapState]] = {
-    RoadmapState.NOT_ASSESSED: [
-        RoadmapState.ASSESSMENT_REQUIRED,
-        RoadmapState.MIGRATION_CANDIDATE
+# Backward-compatible alias
+RoadmapState = MigrationLifecycleState
+
+# Canonical state transitions per Synopsis Section 5.6
+VALID_TRANSITIONS: Dict[MigrationLifecycleState, List[MigrationLifecycleState]] = {
+    MigrationLifecycleState.DISCOVERED: [
+        MigrationLifecycleState.EVALUATED,
+        MigrationLifecycleState.DECOMMISSIONED,  # Dead/unused crypto removed immediately
     ],
-    RoadmapState.ASSESSMENT_REQUIRED: [
-        RoadmapState.MIGRATION_CANDIDATE,
-        RoadmapState.NOT_ASSESSED
+    MigrationLifecycleState.EVALUATED: [
+        MigrationLifecycleState.IN_PLANNING,
+        MigrationLifecycleState.DECOMMISSIONED,
+        MigrationLifecycleState.DISCOVERED,      # Rescan/reset
     ],
-    RoadmapState.MIGRATION_CANDIDATE: [
-        RoadmapState.HIGH_PRIORITY,
-        RoadmapState.PLANNED,
-        RoadmapState.ASSESSMENT_REQUIRED # Backward reassessment
+    MigrationLifecycleState.IN_PLANNING: [
+        MigrationLifecycleState.IN_MIGRATION,
+        MigrationLifecycleState.EVALUATED,       # Plan deferred/cancelled
     ],
-    RoadmapState.HIGH_PRIORITY: [
-        RoadmapState.PLANNED,
-        RoadmapState.MIGRATION_CANDIDATE # Downgrade priority
+    MigrationLifecycleState.IN_MIGRATION: [
+        MigrationLifecycleState.VALIDATED,
+        MigrationLifecycleState.IN_PLANNING,     # Rollback to planning
     ],
-    RoadmapState.PLANNED: [
-        RoadmapState.IN_PROGRESS,
-        RoadmapState.MIGRATION_CANDIDATE # Cancel plan
+    MigrationLifecycleState.VALIDATED: [
+        MigrationLifecycleState.DECOMMISSIONED,  # Legacy crypto retired
+        MigrationLifecycleState.IN_MIGRATION,    # Regression discovered post-validation
     ],
-    RoadmapState.IN_PROGRESS: [
-        RoadmapState.MIGRATED,
-        RoadmapState.PLANNED # Revert progress
-    ],
-    RoadmapState.MIGRATED: [
-        RoadmapState.VERIFIED,
-        RoadmapState.IN_PROGRESS # Revert to in-progress if migration was incomplete
-    ],
-    RoadmapState.VERIFIED: [
-        RoadmapState.MIGRATED # If verification fails later, fall back to migrated
+    MigrationLifecycleState.DECOMMISSIONED: [
+        MigrationLifecycleState.DISCOVERED,      # Resurrected or re-introduced
+        MigrationLifecycleState.IN_PLANNING,
     ]
 }
 
+LEGACY_STATE_MAPPING: Dict[str, MigrationLifecycleState] = {
+    "NOT_ASSESSED": MigrationLifecycleState.DISCOVERED,
+    "ASSESSMENT_REQUIRED": MigrationLifecycleState.DISCOVERED,
+    "MIGRATION_CANDIDATE": MigrationLifecycleState.EVALUATED,
+    "HIGH_PRIORITY": MigrationLifecycleState.EVALUATED,
+    "PLANNED": MigrationLifecycleState.IN_PLANNING,
+    "IN_PROGRESS": MigrationLifecycleState.IN_MIGRATION,
+    "MIGRATED": MigrationLifecycleState.VALIDATED,
+    "VERIFIED": MigrationLifecycleState.VALIDATED,
+}
+
+def parse_lifecycle_state(val: str | MigrationLifecycleState) -> MigrationLifecycleState:
+    if isinstance(val, MigrationLifecycleState):
+        return val
+    str_val = str(val).strip().upper()
+    if str_val in MigrationLifecycleState.__members__:
+        return MigrationLifecycleState[str_val]
+    if str_val in LEGACY_STATE_MAPPING:
+        return LEGACY_STATE_MAPPING[str_val]
+    raise ValueError(f"Unknown lifecycle state: {val}")
+
 class MigrationStateRecord(BaseModel):
     asset_id: str
-    current_state: RoadmapState = RoadmapState.NOT_ASSESSED
-    previous_state: Optional[RoadmapState] = None
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    current_state: MigrationLifecycleState = MigrationLifecycleState.DISCOVERED
+    previous_state: Optional[MigrationLifecycleState] = None
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
-def is_transition_allowed(current: RoadmapState, requested: RoadmapState) -> bool:
+def is_transition_allowed(
+    current: MigrationLifecycleState | str, 
+    requested: MigrationLifecycleState | str
+) -> bool:
     """Check if a transition from current state to requested state is valid."""
-    if current == requested:
-        return True # Same-state transitions are allowed (no-op)
+    try:
+        curr_enum = parse_lifecycle_state(current)
+        req_enum = parse_lifecycle_state(requested)
+    except ValueError:
+        return False
+        
+    if curr_enum == req_enum:
+        return True  # Same-state transitions are allowed (no-op)
     
-    return requested in VALID_TRANSITIONS.get(current, [])
+    return req_enum in VALID_TRANSITIONS.get(curr_enum, [])
 
-def transition_state(record: MigrationStateRecord, requested: RoadmapState) -> MigrationStateRecord:
+def transition_state(
+    record: MigrationStateRecord, 
+    requested: MigrationLifecycleState | str,
+    reason: Optional[str] = None,
+    operator: Optional[str] = None
+) -> MigrationStateRecord:
     """
     Attempt to transition the migration state record to the requested state.
     Raises ValueError if the transition is invalid.
     """
-    if not is_transition_allowed(record.current_state, requested):
+    req_enum = parse_lifecycle_state(requested)
+    
+    if not is_transition_allowed(record.current_state, req_enum):
         raise ValueError(
             f"Invalid state transition. "
-            f"Cannot transition from {record.current_state.value} to {requested.value}. "
+            f"Cannot transition from {record.current_state.value} to {req_enum.value}. "
             f"Allowed transitions: {[s.value for s in VALID_TRANSITIONS.get(record.current_state, [])]}"
         )
     
-    if record.current_state == requested:
+    if record.current_state == req_enum:
         return record
         
     return MigrationStateRecord(
         asset_id=record.asset_id,
-        current_state=requested,
+        current_state=req_enum,
         previous_state=record.current_state,
-        updated_at=datetime.utcnow()
+        updated_at=datetime.now(timezone.utc)
     )

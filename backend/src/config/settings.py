@@ -6,9 +6,9 @@ class Settings(BaseSettings):
     env: str = "development"
     debug: bool = True
     
-    neo4j_uri: Optional[str] = "bolt://localhost:7687"
-    neo4j_user: Optional[str] = "neo4j"
-    neo4j_password: Optional[str] = "secret"
+    database_url: str = "sqlite:///./agilegraph.db"
+    osv_api_url: str = "https://api.osv.dev/v1/query"
+    osv_timeout_seconds: float = 5.0
     
     model_config = {"env_file": ".env"}
 

@@ -1,18 +1,37 @@
-from pydantic import BaseModel, Field, model_validator
+import os
+import json
 import math
+from pydantic import BaseModel, Field, model_validator
+from typing import Dict, Any, Optional
+
+DEFAULT_CONFIG_PATH = os.path.realpath(
+    os.path.join(os.path.dirname(os.path.dirname(__file__)), "config", "heuristic_weights.json")
+)
+
+# Canonical default weights matching heuristic_weights.json (sum == 1.0)
+DEFAULT_WEIGHTS: Dict[str, float] = {
+    "crypto_weakness": 0.25,
+    "asset_criticality": 0.15,
+    "data_sensitivity": 0.15,
+    "internet_exposure": 0.15,
+    "migration_difficulty": 0.10,
+    "library_centrality": 0.10,
+    "cve_risk": 0.10,
+}
+
 
 class HeuristicWeights(BaseModel):
     """
-    INITIAL / CONFIGURABLE WEIGHTS
-    NOT EXPERT-VALIDATED
+    Seven-factor heuristic risk weights configuration for AgileGraph.
+    Weights sum strictly to 1.0. All values are within [0.0, 1.0].
     """
-    data_sensitivity: float = Field(..., ge=0.0, le=1.0)
-    asset_criticality: float = Field(..., ge=0.0, le=1.0)
-    internet_exposure: float = Field(..., ge=0.0, le=1.0)
-    crypto_weakness: float = Field(..., ge=0.0, le=1.0)
-    cve_risk: float = Field(..., ge=0.0, le=1.0)
-    library_centrality: float = Field(..., ge=0.0, le=1.0)
-    migration_difficulty: float = Field(..., ge=0.0, le=1.0)
+    crypto_weakness: float = Field(default=DEFAULT_WEIGHTS["crypto_weakness"], ge=0.0, le=1.0)
+    asset_criticality: float = Field(default=DEFAULT_WEIGHTS["asset_criticality"], ge=0.0, le=1.0)
+    data_sensitivity: float = Field(default=DEFAULT_WEIGHTS["data_sensitivity"], ge=0.0, le=1.0)
+    internet_exposure: float = Field(default=DEFAULT_WEIGHTS["internet_exposure"], ge=0.0, le=1.0)
+    migration_difficulty: float = Field(default=DEFAULT_WEIGHTS["migration_difficulty"], ge=0.0, le=1.0)
+    library_centrality: float = Field(default=DEFAULT_WEIGHTS["library_centrality"], ge=0.0, le=1.0)
+    cve_risk: float = Field(default=DEFAULT_WEIGHTS["cve_risk"], ge=0.0, le=1.0)
 
     @model_validator(mode='after')
     def validate_sum(self) -> 'HeuristicWeights':
@@ -29,24 +48,30 @@ class HeuristicWeights(BaseModel):
             raise ValueError(f"Weights must sum to 1.0, got {total}")
         return self
 
-def perturb_weights(baseline: HeuristicWeights, perturbation: float = 0.10) -> HeuristicWeights:
+    @classmethod
+    def from_config(cls, config_path: Optional[str] = None) -> 'HeuristicWeights':
+        path = config_path or DEFAULT_CONFIG_PATH
+        if os.path.exists(path):
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            weights_data = data.get("weights", {})
+            parsed = {}
+            for k, v in weights_data.items():
+                parsed[k] = v.get("weight") if isinstance(v, dict) else v
+            return cls(**parsed)
+        return cls()
+
+
+def perturb_weights(baseline: HeuristicWeights, target_key: str = "crypto_weakness", perturbation: float = 0.10) -> HeuristicWeights:
     """
-    Sensitivity analysis interface for the eventual ±10-20% study.
-    Returns a new normalized set of weights with the specified perturbation
-    applied to the crypto_weakness (for instance), renormalizing the rest.
+    Perturbs a single target factor weight by delta and proportionally renormalizes others.
     """
-    # For a simple deterministic perturbation interface:
-    # Perturb the first factor up by `perturbation`, distribute remaining to others.
-    # The actual scientific permutation strategy will be implemented later.
     raw_dict = baseline.model_dump()
     num_factors = len(raw_dict)
     
-    # We'll just shift one arbitrarily to prove the interface
-    target_key = "crypto_weakness"
-    new_val = min(raw_dict[target_key] + perturbation, 1.0)
+    new_val = min(max(raw_dict[target_key] + perturbation, 0.0), 1.0)
     diff = new_val - raw_dict[target_key]
     
-    # Adjust others equally
     adjustment_per_other = diff / (num_factors - 1)
     
     new_dict = {}
@@ -56,7 +81,7 @@ def perturb_weights(baseline: HeuristicWeights, perturbation: float = 0.10) -> H
         else:
             new_dict[k] = max(v - adjustment_per_other, 0.0)
             
-    # Normalize mathematically to ensure sum == 1.0
+    # Proportional simplex renormalization
     new_total = sum(new_dict.values())
     for k in new_dict:
         new_dict[k] = new_dict[k] / new_total

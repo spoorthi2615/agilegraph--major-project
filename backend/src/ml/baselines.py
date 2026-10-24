@@ -48,7 +48,7 @@ class RuleBasedBaseline:
                     cat = n_data.get("category")
                     
                     if cat == "crypto_usage":
-                        alg = n_data.get("properties", {}).get("algorithm", "").lower()
+                        alg = (n_data.get("algorithm") or n_data.get("properties", {}).get("algorithm") or "").lower()
                         
                         # Apply rules
                         if any(k in alg for k in high_risk_algos):
@@ -79,13 +79,3 @@ class RuleBasedBaseline:
                     
         return BaselineOutput(scores=scores, audit_trail=audit)
 
-class CBOMkitBaseline:
-    """Comparison interface for CBOMkit."""
-    def __init__(self):
-        self.available = False # CBOMkit is currently unavailable in environment
-
-    def evaluate(self, repo_path: str) -> BaselineOutput:
-        if not self.available:
-            return BaselineOutput(scores={}, audit_trail={"status": "UNAVAILABLE"})
-        # Implement execution when available
-        return BaselineOutput(scores={}, audit_trail={"status": "EXECUTED"})

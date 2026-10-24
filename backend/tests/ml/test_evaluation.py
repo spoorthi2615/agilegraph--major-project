@@ -16,18 +16,18 @@ def test_classification_metrics_computed():
 
 def test_classification_metrics_pending():
     metrics = EvaluationMetrics.calculate_classification_metrics(np.array([]), np.array([]))
-    assert metrics["status"] == "PENDING_EXPERT_LABELS"
+    assert metrics["status"] == "NOT_APPLICABLE"
     assert metrics["macro_f1"] is None
     assert metrics["accuracy"] is None
 
 def test_bootstrap_infrastructure_pending():
     ci = EvaluationMetrics.bootstrap_ci(np.array([]), np.array([]))
-    assert ci["status"] == "PENDING_EXPERT_LABELS"
+    assert ci["status"] == "NOT_APPLICABLE"
     assert ci["confidence_interval"] is None
 
 def test_permutation_infrastructure_pending():
     pval = EvaluationMetrics.paired_permutation_test(np.array([]), np.array([]), np.array([]))
-    assert pval["status"] == "PENDING_EXPERT_LABELS"
+    assert pval["status"] == "NOT_APPLICABLE"
     assert pval["p_value"] is None
     assert pval["statistic"] is None
 

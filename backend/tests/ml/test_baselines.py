@@ -1,5 +1,5 @@
 import pytest
-from src.ml.baselines import HeuristicBaseline, RuleBasedBaseline, CBOMkitBaseline, RuleConfig
+from src.ml.baselines import HeuristicBaseline, RuleBasedBaseline, RuleConfig
 from src.graph.graph import AgileGraph
 
 def test_heuristic_baseline_determinism():
@@ -28,9 +28,3 @@ def test_rule_based_baseline():
     assert res.scores["file1"] == 0.9
     assert res.audit_trail["config_version"] == "1.0"
     assert "HIGH_RISK_ALGO(md5)" in res.audit_trail["hits"]["file1"]
-
-def test_cbomkit_baseline():
-    baseline = CBOMkitBaseline()
-    res = baseline.evaluate("/tmp/repo")
-    assert len(res.scores) == 0
-    assert res.audit_trail["status"] == "UNAVAILABLE"

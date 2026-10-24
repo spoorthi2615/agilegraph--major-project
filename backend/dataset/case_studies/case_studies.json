@@ -1,0 +1,186 @@
+[
+  {
+    "case_id": "CASE-01",
+    "title": "Shor-Vulnerable RSA Key Generation in Public Service",
+    "repository": "python_cryptography",
+    "asset_id": "python_cryptography:src/cryptography/hazmat/primitives/asymmetric/rsa.py",
+    "archetype": "High Quantum Vulnerability + External Exposure",
+    "narrative": "Direct RSA asymmetric private key generation. Under Shor's algorithm on a CRQC, integer factorization is solved in polynomial time O((log N)^3). Combined with exposure to calling endpoints, this represents critical migration urgency.",
+    "algorithm": "rsa",
+    "operation": "key_generation",
+    "key_size": 2048,
+    "exposure_posture": "INTERNET_FACING",
+    "mosca_planning": "AT_RISK (x=36, y=24, z=36 -> U=1.67)",
+    "base_risk": 0.88,
+    "factors": {
+      "crypto_weakness": {
+        "value": 0.9,
+        "rationale": "RSA-2048 Shor-vulnerable"
+      },
+      "data_sensitivity": {
+        "value": 0.8,
+        "rationale": "Private key material"
+      },
+      "asset_criticality": {
+        "value": 0.75,
+        "rationale": "Security core implementation"
+      },
+      "internet_exposure": {
+        "value": 1.0,
+        "rationale": "Binds external interface"
+      },
+      "cve_risk": {
+        "value": 0.1,
+        "rationale": "Clean dependency baseline"
+      },
+      "library_centrality": {
+        "value": 0.45,
+        "rationale": "Imported across modules"
+      },
+      "migration_difficulty": {
+        "value": 0.7,
+        "rationale": "Stateful key exchange replacement"
+      }
+    },
+    "priority": "HIGH",
+    "triage_rationale": "High Priority: Critical preliminary risk (0.88) combined with AT_RISK planning urgency and INTERNET_FACING exposure."
+  },
+  {
+    "case_id": "CASE-02",
+    "title": "Legacy Broken MD5 Checksum Construction",
+    "repository": "python_itsdangerous",
+    "asset_id": "python_itsdangerous:src/itsdangerous/signer.py",
+    "archetype": "Classically Broken Hash Function",
+    "narrative": "MD5 cryptographic hash utilized in legacy message signing. MD5 is classically broken via practical collision attacks (Wang et al.) and disallowed under NIST SP 800-131A. Must be deprecated regardless of quantum timeline.",
+    "algorithm": "md5",
+    "operation": "hashing",
+    "key_size": null,
+    "exposure_posture": "INTERNAL",
+    "mosca_planning": "URGENT (x=12, y=12, z=30 -> U=0.80)",
+    "base_risk": 0.79,
+    "factors": {
+      "crypto_weakness": {
+        "value": 1.0,
+        "rationale": "MD5 classically broken collision resistance"
+      },
+      "data_sensitivity": {
+        "value": 0.6,
+        "rationale": "Session token signature"
+      },
+      "asset_criticality": {
+        "value": 0.75,
+        "rationale": "Token serialization core"
+      },
+      "internet_exposure": {
+        "value": 0.2,
+        "rationale": "Internal helper module"
+      },
+      "cve_risk": {
+        "value": 0.0,
+        "rationale": "No published CVEs"
+      },
+      "library_centrality": {
+        "value": 0.6,
+        "rationale": "Directly called by API handlers"
+      },
+      "migration_difficulty": {
+        "value": 0.3,
+        "rationale": "Drop-in replacement with SHA-256"
+      }
+    },
+    "priority": "HIGH",
+    "triage_rationale": "High Priority: Preliminary risk is critical (0.79) due to broken hash primitive (MD5)."
+  },
+  {
+    "case_id": "CASE-03",
+    "title": "High-Centrality Shared Cryptographic Utility Library",
+    "repository": "go_crypto",
+    "asset_id": "go_crypto:ssh/common.go",
+    "archetype": "High Centrality Architectural Dependency",
+    "narrative": "Shared SSH transport negotiation module with in-degree >= 12 across the repository. High centrality amplifies blast radius; migration requires coordinated protocol upgrades.",
+    "algorithm": "ecdsa",
+    "operation": "signature",
+    "key_size": 256,
+    "exposure_posture": "INTERNET_FACING",
+    "mosca_planning": "URGENT (x=24, y=12, z=40 -> U=0.90)",
+    "base_risk": 0.81,
+    "factors": {
+      "crypto_weakness": {
+        "value": 0.9,
+        "rationale": "ECDSA P-256 Shor-vulnerable"
+      },
+      "data_sensitivity": {
+        "value": 0.75,
+        "rationale": "SSH transport credentials"
+      },
+      "asset_criticality": {
+        "value": 0.75,
+        "rationale": "Security transport core"
+      },
+      "internet_exposure": {
+        "value": 1.0,
+        "rationale": "Network listener exposed"
+      },
+      "cve_risk": {
+        "value": 0.2,
+        "rationale": "Low dependency risk"
+      },
+      "library_centrality": {
+        "value": 0.85,
+        "rationale": "High in-degree architectural hub"
+      },
+      "migration_difficulty": {
+        "value": 0.8,
+        "rationale": "Protocol-level wire format changes"
+      }
+    },
+    "priority": "HIGH",
+    "triage_rationale": "High Priority: High preliminary risk (0.81), high centrality (0.85), and external exposure."
+  },
+  {
+    "case_id": "CASE-04",
+    "title": "Quantum-Resilient Modern Symmetric Cipher (AES-256-GCM)",
+    "repository": "java_jjwt",
+    "asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/AesGcmKeyAlgorithm.java",
+    "archetype": "Quantum-Resilient Symmetric Encryption",
+    "narrative": "Modern AES-256 authenticated encryption in Galois/Counter Mode. Under Grover's algorithm, effective key search complexity is 2^128, which strictly satisfies NIST/CNSA 2.0 post-quantum requirements.",
+    "algorithm": "aes",
+    "operation": "encryption",
+    "key_size": 256,
+    "exposure_posture": "INTERNAL",
+    "mosca_planning": "SAFE (x=12, y=6, z=60 -> U=0.30)",
+    "base_risk": 0.32,
+    "factors": {
+      "crypto_weakness": {
+        "value": 0.1,
+        "rationale": "AES-256 resilient to Grover (128-bit quantum margin)"
+      },
+      "data_sensitivity": {
+        "value": 0.5,
+        "rationale": "Encrypted payload data"
+      },
+      "asset_criticality": {
+        "value": 0.5,
+        "rationale": "Shared encryption utility"
+      },
+      "internet_exposure": {
+        "value": 0.2,
+        "rationale": "Internal helper library"
+      },
+      "cve_risk": {
+        "value": 0.0,
+        "rationale": "Zero CVE vulnerabilities"
+      },
+      "library_centrality": {
+        "value": 0.4,
+        "rationale": "Standard module usage"
+      },
+      "migration_difficulty": {
+        "value": 0.2,
+        "rationale": "Compliant modern primitive"
+      }
+    },
+    "priority": "LOW",
+    "triage_rationale": "Low Priority: Low base risk (0.32) and SAFE planning horizon (U=0.30)."
+  }
+]

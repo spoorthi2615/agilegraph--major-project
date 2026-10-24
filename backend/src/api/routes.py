@@ -1,4 +1,6 @@
 from fastapi import APIRouter, HTTPException, BackgroundTasks
+from fastapi.responses import PlainTextResponse
+import tempfile
 from pydantic import BaseModel
 import os
 import json
@@ -18,12 +20,28 @@ from src.scanners.java.scanner import scan_java_code
 from src.scanners.go.scanner import scan_go_code
 from src.scanners.dependencies.scanner import scan_manifest
 from src.pipeline.runner import run_pipeline
+from src.core.storage import default_storage, sanitize_project_id
 
 router = APIRouter()
 
-# Simple in-memory cache for the dashboard to avoid DB for now
-# Maps project_id -> {"graph": nx.MultiDiGraph, "scores": Dict}
+# In-memory working cache backed by persistent file storage
 project_cache = {}
+
+def get_project_data(project_id: str):
+    """
+    Retrieves project scan data from in-memory cache or restores from disk storage.
+    """
+    if project_id in project_cache:
+        return project_cache[project_id]
+        
+    try:
+        loaded = default_storage.load_scan_result(project_id)
+        if loaded:
+            project_cache[project_id] = loaded
+            return loaded
+    except ValueError:
+        pass
+    return None
 
 @router.get("/status")
 def get_status():
@@ -55,8 +73,12 @@ def trigger_scan(request: ScanRequest):
     req_root = os.path.realpath(repo_path)
     
     try:
+        # Validate project_id for safety
+        sanitize_project_id(request.project_id)
+        
         result = run_pipeline(req_root, request.project_id, "RENORMALIZE", allowed_root=allowed_root)
         project_cache[request.project_id] = result
+        default_storage.save_scan_result(request.project_id, result)
         prov = result["provenance"]
         
         return ScanResponse(
@@ -77,10 +99,11 @@ def trigger_scan(request: ScanRequest):
 
 @router.get("/projects/{project_id}/graph", response_model=GraphResponse)
 def get_graph(project_id: str):
-    if project_id not in project_cache:
+    data_dict = get_project_data(project_id)
+    if not data_dict:
         raise HTTPException(status_code=404, detail="Project not found or not scanned.")
     
-    g = project_cache[project_id]["graph"]
+    g = data_dict["graph"]
     data = nx.node_link_data(g)
     
     return GraphResponse(
@@ -91,16 +114,52 @@ def get_graph(project_id: str):
 
 @router.get("/projects/{project_id}/risk", response_model=RiskResponse)
 def get_risk(project_id: str):
-    if project_id not in project_cache:
+    data_dict = get_project_data(project_id)
+    if not data_dict:
         raise HTTPException(status_code=404, detail="Project not found or not scanned.")
     
-    scores = project_cache[project_id]["scores"]
+    scores = data_dict["scores"]
     
     risk_scores = [RiskScore(**s) for s in scores]
     
     return RiskResponse(
         project_id=project_id,
         assets=risk_scores,
-        ml_status="BLOCKED",
-        expert_validation_status="BLOCKED"
+        ml_status="ARCHITECTURAL_PROTOTYPE",
+        expert_validation_status="NOT_APPLICABLE"
     )
+
+@router.get("/projects/{project_id}/report/json")
+def export_report_json(project_id: str):
+    data_dict = get_project_data(project_id)
+    if not data_dict:
+        raise HTTPException(status_code=404, detail="Project not found or not scanned.")
+    from src.pipeline.reporter import build_export_payload
+    return build_export_payload(project_id, data_dict)
+
+@router.get("/projects/{project_id}/report/markdown", response_class=PlainTextResponse)
+def export_report_markdown(project_id: str):
+    data_dict = get_project_data(project_id)
+    if not data_dict:
+        raise HTTPException(status_code=404, detail="Project not found or not scanned.")
+    
+    from src.pipeline.reporter import generate_markdown_report
+    with tempfile.TemporaryDirectory() as td:
+        json_path = os.path.join(td, "scan.json")
+        md_path = os.path.join(td, "report.md")
+        g_data = nx.node_link_data(data_dict["graph"])
+        payload = {
+            "project_id": project_id,
+            "analysis_type": "HEURISTIC",
+            "ml_status": "ARCHITECTURAL_PROTOTYPE",
+            "expert_validation_status": "NOT_APPLICABLE",
+            "missing_data_policy": data_dict.get("missing_data_policy", "RENORMALIZE"),
+            "provenance": data_dict.get("provenance", {}),
+            "assets": data_dict.get("scores", []),
+            "graph": g_data
+        }
+        with open(json_path, "w", encoding="utf-8") as f:
+            json.dump(payload, f)
+        generate_markdown_report(json_path, md_path)
+        with open(md_path, "r", encoding="utf-8") as f:
+            return f.read()

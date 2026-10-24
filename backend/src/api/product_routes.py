@@ -2,15 +2,34 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import List, Dict, Optional, Any
 
-from src.api.routes import project_cache
+from src.api.routes import get_project_data
+from src.core.storage import default_storage, sanitize_project_id
 from src.risk.mosca import calculate_mosca, MoscaResult, MoscaStatus
 from src.risk.migration_priority import calculate_migration_priority, MigrationPriorityResult
 from src.models.migration_state import RoadmapState, MigrationStateRecord, transition_state
 
 router = APIRouter(prefix="/product", tags=["product"])
 
-# In-memory store for roadmap state
+# In-memory store backed by file storage
 roadmap_state_store: Dict[str, Dict[str, MigrationStateRecord]] = {}
+
+def get_project_roadmap(project_id: str) -> Dict[str, MigrationStateRecord]:
+    """
+    Retrieves roadmap records for project from memory or restores from disk.
+    """
+    if project_id not in roadmap_state_store:
+        try:
+            persisted = default_storage.load_roadmap_state(project_id)
+            records = {}
+            for asset_id, data in persisted.items():
+                if isinstance(data, dict):
+                    records[asset_id] = MigrationStateRecord(**data)
+                elif isinstance(data, MigrationStateRecord):
+                    records[asset_id] = data
+            roadmap_state_store[project_id] = records
+        except Exception:
+            roadmap_state_store[project_id] = {}
+    return roadmap_state_store[project_id]
 
 class MoscaRequest(BaseModel):
     x: Optional[int] = None
@@ -22,10 +41,10 @@ class RoadmapTransitionRequest(BaseModel):
 
 @router.get("/{project_id}/pqc-readiness")
 def get_pqc_readiness(project_id: str):
-    if project_id not in project_cache:
+    result = get_project_data(project_id)
+    if not result:
         raise HTTPException(status_code=404, detail="Project not found or not scanned.")
     
-    result = project_cache[project_id]
     scores = result["scores"]
     g = result["graph"]
     
@@ -61,12 +80,18 @@ def evaluate_mosca(req: MoscaRequest):
     return calculate_mosca(req.x, req.y, req.z)
 
 @router.get("/{project_id}/assets/{asset_id:path}/priority", response_model=MigrationPriorityResult)
-def get_migration_priority(project_id: str, asset_id: str, mosca_status: str = "NOT_AT_RISK"):
-    if project_id not in project_cache:
+def get_migration_priority(
+    project_id: str, 
+    asset_id: str, 
+    mosca_status: str = "SAFE",
+    exposure_posture: Optional[str] = None
+):
+    result = get_project_data(project_id)
+    if not result:
         raise HTTPException(status_code=404, detail="Project not found or not scanned.")
     
-    scores = project_cache[project_id]["scores"]
-    g = project_cache[project_id]["graph"]
+    scores = result["scores"]
+    g = result["graph"]
     
     if asset_id not in g:
         raise HTTPException(status_code=404, detail="Asset not found.")
@@ -82,7 +107,9 @@ def get_migration_priority(project_id: str, asset_id: str, mosca_status: str = "
         factors = asset_score.get("factors", {})
         migration_difficulty = factors.get("migration_difficulty", {}).get("value")
         
-    algorithm = g.nodes[asset_id].get("algorithm") if g.nodes[asset_id].get("type") == "CryptoUsageNode" else None
+    node_data = g.nodes[asset_id]
+    algorithm = node_data.get("algorithm") if node_data.get("type") == "CryptoUsageNode" or node_data.get("category") == "crypto_usage" else None
+    effective_exposure = exposure_posture or node_data.get("network_exposure")
     
     try:
         mosca_enum = MoscaStatus(mosca_status)
@@ -94,47 +121,112 @@ def get_migration_priority(project_id: str, asset_id: str, mosca_status: str = "
         base_risk=base_risk,
         mosca_status=mosca_enum,
         missing_factors=missing_factors,
+        exposure_posture=effective_exposure,
         migration_difficulty=migration_difficulty,
         algorithm=algorithm
     )
 
 @router.get("/{project_id}/assets/{asset_id:path}/roadmap", response_model=MigrationStateRecord)
 def get_roadmap_state(project_id: str, asset_id: str):
-    if project_id not in project_cache:
+    result = get_project_data(project_id)
+    if not result:
         raise HTTPException(status_code=404, detail="Project not found or not scanned.")
         
-    g = project_cache[project_id]["graph"]
+    g = result["graph"]
     if asset_id not in g:
         raise HTTPException(status_code=404, detail="Asset not found.")
         
-    if project_id not in roadmap_state_store:
-        roadmap_state_store[project_id] = {}
+    project_roadmap = get_project_roadmap(project_id)
+    if asset_id not in project_roadmap:
+        project_roadmap[asset_id] = MigrationStateRecord(asset_id=asset_id)
+        default_storage.save_roadmap_state(project_id, project_roadmap)
         
-    if asset_id not in roadmap_state_store[project_id]:
-        roadmap_state_store[project_id][asset_id] = MigrationStateRecord(asset_id=asset_id)
-        
-    return roadmap_state_store[project_id][asset_id]
+    return project_roadmap[asset_id]
 
 @router.post("/{project_id}/assets/{asset_id:path}/roadmap", response_model=MigrationStateRecord)
 def transition_roadmap_state(project_id: str, asset_id: str, req: RoadmapTransitionRequest):
-    if project_id not in project_cache:
+    result = get_project_data(project_id)
+    if not result:
         raise HTTPException(status_code=404, detail="Project not found or not scanned.")
         
-    g = project_cache[project_id]["graph"]
+    g = result["graph"]
     if asset_id not in g:
         raise HTTPException(status_code=404, detail="Asset not found.")
         
-    if project_id not in roadmap_state_store:
-        roadmap_state_store[project_id] = {}
+    project_roadmap = get_project_roadmap(project_id)
+    if asset_id not in project_roadmap:
+        project_roadmap[asset_id] = MigrationStateRecord(asset_id=asset_id)
         
-    if asset_id not in roadmap_state_store[project_id]:
-        roadmap_state_store[project_id][asset_id] = MigrationStateRecord(asset_id=asset_id)
-        
-    current_record = roadmap_state_store[project_id][asset_id]
+    current_record = project_roadmap[asset_id]
     
     try:
         new_record = transition_state(current_record, req.requested_state)
-        roadmap_state_store[project_id][asset_id] = new_record
+        project_roadmap[asset_id] = new_record
+        default_storage.save_roadmap_state(project_id, project_roadmap)
         return new_record
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+@router.get("/{project_id}/crypto-inventory")
+def get_crypto_inventory(project_id: str):
+    result = get_project_data(project_id)
+    if not result:
+        raise HTTPException(status_code=404, detail="Project not found or not scanned.")
+    
+    g = result["graph"]
+    scores = result["scores"]
+    
+    # Map score by asset_id
+    score_map = {s["asset_id"]: s for s in scores}
+    
+    items = []
+    languages = set()
+    algorithms = set()
+    libraries = set()
+    
+    for node, data in g.nodes(data=True):
+        if data.get("category") == "crypto_usage" or data.get("type") == "CryptoUsageNode":
+            asset_id = str(node)
+            props = data.get("properties", data)
+            
+            lang = props.get("language")
+            alg = props.get("algorithm")
+            op = props.get("operation")
+            lib = props.get("library")
+            source = f"{props.get('file', 'Unknown')}:{props.get('line', '?')}" if props.get("file") else "Unknown"
+            
+            if lang: languages.add(lang)
+            if alg and alg != "unknown": algorithms.add(alg)
+            if lib: libraries.add(lib)
+            
+            asset_score = score_map.get(asset_id)
+            risk = asset_score["score"] if asset_score else None
+            evidence = "Missing data" if asset_score and asset_score.get("score") is None else "Assessed"
+            
+            items.append({
+                "asset_id": asset_id,
+                "language": lang,
+                "algorithm": alg,
+                "operation": op,
+                "library": lib,
+                "source": source,
+                "evidence_status": evidence,
+                "risk": risk
+            })
+            
+    return {
+        "project_id": project_id,
+        "summary": {
+            "total_assets": len(g.nodes),
+            "crypto_usages": len(items),
+            "languages": len(languages),
+            "algorithms": len(algorithms),
+            "libraries": len(libraries)
+        },
+        "items": items,
+        "coverage": {
+            "certificates": "NOT_COLLECTED",
+            "endpoints": "NOT_COLLECTED",
+            "sensitive_data": "NOT_COLLECTED"
+        }
+    }

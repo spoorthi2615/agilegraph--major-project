@@ -9,12 +9,45 @@ def test_go_scanner_rsa():
     assert usage.algorithm == "rsa"
     assert usage.operation == "key_generation"
 
+def test_go_scanner_rsa_sign_and_encrypt():
+    code = (
+        'import "crypto/rsa"\n'
+        'sig, err := rsa.SignPSS(rand.Reader, priv, crypto.SHA256, hashed, nil)\n'
+        'ct, err2 := rsa.EncryptOAEP(sha256.New(), rand.Reader, &priv.PublicKey, msg, label)'
+    )
+    findings = scan_go_code("repo", "main.go", code)
+    usages = [f for f in findings if f.asset_type == AssetType.CRYPTO_USAGE]
+    assert len(usages) == 2
+    assert usages[0].operation == "signature"
+    assert usages[1].operation == "encryption"
+
 def test_go_scanner_ecdsa():
     code = 'import "crypto/ecdsa"\nkey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)'
     findings = scan_go_code("repo", "main.go", code)
     assert len(findings) == 2
     usage = [f for f in findings if f.asset_type == AssetType.CRYPTO_USAGE][0]
     assert usage.algorithm == "ecdsa"
+
+def test_go_scanner_ed25519_and_elliptic():
+    code = (
+        'import "crypto/ed25519"\n'
+        'import "crypto/elliptic"\n'
+        'pub, priv, err := ed25519.GenerateKey(rand.Reader)\n'
+        'curve := elliptic.P256()'
+    )
+    findings = scan_go_code("repo", "main.go", code)
+    usages = [f for f in findings if f.asset_type == AssetType.CRYPTO_USAGE]
+    assert len(usages) == 2
+    assert any(u.algorithm == "ed25519" and u.operation == "key_generation" for u in usages)
+    assert any(u.algorithm == "elliptic" and u.operation == "elliptic_curve" for u in usages)
+
+def test_go_scanner_tls():
+    code = 'import "crypto/tls"\ncfg := &tls.Config{MinVersion: tls.VersionTLS13}'
+    findings = scan_go_code("repo", "main.go", code)
+    usages = [f for f in findings if f.asset_type == AssetType.CRYPTO_USAGE]
+    assert len(usages) >= 1
+    assert usages[0].algorithm == "tls"
+    assert usages[0].operation == "tls_config"
 
 def test_go_scanner_aes():
     code = 'import "crypto/aes"\nblock, err := aes.NewCipher(key)'

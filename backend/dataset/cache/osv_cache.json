@@ -1,0 +1,1414 @@
+{
+  "Go:golang.org/x/crypto:0.0.0-20210921155107-089bfa567519": {
+    "status": "success",
+    "cves": [
+      "CVE-2026-39828",
+      "CVE-2023-48795",
+      "CVE-2026-42508",
+      "CVE-2026-39835",
+      "CVE-2026-39831",
+      "CVE-2022-27191",
+      "CVE-2026-46598",
+      "CVE-2026-39832",
+      "CVE-2025-47914",
+      "CVE-2021-43565",
+      "CVE-2025-22869",
+      "CVE-2025-58181",
+      "CVE-2026-39833",
+      "CVE-2026-46597",
+      "CVE-2026-39827",
+      "CVE-2026-39834",
+      "CVE-2024-45337",
+      "CVE-2026-39830",
+      "CVE-2026-39829",
+      "CVE-2026-46595",
+      "CVE-2022-30636",
+      "CVE-2025-47913",
+      "GO-2026-5932",
+      "CVE-2026-56854",
+      "CVE-2026-78662",
+      "CVE-2026-56855"
+    ],
+    "count": 26,
+    "package": "golang.org/x/crypto",
+    "version": "0.0.0-20210921155107-089bfa567519",
+    "enrichment_date": "2026-10-24T07:13:15.632882+00:00"
+  },
+  "Go:github.com/google/uuid:1.3.0": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "github.com/google/uuid",
+    "version": "1.3.0",
+    "enrichment_date": "2026-10-24T07:13:17.047609+00:00"
+  },
+  "Go:example.com/other:1.0.0": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "example.com/other",
+    "version": "1.0.0",
+    "enrichment_date": "2026-10-24T07:13:18.066290+00:00"
+  },
+  "Maven:org.bouncycastle:bcprov-jdk15on:1.68": {
+    "status": "success",
+    "cves": [
+      "CVE-2024-34447",
+      "CVE-2024-29857",
+      "CVE-2023-33201",
+      "CVE-2024-30171",
+      "CVE-2023-33202"
+    ],
+    "count": 5,
+    "package": "org.bouncycastle:bcprov-jdk15on",
+    "version": "1.68",
+    "enrichment_date": "2026-10-24T07:13:19.008190+00:00"
+  },
+  "PyPI:cryptography:3.4.7": {
+    "status": "success",
+    "cves": [
+      "CVE-2023-50782",
+      "GHSA-537c-gmf6-5ccf",
+      "GHSA-5cpq-8wj7-hf2v",
+      "CVE-2024-0727",
+      "CVE-2023-49083",
+      "GHSA-jm77-qphf-c4w8",
+      "CVE-2026-34073",
+      "CVE-2026-26007",
+      "GHSA-v8gr-m533-ghj9",
+      "CVE-2023-23931",
+      "CVE-2023-0286",
+      "CVE-2026-69249",
+      "CVE-2026-69248"
+    ],
+    "count": 13,
+    "package": "cryptography",
+    "version": "3.4.7",
+    "enrichment_date": "2026-10-24T07:13:20.134217+00:00"
+  },
+  "PyPI:requests:2.0": {
+    "status": "success",
+    "cves": [
+      "CVE-2014-1830",
+      "CVE-2024-47081",
+      "CVE-2024-35195",
+      "CVE-2014-1829",
+      "CVE-2026-25645",
+      "CVE-2018-18074",
+      "CVE-2015-2296"
+    ],
+    "count": 7,
+    "package": "requests",
+    "version": "2.0",
+    "enrichment_date": "2026-10-24T07:13:21.502376+00:00"
+  },
+  "PyPI:python:3.9": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "python",
+    "version": "3.9",
+    "enrichment_date": "2026-10-24T07:13:23.049776+00:00"
+  },
+  "PyPI:cryptography:3.4": {
+    "status": "success",
+    "cves": [
+      "CVE-2023-50782",
+      "GHSA-537c-gmf6-5ccf",
+      "GHSA-5cpq-8wj7-hf2v",
+      "CVE-2024-0727",
+      "CVE-2023-49083",
+      "GHSA-jm77-qphf-c4w8",
+      "CVE-2026-34073",
+      "CVE-2026-26007",
+      "GHSA-v8gr-m533-ghj9",
+      "CVE-2023-23931",
+      "CVE-2023-0286",
+      "CVE-2024-26130",
+      "CVE-2026-69249",
+      "CVE-2026-69248"
+    ],
+    "count": 14,
+    "package": "cryptography",
+    "version": "3.4",
+    "enrichment_date": "2026-10-24T07:13:24.070822+00:00"
+  },
+  "PyPI:hashlib:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "hashlib",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:14:28.672830+00:00"
+  },
+  "PyPI:hmac:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "hmac",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:14:30.059208+00:00"
+  },
+  "PyPI:-e:.[tests]": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "-e",
+    "version": ".[tests]",
+    "enrichment_date": "2026-10-24T07:14:31.546712+00:00"
+  },
+  "PyPI:cryptography:any": {
+    "status": "success",
+    "cves": [
+      "GHSA-39hc-v87j-747x",
+      "CVE-2023-50782",
+      "GHSA-537c-gmf6-5ccf",
+      "GHSA-5cpq-8wj7-hf2v",
+      "CVE-2024-26130",
+      "CVE-2024-12797",
+      "CVE-2024-0727",
+      "CVE-2023-38325",
+      "CVE-2018-10903",
+      "CVE-2026-69247",
+      "GHSA-h4gh-qq45-vh27",
+      "CVE-2020-25659",
+      "CVE-2023-49083",
+      "GHSA-jm77-qphf-c4w8",
+      "CVE-2026-69249",
+      "CVE-2026-69248",
+      "CVE-2026-34073",
+      "CVE-2026-39892",
+      "CVE-2016-9243",
+      "CVE-2026-26007",
+      "CVE-2020-36242",
+      "GHSA-v8gr-m533-ghj9",
+      "CVE-2023-23931",
+      "CVE-2023-0286"
+    ],
+    "count": 24,
+    "package": "cryptography",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:14:35.207383+00:00"
+  },
+  "Go:crypto/cipher:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "crypto/cipher",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:14:36.726048+00:00"
+  },
+  "Go:crypto/sha256:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "crypto/sha256",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:14:37.732060+00:00"
+  },
+  "Maven:java.security.AlgorithmParameters:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.AlgorithmParameters",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:14:41.448992+00:00"
+  },
+  "Maven:java.security.GeneralSecurityException:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.GeneralSecurityException",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:14:43.333903+00:00"
+  },
+  "Maven:java.security.KeyFactory:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.KeyFactory",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:14:44.374858+00:00"
+  },
+  "Maven:java.security.PrivateKey:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.PrivateKey",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:14:45.448128+00:00"
+  },
+  "Maven:java.security.Security:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.Security",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:14:46.562792+00:00"
+  },
+  "Maven:java.security.spec.AlgorithmParameterSpec:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.spec.AlgorithmParameterSpec",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:14:47.529151+00:00"
+  },
+  "Maven:java.security.spec.MGF1ParameterSpec:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.spec.MGF1ParameterSpec",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:14:48.549858+00:00"
+  },
+  "Maven:java.security.spec.RSAPrivateKeySpec:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.spec.RSAPrivateKeySpec",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:14:49.541634+00:00"
+  },
+  "Maven:javax.crypto.Cipher:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "javax.crypto.Cipher",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:14:50.614912+00:00"
+  },
+  "Maven:javax.crypto.spec.OAEPParameterSpec:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "javax.crypto.spec.OAEPParameterSpec",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:14:51.547625+00:00"
+  },
+  "Maven:javax.crypto.spec.PSource:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "javax.crypto.spec.PSource",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:14:52.523868+00:00"
+  },
+  "Maven:org.bouncycastle.jce.provider.BouncyCastleProvider:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "org.bouncycastle.jce.provider.BouncyCastleProvider",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:14:53.603201+00:00"
+  },
+  "Maven:java.security.interfaces.*:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.interfaces.*",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:14:55.714865+00:00"
+  },
+  "Maven:java.security.spec.PSSParameterSpec:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.spec.PSSParameterSpec",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:14:56.804663+00:00"
+  },
+  "Maven:javax.crypto.Mac:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "javax.crypto.Mac",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:14:57.834410+00:00"
+  },
+  "Maven:javax.crypto.spec.SecretKeySpec:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "javax.crypto.spec.SecretKeySpec",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:14:58.827966+00:00"
+  },
+  "Maven:java.security.*:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.*",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:14:59.864458+00:00"
+  },
+  "Maven:java.security.InvalidKeyException:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.InvalidKeyException",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:15:01.295455+00:00"
+  },
+  "Maven:java.security.NoSuchAlgorithmException:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.NoSuchAlgorithmException",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:15:02.267984+00:00"
+  },
+  "Maven:java.security.SignatureException:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.SignatureException",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:15:03.521703+00:00"
+  },
+  "Maven:java.security.interfaces.ECPrivateKey:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.interfaces.ECPrivateKey",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:15:04.444692+00:00"
+  },
+  "Maven:java.security.interfaces.ECPublicKey:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.interfaces.ECPublicKey",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:15:06.014030+00:00"
+  },
+  "Maven:java.security.interfaces.RSAPrivateKey:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.interfaces.RSAPrivateKey",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:15:07.007918+00:00"
+  },
+  "Maven:java.security.interfaces.RSAPublicKey:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.interfaces.RSAPublicKey",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:15:07.948249+00:00"
+  },
+  "Maven:java.security.PublicKey:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.PublicKey",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:15:11.690804+00:00"
+  },
+  "Maven:java.security.interfaces.ECKey:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.interfaces.ECKey",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:15:13.008495+00:00"
+  },
+  "Maven:java.security.interfaces.RSAKey:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.interfaces.RSAKey",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:15:14.122671+00:00"
+  },
+  "Maven:org.bouncycastle.util.io.pem.PemObject:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "org.bouncycastle.util.io.pem.PemObject",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:15:15.872432+00:00"
+  },
+  "Maven:org.bouncycastle.util.io.pem.PemReader:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "org.bouncycastle.util.io.pem.PemReader",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:15:16.987707+00:00"
+  },
+  "Maven:java.security.spec.EncodedKeySpec:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.spec.EncodedKeySpec",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:15:17.944547+00:00"
+  },
+  "Maven:java.security.spec.InvalidKeySpecException:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.spec.InvalidKeySpecException",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:15:18.907343+00:00"
+  },
+  "Maven:java.security.spec.PKCS8EncodedKeySpec:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.spec.PKCS8EncodedKeySpec",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:15:19.918219+00:00"
+  },
+  "Maven:java.security.spec.X509EncodedKeySpec:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.spec.X509EncodedKeySpec",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:15:20.914060+00:00"
+  },
+  "Maven:java.security.spec.ECParameterSpec:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.spec.ECParameterSpec",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:15:21.877768+00:00"
+  },
+  "Maven:java.security.Provider:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.Provider",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:15:22.863198+00:00"
+  },
+  "Maven:io.jsonwebtoken:jjwt-api:${project.version}": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "io.jsonwebtoken:jjwt-api",
+    "version": "${project.version}",
+    "enrichment_date": "2026-10-24T07:15:23.910970+00:00"
+  },
+  "Maven:io.jsonwebtoken:jjwt-impl:${project.version}": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "io.jsonwebtoken:jjwt-impl",
+    "version": "${project.version}",
+    "enrichment_date": "2026-10-24T07:15:24.824978+00:00"
+  },
+  "Maven:io.jsonwebtoken:jjwt-jackson:${project.version}": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "io.jsonwebtoken:jjwt-jackson",
+    "version": "${project.version}",
+    "enrichment_date": "2026-10-24T07:15:25.793099+00:00"
+  },
+  "Maven:io.jsonwebtoken:jjwt-orgjson:${project.version}": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "io.jsonwebtoken:jjwt-orgjson",
+    "version": "${project.version}",
+    "enrichment_date": "2026-10-24T07:15:26.756762+00:00"
+  },
+  "Maven:io.jsonwebtoken:jjwt-gson:${project.version}": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "io.jsonwebtoken:jjwt-gson",
+    "version": "${project.version}",
+    "enrichment_date": "2026-10-24T07:15:28.227187+00:00"
+  },
+  "Maven:com.fasterxml.jackson.core:jackson-databind:${jackson.version}": {
+    "status": "success",
+    "cves": [
+      "CVE-2020-36518",
+      "CVE-2021-20190",
+      "CVE-2019-14379",
+      "CVE-2019-16335",
+      "CVE-2019-14892",
+      "CVE-2018-7489",
+      "CVE-2018-12022",
+      "CVE-2019-17267",
+      "CVE-2019-16943",
+      "CVE-2019-17531",
+      "CVE-2019-14439",
+      "CVE-2019-14540",
+      "CVE-2017-7525",
+      "CVE-2017-17485",
+      "CVE-2020-10650",
+      "CVE-2020-36189",
+      "CVE-2018-5968"
+    ],
+    "count": 17,
+    "package": "com.fasterxml.jackson.core:jackson-databind",
+    "version": "${jackson.version}",
+    "enrichment_date": "2026-10-24T07:15:29.289994+00:00"
+  },
+  "Maven:org.json:json:${orgjson.version}": {
+    "status": "success",
+    "cves": [
+      "CVE-2022-45688",
+      "CVE-2023-5072"
+    ],
+    "count": 2,
+    "package": "org.json:json",
+    "version": "${orgjson.version}",
+    "enrichment_date": "2026-10-24T07:15:30.669774+00:00"
+  },
+  "Maven:com.google.code.gson:gson:${gson.version}": {
+    "status": "success",
+    "cves": [
+      "CVE-2022-25647"
+    ],
+    "count": 1,
+    "package": "com.google.code.gson:gson",
+    "version": "${gson.version}",
+    "enrichment_date": "2026-10-24T07:15:31.681054+00:00"
+  },
+  "Maven:org.bouncycastle:${bcprov.artifactId}:${bouncycastle.version}": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "org.bouncycastle:${bcprov.artifactId}",
+    "version": "${bouncycastle.version}",
+    "enrichment_date": "2026-10-24T07:15:32.623354+00:00"
+  },
+  "Maven:org.bouncycastle:${bcpkix.artifactId}:${bouncycastle.version}": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "org.bouncycastle:${bcpkix.artifactId}",
+    "version": "${bouncycastle.version}",
+    "enrichment_date": "2026-10-24T07:15:33.647858+00:00"
+  },
+  "Maven:org.apache.groovy:groovy:${groovy.version}": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "org.apache.groovy:groovy",
+    "version": "${groovy.version}",
+    "enrichment_date": "2026-10-24T07:15:34.749688+00:00"
+  },
+  "Maven:org.easymock:easymock:${easymock.version}": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "org.easymock:easymock",
+    "version": "${easymock.version}",
+    "enrichment_date": "2026-10-24T07:15:35.750055+00:00"
+  },
+  "Maven:org.powermock:powermock-module-junit4:${powermock.version}": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "org.powermock:powermock-module-junit4",
+    "version": "${powermock.version}",
+    "enrichment_date": "2026-10-24T07:15:36.836889+00:00"
+  },
+  "Maven:org.powermock:powermock-api-easymock:${powermock.version}": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "org.powermock:powermock-api-easymock",
+    "version": "${powermock.version}",
+    "enrichment_date": "2026-10-24T07:15:37.798984+00:00"
+  },
+  "Maven:org.powermock:powermock-core:${powermock.version}": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "org.powermock:powermock-core",
+    "version": "${powermock.version}",
+    "enrichment_date": "2026-10-24T07:15:39.203887+00:00"
+  },
+  "Maven:junit:junit:${junit.version}": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "junit:junit",
+    "version": "${junit.version}",
+    "enrichment_date": "2026-10-24T07:15:42.089292+00:00"
+  },
+  "Maven:org.apache.maven.scm:maven-scm-provider-gitexe:2.1.0": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "org.apache.maven.scm:maven-scm-provider-gitexe",
+    "version": "2.1.0",
+    "enrichment_date": "2026-10-24T07:15:43.119466+00:00"
+  },
+  "Maven:com.mycila:license-maven-plugin-git:${maven.license.version}": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "com.mycila:license-maven-plugin-git",
+    "version": "${maven.license.version}",
+    "enrichment_date": "2026-10-24T07:15:44.114980+00:00"
+  },
+  "Maven:${project.groupId}:${project.artifactId}:${jjwt.previousVersion}": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "${project.groupId}:${project.artifactId}",
+    "version": "${jjwt.previousVersion}",
+    "enrichment_date": "2026-10-24T07:15:45.129784+00:00"
+  },
+  "Maven:jakarta.xml.bind:jakarta.xml.bind-api:2.3.3": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "jakarta.xml.bind:jakarta.xml.bind-api",
+    "version": "2.3.3",
+    "enrichment_date": "2026-10-24T07:15:46.104728+00:00"
+  },
+  "Maven:io.jsonwebtoken:jjwt:0.14.0-SNAPSHOT": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "io.jsonwebtoken:jjwt",
+    "version": "0.14.0-SNAPSHOT",
+    "enrichment_date": "2026-10-24T07:15:47.529164+00:00"
+  },
+  "Maven:io.jsonwebtoken:jjwt-api:0.14.0-SNAPSHOT": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "io.jsonwebtoken:jjwt-api",
+    "version": "0.14.0-SNAPSHOT",
+    "enrichment_date": "2026-10-24T07:15:48.557853+00:00"
+  },
+  "Maven:io.jsonwebtoken:jjwt-impl:0.14.0-SNAPSHOT": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "io.jsonwebtoken:jjwt-impl",
+    "version": "0.14.0-SNAPSHOT",
+    "enrichment_date": "2026-10-24T07:15:49.607719+00:00"
+  },
+  "Maven:io.jsonwebtoken:jjwt-orgjson:0.14.0-SNAPSHOT": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "io.jsonwebtoken:jjwt-orgjson",
+    "version": "0.14.0-SNAPSHOT",
+    "enrichment_date": "2026-10-24T07:15:50.735326+00:00"
+  },
+  "Maven:io.jsonwebtoken:jjwt-gson:0.14.0-SNAPSHOT": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "io.jsonwebtoken:jjwt-gson",
+    "version": "0.14.0-SNAPSHOT",
+    "enrichment_date": "2026-10-24T07:15:51.795477+00:00"
+  },
+  "Maven:io.jsonwebtoken:jjwt-jackson:0.14.0-SNAPSHOT": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "io.jsonwebtoken:jjwt-jackson",
+    "version": "0.14.0-SNAPSHOT",
+    "enrichment_date": "2026-10-24T07:15:52.807170+00:00"
+  },
+  "Maven:io.jsonwebtoken:jjwt-api:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "io.jsonwebtoken:jjwt-api",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:15:53.840247+00:00"
+  },
+  "Maven:com.google.code.gson:gson:any": {
+    "status": "success",
+    "cves": [
+      "CVE-2022-25647"
+    ],
+    "count": 1,
+    "package": "com.google.code.gson:gson",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:15:54.828339+00:00"
+  },
+  "Maven:com.fasterxml.jackson.core:jackson-databind:any": {
+    "status": "success",
+    "cves": [
+      "CVE-2020-11619",
+      "CVE-2020-25649",
+      "CVE-2026-59888",
+      "CVE-2026-50193",
+      "CVE-2021-46877",
+      "CVE-2018-14719",
+      "CVE-2020-8840",
+      "CVE-2020-36518",
+      "CVE-2020-11112",
+      "CVE-2021-20190",
+      "CVE-2026-59889",
+      "CVE-2026-54517",
+      "CVE-2026-54515",
+      "CVE-2020-9546",
+      "CVE-2020-35728",
+      "CVE-2019-12086",
+      "CVE-2018-14718",
+      "CVE-2019-14379",
+      "CVE-2018-12023",
+      "CVE-2020-10969",
+      "CVE-2019-16335",
+      "CVE-2020-36182",
+      "CVE-2020-36180",
+      "CVE-2020-36185",
+      "CVE-2020-10672",
+      "CVE-2026-54516",
+      "CVE-2020-36179",
+      "CVE-2020-36183",
+      "CVE-2018-14721",
+      "CVE-2020-11113",
+      "CVE-2020-14062",
+      "CVE-2020-14061",
+      "CVE-2018-19362",
+      "CVE-2019-14892",
+      "CVE-2018-7489",
+      "CVE-2018-12022",
+      "CVE-2019-12814",
+      "CVE-2020-36181",
+      "CVE-2026-91777",
+      "CVE-2019-17267",
+      "CVE-2018-19360",
+      "CVE-2020-36188",
+      "CVE-2019-16943",
+      "CVE-2020-10673",
+      "CVE-2019-17531",
+      "CVE-2019-14439",
+      "CVE-2019-20330",
+      "CVE-2026-83557",
+      "CVE-2020-24616",
+      "CVE-2020-11620",
+      "CVE-2017-15095",
+      "CVE-2019-14540",
+      "CVE-2026-54514",
+      "CVE-2026-54512",
+      "CVE-2020-14060",
+      "CVE-2022-42003",
+      "CVE-2020-36184",
+      "CVE-2020-14195",
+      "GHSA-mhm7-754m-9p8w",
+      "CVE-2019-12384",
+      "CVE-2019-16942",
+      "CVE-2018-19361",
+      "CVE-2020-9548",
+      "CVE-2026-68497",
+      "CVE-2020-9547",
+      "CVE-2020-24750",
+      "CVE-2019-14893",
+      "CVE-2018-11307",
+      "CVE-2017-7525",
+      "CVE-2020-35491",
+      "CVE-2020-36187",
+      "CVE-2026-54518",
+      "CVE-2020-10968",
+      "CVE-2017-17485",
+      "CVE-2022-42004",
+      "CVE-2026-54513",
+      "CVE-2020-10650",
+      "CVE-2020-11111",
+      "CVE-2020-36186",
+      "CVE-2020-36189",
+      "CVE-2026-77310",
+      "CVE-2018-5968",
+      "CVE-2020-35490",
+      "CVE-2026-19032",
+      "CVE-2026-91776",
+      "CVE-2018-14720"
+    ],
+    "count": 86,
+    "package": "com.fasterxml.jackson.core:jackson-databind",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:15:55.809857+00:00"
+  },
+  "Maven:org.json:json:any": {
+    "status": "success",
+    "cves": [
+      "CVE-2022-45688",
+      "CVE-2023-5072"
+    ],
+    "count": 2,
+    "package": "org.json:json",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:15:57.887308+00:00"
+  },
+  "Maven:org.bouncycastle:${bcprov.artifactId}:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "org.bouncycastle:${bcprov.artifactId}",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:15:59.215994+00:00"
+  },
+  "Maven:org.bouncycastle:${bcpkix.artifactId}:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "org.bouncycastle:${bcpkix.artifactId}",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:00.324200+00:00"
+  },
+  "Maven:io.jsonwebtoken:jjwt-jackson:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "io.jsonwebtoken:jjwt-jackson",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:01.447543+00:00"
+  },
+  "Maven:io.jsonwebtoken:jjwt-orgjson:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "io.jsonwebtoken:jjwt-orgjson",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:02.496248+00:00"
+  },
+  "Maven:io.jsonwebtoken:jjwt-gson:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "io.jsonwebtoken:jjwt-gson",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:04.381515+00:00"
+  },
+  "Maven:io.jsonwebtoken:jjwt-impl:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "io.jsonwebtoken:jjwt-impl",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:05.924470+00:00"
+  },
+  "Maven:javax.crypto.SecretKey:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "javax.crypto.SecretKey",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:06.978281+00:00"
+  },
+  "Maven:java.security.Key:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.Key",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:07.961604+00:00"
+  },
+  "Maven:java.security.SecureRandom:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.SecureRandom",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:08.940964+00:00"
+  },
+  "Maven:java.security.KeyPair:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.KeyPair",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:12.464202+00:00"
+  },
+  "Maven:java.security.cert.X509Certificate:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.cert.X509Certificate",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:13.504894+00:00"
+  },
+  "Maven:java.security.MessageDigest:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.MessageDigest",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:14.782751+00:00"
+  },
+  "Maven:java.security.spec.EllipticCurve:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.spec.EllipticCurve",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:15.804844+00:00"
+  },
+  "Maven:java.security.Signature:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.Signature",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:16.773935+00:00"
+  },
+  "Maven:javax.crypto.spec.GCMParameterSpec:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "javax.crypto.spec.GCMParameterSpec",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:17.709749+00:00"
+  },
+  "Maven:javax.crypto.spec.IvParameterSpec:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "javax.crypto.spec.IvParameterSpec",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:18.669077+00:00"
+  },
+  "Maven:java.security.spec.RSAOtherPrimeInfo:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.spec.RSAOtherPrimeInfo",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:19.784844+00:00"
+  },
+  "Maven:java.security.spec.ECFieldFp:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.spec.ECFieldFp",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:20.746081+00:00"
+  },
+  "Maven:java.security.spec.ECGenParameterSpec:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.spec.ECGenParameterSpec",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:21.712008+00:00"
+  },
+  "Maven:java.security.spec.ECPoint:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.spec.ECPoint",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:22.716493+00:00"
+  },
+  "Maven:java.security.spec.ECPublicKeySpec:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.spec.ECPublicKeySpec",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:23.747092+00:00"
+  },
+  "Maven:javax.crypto.KeyAgreement:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "javax.crypto.KeyAgreement",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:24.749484+00:00"
+  },
+  "Maven:java.security.spec.ECPrivateKeySpec:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.spec.ECPrivateKeySpec",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:25.724753+00:00"
+  },
+  "Maven:java.security.spec.KeySpec:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.spec.KeySpec",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:26.694351+00:00"
+  },
+  "Maven:javax.crypto.KeyGenerator:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "javax.crypto.KeyGenerator",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:27.633250+00:00"
+  },
+  "Maven:javax.crypto.NoSuchPaddingException:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "javax.crypto.NoSuchPaddingException",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:28.790411+00:00"
+  },
+  "Maven:javax.crypto.SecretKeyFactory:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "javax.crypto.SecretKeyFactory",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:29.999170+00:00"
+  },
+  "Maven:java.security.InvalidAlgorithmParameterException:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.InvalidAlgorithmParameterException",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:31.161349+00:00"
+  },
+  "Maven:java.security.KeyPairGenerator:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.KeyPairGenerator",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:32.326697+00:00"
+  },
+  "Maven:java.security.cert.CertificateException:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.cert.CertificateException",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:33.475628+00:00"
+  },
+  "Maven:java.security.cert.CertificateFactory:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.cert.CertificateFactory",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:34.442346+00:00"
+  },
+  "Maven:java.security.cert.CertificateEncodingException:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.cert.CertificateEncodingException",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:35.385621+00:00"
+  },
+  "Maven:javax.crypto.spec.PBEKeySpec:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "javax.crypto.spec.PBEKeySpec",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:36.346039+00:00"
+  },
+  "Maven:java.security.interfaces.RSAMultiPrimePrivateCrtKey:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.interfaces.RSAMultiPrimePrivateCrtKey",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:37.336200+00:00"
+  },
+  "Maven:java.security.interfaces.RSAPrivateCrtKey:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.interfaces.RSAPrivateCrtKey",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:38.307847+00:00"
+  },
+  "Maven:java.security.spec.RSAMultiPrimePrivateCrtKeySpec:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.spec.RSAMultiPrimePrivateCrtKeySpec",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:39.468612+00:00"
+  },
+  "Maven:java.security.spec.RSAPrivateCrtKeySpec:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.spec.RSAPrivateCrtKeySpec",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:42.773870+00:00"
+  },
+  "Maven:java.security.spec.RSAPublicKeySpec:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.spec.RSAPublicKeySpec",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:43.720180+00:00"
+  },
+  "Maven:java.security.cert.Certificate:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.cert.Certificate",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:44.994715+00:00"
+  },
+  "Go:crypto/ecdsa:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "crypto/ecdsa",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:46.256105+00:00"
+  },
+  "Go:crypto/rand:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "crypto/rand",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:47.399401+00:00"
+  },
+  "Go:crypto/ed25519:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "crypto/ed25519",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:48.380337+00:00"
+  },
+  "Go:crypto/hmac:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "crypto/hmac",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:49.332924+00:00"
+  },
+  "Go:crypto/rsa:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "crypto/rsa",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:50.297189+00:00"
+  },
+  "Go:github.com/dgrijalva/jwt-go:any": {
+    "status": "success",
+    "cves": [
+      "CVE-2020-26160"
+    ],
+    "count": 1,
+    "package": "github.com/dgrijalva/jwt-go",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:16:51.763623+00:00"
+  },
+  "Go:golang.org/x/net:0.58.0": {
+    "status": "success",
+    "cves": [
+      "CVE-2026-78659",
+      "CVE-2026-78660",
+      "CVE-2026-78669",
+      "CVE-2026-78663",
+      "CVE-2026-97032"
+    ],
+    "count": 5,
+    "package": "golang.org/x/net",
+    "version": "0.58.0",
+    "enrichment_date": "2026-10-24T07:16:53.137928+00:00"
+  },
+  "Go:golang.org/x/sys:0.48.0": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "golang.org/x/sys",
+    "version": "0.48.0",
+    "enrichment_date": "2026-10-24T07:16:54.335343+00:00"
+  },
+  "Go:golang.org/x/term:0.46.0": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "golang.org/x/term",
+    "version": "0.46.0",
+    "enrichment_date": "2026-10-24T07:16:55.328836+00:00"
+  },
+  "Go:golang.org/x/text:0.42.0": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "golang.org/x/text",
+    "version": "0.42.0",
+    "enrichment_date": "2026-10-24T07:16:56.282267+00:00"
+  },
+  "Go:github.com/mmcloughlin/avo:0.6.0": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "github.com/mmcloughlin/avo",
+    "version": "0.6.0",
+    "enrichment_date": "2026-10-24T07:16:57.415382+00:00"
+  },
+  "Go:golang.org/x/crypto:0.33.0": {
+    "status": "success",
+    "cves": [
+      "CVE-2026-39828",
+      "CVE-2026-42508",
+      "CVE-2026-39835",
+      "CVE-2026-39831",
+      "CVE-2026-46598",
+      "CVE-2026-39832",
+      "CVE-2025-47914",
+      "CVE-2025-22869",
+      "CVE-2025-58181",
+      "CVE-2026-39833",
+      "CVE-2026-46597",
+      "CVE-2026-39827",
+      "CVE-2026-39834",
+      "CVE-2026-39830",
+      "CVE-2026-39829",
+      "CVE-2026-46595",
+      "CVE-2025-47913",
+      "GO-2026-5932",
+      "CVE-2026-56854",
+      "CVE-2026-78662",
+      "CVE-2026-56855"
+    ],
+    "count": 21,
+    "package": "golang.org/x/crypto",
+    "version": "0.33.0",
+    "enrichment_date": "2026-10-24T07:16:58.352076+00:00"
+  },
+  "Go:golang.org/x/mod:0.20.0": {
+    "status": "success",
+    "cves": [
+      "CVE-2026-56865",
+      "CVE-2026-56864"
+    ],
+    "count": 2,
+    "package": "golang.org/x/mod",
+    "version": "0.20.0",
+    "enrichment_date": "2026-10-24T07:16:59.644809+00:00"
+  },
+  "Go:golang.org/x/sync:0.8.0": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "golang.org/x/sync",
+    "version": "0.8.0",
+    "enrichment_date": "2026-10-24T07:17:00.634278+00:00"
+  },
+  "Go:golang.org/x/sys:0.30.0": {
+    "status": "success",
+    "cves": [
+      "CVE-2026-39824"
+    ],
+    "count": 1,
+    "package": "golang.org/x/sys",
+    "version": "0.30.0",
+    "enrichment_date": "2026-10-24T07:17:01.725842+00:00"
+  },
+  "Go:golang.org/x/tools:0.24.0": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "golang.org/x/tools",
+    "version": "0.24.0",
+    "enrichment_date": "2026-10-24T07:17:02.928375+00:00"
+  },
+  "Go:crypto/elliptic:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "crypto/elliptic",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:17:05.399223+00:00"
+  },
+  "Go:crypto/tls:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "crypto/tls",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:17:06.347378+00:00"
+  },
+  "Go:crypto/sha512:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "crypto/sha512",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:17:07.293257+00:00"
+  },
+  "Go:crypto/ecdh:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "crypto/ecdh",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:17:08.287653+00:00"
+  },
+  "Go:crypto/md5:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "crypto/md5",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:17:09.234555+00:00"
+  },
+  "Go:crypto/sha1:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "crypto/sha1",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:17:10.218667+00:00"
+  },
+  "Go:crypto/aes:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "crypto/aes",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:17:13.113850+00:00"
+  },
+  "Go:crypto/des:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "crypto/des",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:17:14.313157+00:00"
+  },
+  "Go:crypto/dsa:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "crypto/dsa",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:17:15.355135+00:00"
+  },
+  "PyPI:rsa:any": {
+    "status": "unavailable",
+    "error": "OSV service timeout: The read operation timed out",
+    "package": "rsa",
+    "version": null,
+    "enrichment_date": "2026-10-24T07:55:30.726482+00:00"
+  },
+  "PyPI:javax:.crypto.Cipher": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "javax",
+    "version": ".crypto.Cipher",
+    "enrichment_date": "2026-10-24T07:55:42.599658+00:00"
+  },
+  "Go:crypto/aes:1.0.0": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "crypto/aes",
+    "version": "1.0.0",
+    "enrichment_date": "2026-10-24T07:55:43.524962+00:00"
+  }
+}

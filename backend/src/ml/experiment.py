@@ -10,12 +10,13 @@ class LabelRegime(str, Enum):
 class AblationRegime(str, Enum):
     WITH_BASE_RISK = "WITH_BASE_RISK"
     WITHOUT_BASE_RISK = "WITHOUT_BASE_RISK"
+    STRUCTURE_ONLY = "STRUCTURE_ONLY"
+    ALL = "ALL"
 
 class ModelType(str, Enum):
     GATV2 = "GATV2"
     HEURISTIC_BASELINE = "HEURISTIC_BASELINE"
     RULE_BASELINE = "RULE_BASELINE"
-    CBOMKIT = "CBOMKIT"
 
 class ExperimentManifest(BaseModel):
     experiment_id: str

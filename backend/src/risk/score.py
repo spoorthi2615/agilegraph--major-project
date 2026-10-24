@@ -5,8 +5,9 @@ from src.risk.weights import HeuristicWeights
 from src.risk.factors import RiskFactors
 
 class MissingDataPolicy(str, Enum):
-    STRICT = "STRICT"
     RENORMALIZE = "RENORMALIZE"
+    CONSERVATIVE = "CONSERVATIVE"
+    STRICT = "STRICT"
 
 class FactorContribution(BaseModel):
     value: float

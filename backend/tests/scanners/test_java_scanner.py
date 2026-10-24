@@ -161,3 +161,19 @@ public class Test {
     sig_findings = [f for f in findings if f.operation == "signature"]
     assert sig_findings
     assert any(f.algorithm == "UNKNOWN_ALGORITHM" for f in sig_findings)
+
+def test_java_secure_random():
+    code = """
+import java.security.SecureRandom;
+public class Test {
+    public void test() throws Exception {
+        SecureRandom sr1 = new SecureRandom();
+        SecureRandom sr2 = SecureRandom.getInstance("SHA1PRNG");
+    }
+}
+"""
+    findings = scan_java_code("test", "Test.java", code)
+    crypto = [f for f in findings if f.asset_type == AssetType.CRYPTO_USAGE]
+    assert len(crypto) == 2
+    assert any(f.api == "new SecureRandom()" and f.operation == "random" for f in crypto)
+    assert any(f.algorithm == "SHA1PRNG" and f.operation == "random" for f in crypto)

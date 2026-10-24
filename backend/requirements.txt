@@ -5,6 +5,10 @@ pydantic-settings
 pytest
 httpx
 networkx
+numpy
+scipy
+cryptography
+matplotlib
 torch
 torch_geometric
 scikit-learn

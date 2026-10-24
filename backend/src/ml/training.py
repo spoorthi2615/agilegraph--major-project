@@ -8,10 +8,9 @@ class ModelTrainer:
     def run_training_loop(self) -> Dict[str, Any]:
         """Runs the training experiment based on the regime."""
         if self.manifest.label_source == LabelRegime.EXPERT:
-            # We don't have expert labels yet
             return {
-                "status": "PENDING_EXPERT_LABELS",
-                "message": "Cannot perform real GATv2 training without expert labels."
+                "status": "NOT_APPLICABLE",
+                "message": "Supervised GATv2 training is out of scope per project synopsis."
             }
         
         elif self.manifest.label_source == LabelRegime.SYNTHETIC:
@@ -31,11 +30,11 @@ class ModelTrainer:
         """Runs paired ablation experiments (WITH_BASE_RISK vs WITHOUT_BASE_RISK)."""
         if self.manifest.label_source == LabelRegime.EXPERT:
             return {
-                "status": "PENDING_EXPERT_LABELS",
-                "message": "Ablation requires real labeled data."
+                "status": "NOT_APPLICABLE",
+                "message": "Ablation on supervised expert data is out of scope per project synopsis."
             }
             
         return {
             "status": "INFRASTRUCTURE_READY",
-            "message": "Leakage ablation infrastructure is ready, but pending real expert labels for execution."
+            "message": "Leakage ablation infrastructure is mechanically verified on synthetic data."
         }

@@ -1,6 +1,7 @@
 import networkx as nx
 from typing import List, Optional, Dict
 from src.graph.schema import GraphNode, GraphEdge
+from src.graph.validation import validate_graph
 
 class AgileGraph:
     def __init__(self):
@@ -24,3 +25,10 @@ class AgileGraph:
         if node_id in self.G:
             return list(self.G.successors(node_id)) + list(self.G.predecessors(node_id))
         return []
+
+    def validate_integrity(self) -> List[str]:
+        """
+        Validates no dangling edges, non-empty graph, and schema-legal edge triplets
+        per Synopsis 5.3. Returns list of error strings (empty if valid).
+        """
+        return validate_graph(self)

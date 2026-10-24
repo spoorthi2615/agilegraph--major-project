@@ -1,20 +1,19 @@
 import { useState, useEffect } from 'react';
+import { useProject } from '../../context/ProjectContext';
 import { apiClient } from '../../api/client';
 import { Map, AlertCircle, Info } from 'lucide-react';
 
 const STATES = [
-  "NOT_ASSESSED",
-  "ASSESSMENT_REQUIRED",
-  "MIGRATION_CANDIDATE",
-  "HIGH_PRIORITY",
-  "PLANNED",
-  "IN_PROGRESS",
-  "MIGRATED",
-  "VERIFIED"
+  "DISCOVERED",
+  "EVALUATED",
+  "IN_PLANNING",
+  "IN_MIGRATION",
+  "VALIDATED",
+  "DECOMMISSIONED"
 ];
 
 export default function MigrationRoadmap() {
-  const [projectId, setProjectId] = useState('demo-project');
+  const { projectId, setProjectId } = useProject();
   const [assets, setAssets] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,8 +37,8 @@ export default function MigrationRoadmap() {
           try {
             const state = await apiClient.getRoadmapState(projectId, asset.asset_id);
             return { ...asset, roadmap: state };
-          } catch (e) {
-            return { ...asset, roadmap: { current_state: "NOT_ASSESSED" } };
+          } catch {
+            return { ...asset, roadmap: { current_state: "DISCOVERED" } };
           }
         })
       );
@@ -53,8 +52,12 @@ export default function MigrationRoadmap() {
   };
 
   useEffect(() => {
-    fetchRoadmap();
-  }, []);
+    if (projectId) {
+      fetchRoadmap();
+    } else {
+      setAssets([]);
+    }
+  }, [projectId]);
 
   const handleTransition = async (assetId: string, newState: string) => {
     setActionError(null);
@@ -89,7 +92,7 @@ export default function MigrationRoadmap() {
       <div className="p-4 bg-slate-800 border border-slate-700 rounded-md text-sm text-slate-400 flex flex-col gap-2">
         <p className="font-semibold text-slate-200">Migration planning</p>
         <p>This is a user-managed planning state board, not migration execution. Transitions represent planning decisions.</p>
-        <p className="text-amber-500/80 mt-1">Note: <span className="font-mono">MIGRATED</span> and <span className="font-mono">VERIFIED</span> are user-asserted workflow states, not empirically validated claims.</p>
+        <p className="text-amber-500/80 mt-1">Note: <span className="font-mono">VALIDATED</span> and <span className="font-mono">DECOMMISSIONED</span> are user-asserted workflow states, not empirically validated claims.</p>
       </div>
 
       {error && (
@@ -114,9 +117,11 @@ export default function MigrationRoadmap() {
                 <div className="flex items-center justify-between border-b border-slate-800 pb-2">
                   <span className="font-mono font-medium text-slate-200">{asset.asset_id}</span>
                   <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                    asset.roadmap.current_state === 'VERIFIED' ? 'bg-emerald-900/50 text-emerald-400 border border-emerald-500/30' :
-                    asset.roadmap.current_state === 'MIGRATED' ? 'bg-blue-900/50 text-blue-400 border border-blue-500/30' :
-                    asset.roadmap.current_state === 'IN_PROGRESS' ? 'bg-purple-900/50 text-purple-400 border border-purple-500/30' :
+                    asset.roadmap.current_state === 'VALIDATED' ? 'bg-emerald-900/50 text-emerald-400 border border-emerald-500/30' :
+                    asset.roadmap.current_state === 'DECOMMISSIONED' ? 'bg-slate-700/50 text-slate-400 border border-slate-500/30' :
+                    asset.roadmap.current_state === 'IN_MIGRATION' ? 'bg-purple-900/50 text-purple-400 border border-purple-500/30' :
+                    asset.roadmap.current_state === 'IN_PLANNING' ? 'bg-blue-900/50 text-blue-400 border border-blue-500/30' :
+                    asset.roadmap.current_state === 'EVALUATED' ? 'bg-amber-900/50 text-amber-400 border border-amber-500/30' :
                     'bg-slate-800 text-slate-300 border border-slate-600'
                   }`}>
                     {asset.roadmap.current_state}

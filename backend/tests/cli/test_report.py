@@ -52,8 +52,8 @@ def test_cli_report_valid():
             content = f.read()
             
         assert "HEURISTIC ANALYSIS" in content
-        assert "GATv2**: `PENDING_EXPERT_LABELS`" in content
-        assert "Expert validation**: `BLOCKED`" in content
+        assert "GATv2**: `ARCHITECTURAL_PROTOTYPE`" in content
+        assert "Validation status**: `BLOCKED`" in content
         assert "Empirical evaluation**: `BLOCKED`" in content
         assert "No fabricated empirical metrics" in content
         assert "cve_risk" in content

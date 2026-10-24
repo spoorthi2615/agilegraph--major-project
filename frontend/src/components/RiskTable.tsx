@@ -12,18 +12,18 @@ interface RiskTableProps {
 function ScoreBadge({ score }: { score: number | null }) {
   if (score === null || score === undefined) {
     return (
-      <span className="px-2 py-0.5 rounded-full text-xs bg-slate-500/20 text-slate-400 flex items-center gap-1">
+      <span className="px-2 py-0.5 rounded-full text-xs bg-muted text-muted-foreground flex items-center gap-1">
         <HelpCircle className="w-3 h-3" />
         Unrated
       </span>
     );
   }
   const colorClass =
-    score > 0.7 ? 'bg-red-500/20 text-red-400' :
-    score > 0.4 ? 'bg-amber-500/20 text-amber-400' :
-                  'bg-emerald-500/20 text-emerald-400';
+    score > 0.7 ? 'bg-destructive/15 text-destructive border border-destructive/20' :
+    score > 0.4 ? 'bg-warning/15 text-warning border border-warning/20' :
+                  'bg-success/15 text-success border border-success/20';
   return (
-    <span className={`px-2 py-0.5 rounded-full text-xs ${colorClass}`}>
+    <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${colorClass}`}>
       {score.toFixed(4)}
     </span>
   );
@@ -37,15 +37,15 @@ function ScanIntegritySummary({ data }: { data: RiskResponse }) {
   if (unrated === 0) return null;
 
   return (
-    <div className="mb-3 p-3 bg-amber-950/40 border border-amber-700/50 rounded-lg text-xs text-amber-400">
-      <p className="font-semibold flex items-center gap-1 mb-1">
-        <AlertTriangle className="w-3 h-3" /> Scan Integrity Notice
+    <div className="mb-4 mx-4 mt-4 p-4 bg-warning/10 border border-warning/20 rounded-xl text-xs text-warning">
+      <p className="font-semibold flex items-center gap-1.5 mb-1 text-sm">
+        <AlertTriangle className="w-4 h-4" /> Scan Integrity Notice
       </p>
       <p>
         {scored} asset{scored !== 1 ? 's' : ''} scored · {unrated} unrated
         (insufficient scoring evidence — not equivalent to low risk).
       </p>
-      <p className="mt-1 text-amber-500/70">
+      <p className="mt-1 text-warning/70">
         Unrated assets must be reviewed manually. They are not included in
         vulnerability counts.
       </p>
@@ -55,7 +55,7 @@ function ScanIntegritySummary({ data }: { data: RiskResponse }) {
 
 export default function RiskTable({ data, graphData, selectedAssetId, onRowClick }: RiskTableProps) {
   if (!data || !data.assets || data.assets.length === 0) {
-    return <div className="text-slate-500 text-sm">No assets found.</div>;
+    return <div className="text-muted-foreground text-sm p-4 text-center">No assets found.</div>;
   }
 
   const selectedAsset = data.assets.find(a => a.asset_id === selectedAssetId);
@@ -88,16 +88,16 @@ export default function RiskTable({ data, graphData, selectedAssetId, onRowClick
     <div className="flex flex-col h-full overflow-hidden">
       <ScanIntegritySummary data={data} />
 
-      <div className="overflow-auto flex-1 border-b border-slate-700/50">
+      <div className="overflow-auto flex-1 border-b border-border/50">
         <table className="w-full text-left text-sm whitespace-nowrap">
-          <thead className="bg-slate-900/50 text-slate-400 font-medium sticky top-0 z-10 backdrop-blur">
+          <thead className="bg-muted/50 text-muted-foreground font-semibold sticky top-0 z-10 backdrop-blur-md">
             <tr>
-              <th className="px-3 py-2 rounded-tl-md">Asset ID</th>
-              <th className="px-3 py-2 text-right">Base Risk</th>
-              <th className="px-3 py-2 rounded-tr-md">Policy Status</th>
+              <th className="px-5 py-3 rounded-tl-md">Asset ID</th>
+              <th className="px-5 py-3 text-right">Base Risk</th>
+              <th className="px-5 py-3 rounded-tr-md">Policy Status</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-700/50">
+          <tbody className="divide-y divide-border/50">
             {data.assets.map((asset) => {
               const isSelected = asset.asset_id === selectedAssetId;
               const isUnrated = asset.score === null || asset.score === undefined;
@@ -106,23 +106,23 @@ export default function RiskTable({ data, graphData, selectedAssetId, onRowClick
                 <tr 
                   key={asset.asset_id} 
                   onClick={() => onRowClick(asset.asset_id)}
-                  className={`cursor-pointer transition-colors ${isSelected ? 'bg-blue-900/30 border-l-2 border-blue-500' : 'hover:bg-slate-700/30 border-l-2 border-transparent'} ${isUnrated ? 'opacity-70' : ''}`}
+                  className={`cursor-pointer transition-colors ${isSelected ? 'bg-primary/10 border-l-2 border-primary' : 'hover:bg-muted/30 border-l-2 border-transparent'} ${isUnrated ? 'opacity-70' : ''}`}
                 >
-                  <td className="px-3 py-2 font-mono text-slate-300 truncate max-w-xs" title={asset.asset_id}>{asset.asset_id}</td>
-                  <td className="px-3 py-2 text-right font-medium">
+                  <td className="px-5 py-3 font-mono text-foreground truncate max-w-xs text-xs" title={asset.asset_id}>{asset.asset_id}</td>
+                  <td className="px-5 py-3 text-right font-medium">
                     <ScoreBadge score={asset.score} />
                   </td>
-                  <td className="px-3 py-2 text-right">
+                  <td className="px-5 py-3 text-right">
                     {isUnrated ? (
-                      <span className="text-xs bg-slate-700/50 text-slate-400 px-2 py-0.5 rounded flex items-center gap-1 w-max ml-auto">
+                      <span className="text-[10px] uppercase font-bold tracking-wider bg-muted text-muted-foreground px-2 py-0.5 rounded-full flex items-center gap-1 w-max ml-auto">
                         <HelpCircle className="w-3 h-3" /> UNRATED
                       </span>
                     ) : hasMissing ? (
-                      <span className="text-xs bg-amber-900/40 text-amber-500 px-2 py-0.5 rounded flex items-center gap-1 w-max ml-auto">
+                      <span className="text-[10px] uppercase font-bold tracking-wider bg-warning/15 text-warning px-2 py-0.5 rounded-full flex items-center gap-1 w-max ml-auto border border-warning/20">
                         <AlertTriangle className="w-3 h-3" /> RENORMALIZED
                       </span>
                     ) : (
-                      <span className="text-xs bg-emerald-900/40 text-emerald-500 px-2 py-0.5 rounded flex items-center gap-1 w-max ml-auto">
+                      <span className="text-[10px] uppercase font-bold tracking-wider bg-success/15 text-success px-2 py-0.5 rounded-full flex items-center gap-1 w-max ml-auto border border-success/20">
                         <Info className="w-3 h-3" /> COMPLETE
                       </span>
                     )}
@@ -135,15 +135,15 @@ export default function RiskTable({ data, graphData, selectedAssetId, onRowClick
       </div>
 
       {selectedAsset && (
-        <div className="bg-slate-800/80 p-4 shrink-0 overflow-y-auto max-h-64">
-          <h3 className="text-sm font-bold text-slate-200 mb-2 truncate" title={selectedAsset.asset_id}>
-            Details: {selectedAsset.asset_id}
+        <div className="bg-background border-t border-border p-5 shrink-0 overflow-y-auto max-h-72">
+          <h3 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2 truncate" title={selectedAsset.asset_id}>
+            <Info className="w-4 h-4 text-primary" /> Details: {selectedAsset.asset_id}
           </h3>
 
           {/* Unrated notice */}
           {(selectedAsset.score === null || selectedAsset.score === undefined) && (
-            <div className="mb-4 bg-slate-900/60 border border-slate-600/50 p-3 rounded text-xs text-slate-400">
-              <p className="font-semibold mb-1 flex items-center gap-1">
+            <div className="mb-4 bg-muted/50 border border-border p-3 rounded-xl text-xs text-muted-foreground">
+              <p className="font-semibold mb-1 flex items-center gap-1.5 text-foreground">
                 <HelpCircle className="w-4 h-4" /> Unrated Asset
               </p>
               <p>
@@ -155,54 +155,60 @@ export default function RiskTable({ data, graphData, selectedAssetId, onRowClick
           )}
           
           {selectedAsset.missing_factors && selectedAsset.missing_factors.length > 0 && (
-            <div className="mb-4 bg-amber-950/30 border border-amber-900/50 p-3 rounded text-xs text-amber-400/90">
-              <p className="font-semibold mb-1 flex items-center gap-1"><AlertTriangle className="w-4 h-4"/>Missing Factors Detected</p>
-              <p className="mb-1">Policy: <span className="font-mono bg-slate-900 px-1 rounded">{selectedAsset.missing_data_policy}</span></p>
-              <p className="mb-1">The following factors were unavailable and their weights redistributed (CVE unavailable ≠ CVE risk zero):</p>
-              <ul className="list-disc pl-4 mt-1 font-mono">
+            <div className="mb-4 bg-warning/10 border border-warning/20 p-4 rounded-xl text-xs text-warning">
+              <p className="font-semibold mb-1.5 flex items-center gap-1.5"><AlertTriangle className="w-4 h-4"/>Missing Factors Detected</p>
+              <p className="mb-1">Policy: <span className="font-mono bg-warning/20 px-1.5 py-0.5 rounded">{selectedAsset.missing_data_policy}</span></p>
+              <p className="mb-1 text-warning/80">The following factors were unavailable and their weights redistributed (CVE unavailable ≠ CVE risk zero):</p>
+              <ul className="list-disc pl-4 mt-2 font-mono">
                 {selectedAsset.missing_factors.map(mf => <li key={mf}>{mf}</li>)}
               </ul>
             </div>
           )}
 
-          <div className="grid grid-cols-2 gap-4 text-sm mb-4">
+          <div className="grid grid-cols-2 gap-6 text-sm mb-4">
             <div>
-              <p className="text-slate-400 font-semibold mb-2">Factor Contributions</p>
-              {selectedAsset.weighted_contributions && Object.entries(selectedAsset.weighted_contributions).map(([factor, contrib]) => (
-                <div key={factor} className="flex justify-between items-center mb-1 text-xs">
-                  <span className="text-slate-300 font-mono capitalize">{factor.replace('_', ' ')}</span>
-                  <div className="text-right">
-                    <span className="text-slate-400 mr-2">val: {contrib.value?.toFixed(2) ?? 'N/A'}</span>
-                    <span className="text-emerald-400">+{contrib.contribution?.toFixed(3) ?? 'N/A'}</span>
+              <p className="text-muted-foreground text-[10px] uppercase font-bold tracking-wider mb-2.5">Factor Contributions</p>
+              <div className="space-y-1.5">
+                {selectedAsset.weighted_contributions && Object.entries(selectedAsset.weighted_contributions).map(([factor, contrib]) => (
+                  <div key={factor} className="flex justify-between items-center text-xs bg-muted/30 p-1.5 rounded-lg border border-border/50">
+                    <span className="text-foreground font-mono capitalize">{factor.replace('_', ' ')}</span>
+                    <div className="text-right flex items-center gap-2">
+                      <span className="text-muted-foreground text-[10px]">val: {contrib.value?.toFixed(2) ?? 'N/A'}</span>
+                      <span className="text-success font-semibold">+{contrib.contribution?.toFixed(3) ?? 'N/A'}</span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
             
             <div>
-              <p className="text-slate-400 font-semibold mb-2">Heuristic Weights</p>
-              {selectedAsset.weights && Object.entries(selectedAsset.weights).map(([factor, weight]) => (
-                <div key={factor} className="flex justify-between items-center mb-1 text-xs">
-                  <span className="text-slate-300 font-mono capitalize">{factor.replace('_', ' ')}</span>
-                  <span className="text-blue-400 font-mono">{((weight as number) * 100).toFixed(1)}%</span>
-                </div>
-              ))}
+              <p className="text-muted-foreground text-[10px] uppercase font-bold tracking-wider mb-2.5">Heuristic Weights</p>
+              <div className="space-y-1.5">
+                {selectedAsset.weights && Object.entries(selectedAsset.weights).map(([factor, weight]) => (
+                  <div key={factor} className="flex justify-between items-center text-xs bg-muted/30 p-1.5 rounded-lg border border-border/50">
+                    <span className="text-foreground font-mono capitalize">{factor.replace('_', ' ')}</span>
+                    <span className="text-primary font-mono font-bold">{((weight as number) * 100).toFixed(1)}%</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
           
           {evidenceNodes.length > 0 && (
-            <div className="border-t border-slate-700/50 pt-3">
-              <p className="text-slate-400 font-semibold mb-2 flex items-center gap-2"><FileCode className="w-4 h-4" /> Scanner Traceability</p>
+            <div className="border-t border-border pt-4 mt-2">
+              <p className="text-muted-foreground text-[10px] uppercase font-bold tracking-wider mb-3 flex items-center gap-2">
+                <FileCode className="w-3.5 h-3.5" /> Scanner Traceability
+              </p>
               <div className="space-y-2">
                 {evidenceNodes.map((ev, i) => (
-                  <div key={i} className="bg-slate-900/50 p-2 rounded text-xs border border-slate-700/50">
-                    <div className="font-mono text-blue-400 mb-1">{ev.category.toUpperCase()}</div>
-                    <div className="grid grid-cols-2 gap-x-2 gap-y-1">
-                      {ev.library && <><span className="text-slate-500">Library</span><span className="text-slate-300 truncate">{ev.library}</span></>}
-                      {ev.api && <><span className="text-slate-500">API</span><span className="text-slate-300 truncate">{ev.api}</span></>}
-                      {ev.algorithm && <><span className="text-slate-500">Algorithm</span><span className="text-slate-300 truncate">{ev.algorithm}</span></>}
-                      {ev.line && <><span className="text-slate-500">Line</span><span className="text-slate-300">{ev.line}</span></>}
-                      {ev.evidence && <><span className="text-slate-500">Code</span><span className="text-slate-300 font-mono bg-slate-950 px-1 rounded truncate">{ev.evidence}</span></>}
+                  <div key={i} className="bg-muted/30 p-3 rounded-xl text-xs border border-border">
+                    <div className="font-mono text-primary font-semibold mb-2">{ev.category.toUpperCase()}</div>
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                      {ev.library && <div className="flex flex-col"><span className="text-muted-foreground text-[10px] uppercase">Library</span><span className="text-foreground font-medium truncate">{ev.library}</span></div>}
+                      {ev.api && <div className="flex flex-col"><span className="text-muted-foreground text-[10px] uppercase">API</span><span className="text-foreground font-medium truncate">{ev.api}</span></div>}
+                      {ev.algorithm && <div className="flex flex-col"><span className="text-muted-foreground text-[10px] uppercase">Algorithm</span><span className="text-emerald-500 font-medium truncate">{ev.algorithm}</span></div>}
+                      {ev.line && <div className="flex flex-col"><span className="text-muted-foreground text-[10px] uppercase">Line</span><span className="text-foreground font-medium">{ev.line}</span></div>}
+                      {ev.evidence && <div className="col-span-2 flex flex-col mt-1"><span className="text-muted-foreground text-[10px] uppercase mb-1">Code</span><span className="text-foreground font-mono bg-background p-1.5 rounded border border-border truncate">{ev.evidence}</span></div>}
                     </div>
                   </div>
                 ))}

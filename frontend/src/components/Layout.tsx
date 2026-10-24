@@ -5,33 +5,35 @@ import { Shield, Home, Search, Activity, Map, List, Database, AlertTriangle, Net
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 flex font-sans">
-      <aside className="w-64 bg-slate-800 border-r border-slate-700 flex flex-col">
-        <div className="p-4 border-b border-slate-700 flex items-center gap-2">
-          <Shield className="text-emerald-400 w-8 h-8" />
-          <h1 className="text-xl font-bold tracking-tight text-white">AgileGraph</h1>
+    <div className="min-h-screen bg-background text-foreground flex font-sans">
+      <aside className="w-64 bg-card border-r border-border flex flex-col">
+        <div className="p-4 border-b border-border flex items-center gap-2">
+          <div className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-primary to-blue-500 text-white shadow-glow">
+            <Shield className="w-4.5 h-4.5" />
+          </div>
+          <h1 className="text-xl font-bold tracking-tight text-foreground">AgileGraph</h1>
         </div>
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-          <NavLink to="/" className={({isActive}: {isActive: boolean}) => `flex items-center gap-2 p-2 rounded-md ${isActive ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-700'}`}><Home className="w-5 h-5"/> Overview</NavLink>
-          <NavLink to="/inventory" className={({isActive}: {isActive: boolean}) => `flex items-center gap-2 p-2 rounded-md ${isActive ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-700'}`}><Database className="w-5 h-5"/> Crypto Inventory</NavLink>
-          <NavLink to="/risk" className={({isActive}: {isActive: boolean}) => `flex items-center gap-2 p-2 rounded-md ${isActive ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-700'}`}><AlertTriangle className="w-5 h-5"/> Risk Analysis</NavLink>
-          <NavLink to="/pqc-readiness" className={({isActive}: {isActive: boolean}) => `flex items-center gap-2 p-2 rounded-md ${isActive ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-700'}`}><Activity className="w-5 h-5"/> PQC Readiness</NavLink>
-          <NavLink to="/mosca" className={({isActive}: {isActive: boolean}) => `flex items-center gap-2 p-2 rounded-md ${isActive ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-700'}`}><Search className="w-5 h-5"/> Mosca Readiness</NavLink>
-          <NavLink to="/priority" className={({isActive}: {isActive: boolean}) => `flex items-center gap-2 p-2 rounded-md ${isActive ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-700'}`}><List className="w-5 h-5"/> Migration Priority</NavLink>
-          <NavLink to="/roadmap" className={({isActive}: {isActive: boolean}) => `flex items-center gap-2 p-2 rounded-md ${isActive ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-700'}`}><Map className="w-5 h-5"/> Migration Roadmap</NavLink>
-          <NavLink to="/graph" className={({isActive}: {isActive: boolean}) => `flex items-center gap-2 p-2 rounded-md ${isActive ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-700'}`}><Network className="w-5 h-5"/> Crypto Graph</NavLink>
-          <NavLink to="/reports" className={({isActive}: {isActive: boolean}) => `flex items-center gap-2 p-2 rounded-md ${isActive ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-700'}`}><PieChart className="w-5 h-5"/> Reports</NavLink>
+          <NavLink to="/" className={({isActive}: {isActive: boolean}) => `flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}><Home className="w-4 h-4"/> Overview</NavLink>
+          <NavLink to="/inventory" className={({isActive}: {isActive: boolean}) => `flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}><Database className="w-4 h-4"/> Crypto Inventory</NavLink>
+          <NavLink to="/risk" className={({isActive}: {isActive: boolean}) => `flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}><AlertTriangle className="w-4 h-4"/> Risk Analysis</NavLink>
+          <NavLink to="/pqc-readiness" className={({isActive}: {isActive: boolean}) => `flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}><Activity className="w-4 h-4"/> PQC Readiness</NavLink>
+          <NavLink to="/mosca" className={({isActive}: {isActive: boolean}) => `flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}><Search className="w-4 h-4"/> Mosca Readiness</NavLink>
+          <NavLink to="/priority" className={({isActive}: {isActive: boolean}) => `flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}><List className="w-4 h-4"/> Migration Priority</NavLink>
+          <NavLink to="/roadmap" className={({isActive}: {isActive: boolean}) => `flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}><Map className="w-4 h-4"/> Migration Roadmap</NavLink>
+          <NavLink to="/graph" className={({isActive}: {isActive: boolean}) => `flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}><Network className="w-4 h-4"/> Crypto Graph</NavLink>
+          <NavLink to="/reports" className={({isActive}: {isActive: boolean}) => `flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}><PieChart className="w-4 h-4"/> Reports</NavLink>
         </nav>
       </aside>
       <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="bg-slate-800 border-b border-slate-700 p-4 shadow-md flex items-center justify-end">
-          <div className="flex items-center gap-4 text-sm font-mono text-slate-400 bg-slate-900 px-3 py-1 rounded-md border border-slate-700">
-            <span>GATv2: <span className="text-amber-400">BLOCKED</span></span>
-            <span className="text-slate-600">|</span>
-            <span>Expert Validation: <span className="text-amber-400">PENDING_EXPERT_LABELS</span></span>
+        <header className="bg-background/70 backdrop-blur-xl border-b border-border p-4 sticky top-0 z-40 flex items-center justify-end">
+          <div className="flex items-center gap-4 text-xs font-mono text-muted-foreground bg-card px-3 py-1.5 rounded-full border border-border shadow-sm">
+            <span>GATv2: <span className="text-muted-foreground font-semibold">ARCHITECTURAL_PROTOTYPE</span></span>
+            <span className="text-border">|</span>
+            <span>Evaluation: <span className="text-emerald-500 font-semibold">DETERMINISTIC_HEURISTIC</span></span>
           </div>
         </header>
-        <main className="flex-1 p-6 overflow-auto">
+        <main className="flex-1 p-6 md:p-8 overflow-auto">
           {children}
         </main>
       </div>

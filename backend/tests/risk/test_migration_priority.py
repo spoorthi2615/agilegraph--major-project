@@ -13,13 +13,13 @@ def test_missing_evidence():
     assert res.evidence_status == "Missing 1 factors"
 
 def test_informational_fields_do_not_change_priority():
-    res1 = calculate_migration_priority("A", 0.4, MoscaStatus.NOT_AT_RISK, [], migration_difficulty=0.9, algorithm="rsa")
-    res2 = calculate_migration_priority("A", 0.4, MoscaStatus.NOT_AT_RISK, ["data_sensitivity"], migration_difficulty=None, algorithm="unknown")
+    res1 = calculate_migration_priority("A", 0.4, MoscaStatus.SAFE, [], migration_difficulty=0.9, algorithm="rsa")
+    res2 = calculate_migration_priority("A", 0.4, MoscaStatus.SAFE, ["data_sensitivity"], migration_difficulty=None, algorithm="unknown")
     assert res1.priority == res2.priority
     assert res1.priority == PriorityLevel.LOW
 
 def test_mosca_planning_urgency_elevates_priority_without_changing_risk():
-    res_base = calculate_migration_priority("A", 0.6, MoscaStatus.NOT_AT_RISK, [])
+    res_base = calculate_migration_priority("A", 0.6, MoscaStatus.SAFE, [])
     assert res_base.priority == PriorityLevel.MEDIUM
     assert res_base.risk_score == 0.6
 
@@ -28,16 +28,34 @@ def test_mosca_planning_urgency_elevates_priority_without_changing_risk():
     assert res_elevated.risk_score == 0.6  # Risk score MUST remain unchanged
     assert "Elevated due to AT_RISK planning urgency" in res_elevated.rationale
 
+def test_mosca_urgent_band_with_internet_exposure():
+    # Moderate risk (0.6) + URGENT + INTERNET_FACING -> HIGH
+    res_exp = calculate_migration_priority(
+        "A", 0.6, MoscaStatus.URGENT, [], exposure_posture="INTERNET_FACING"
+    )
+    assert res_exp.priority == PriorityLevel.HIGH
+    assert "INTERNET_FACING" in res_exp.rationale
+
+    # Moderate risk (0.6) + URGENT + INTERNAL -> MEDIUM
+    res_int = calculate_migration_priority(
+        "A", 0.6, MoscaStatus.URGENT, [], exposure_posture="INTERNAL"
+    )
+    assert res_int.priority == PriorityLevel.MEDIUM
+
 def test_mosca_planning_urgency_on_low_risk():
-    res_base = calculate_migration_priority("A", 0.3, MoscaStatus.NOT_AT_RISK, [])
+    res_base = calculate_migration_priority("A", 0.3, MoscaStatus.SAFE, [])
     assert res_base.priority == PriorityLevel.LOW
 
     res_elevated = calculate_migration_priority("A", 0.3, MoscaStatus.AT_RISK, [])
     assert res_elevated.priority == PriorityLevel.MEDIUM
     assert res_elevated.risk_score == 0.3  # Risk score MUST remain unchanged
 
+    # Low risk + AT_RISK + INTERNET_FACING -> HIGH
+    res_exp = calculate_migration_priority("A", 0.3, MoscaStatus.AT_RISK, [], exposure_posture="INTERNET_FACING")
+    assert res_exp.priority == PriorityLevel.HIGH
+
 def test_critical_risk_is_high_regardless_of_mosca():
-    res = calculate_migration_priority("A", 0.9, MoscaStatus.NOT_AT_RISK, [])
+    res = calculate_migration_priority("A", 0.9, MoscaStatus.SAFE, [])
     assert res.priority == PriorityLevel.HIGH
     assert res.risk_score == 0.9
 
@@ -45,15 +63,15 @@ def test_deterministic_ordering_and_tie_breaking():
     # Tie breaking is: Priority -> -Risk -> Mosca -> Asset ID
     assets = [
         calculate_migration_priority("C", 0.6, MoscaStatus.AT_RISK, []),        # HIGH (0.6, AT_RISK)
-        calculate_migration_priority("A", 0.9, MoscaStatus.NOT_AT_RISK, []),    # HIGH (0.9, NOT_AT_RISK)
-        calculate_migration_priority("B", 0.9, MoscaStatus.NOT_AT_RISK, []),    # HIGH (0.9, NOT_AT_RISK)
-        calculate_migration_priority("D", 0.4, MoscaStatus.NOT_AT_RISK, []),    # LOW (0.4, NOT_AT_RISK)
-        calculate_migration_priority("E", 0.4, MoscaStatus.AT_RISK, [])         # MEDIUM (0.4, AT_RISK)
+        calculate_migration_priority("A", 0.9, MoscaStatus.SAFE, []),           # HIGH (0.9, SAFE)
+        calculate_migration_priority("B", 0.9, MoscaStatus.SAFE, []),           # HIGH (0.9, SAFE)
+        calculate_migration_priority("D", 0.4, MoscaStatus.SAFE, []),           # LOW (0.4, SAFE)
+        calculate_migration_priority("E", 0.4, MoscaStatus.AT_RISK, [])          # MEDIUM (0.4, AT_RISK)
     ]
     assets_sorted = sorted(assets, key=lambda x: x.sort_key)
     
-    assert assets_sorted[0].sort_key[-1] == "A" # HIGH, 0.9, A
-    assert assets_sorted[1].sort_key[-1] == "B" # HIGH, 0.9, B
-    assert assets_sorted[2].sort_key[-1] == "C" # HIGH, 0.6, C
-    assert assets_sorted[3].sort_key[-1] == "E" # MEDIUM, 0.4, E
-    assert assets_sorted[4].sort_key[-1] == "D" # LOW, 0.4, D
+    assert assets_sorted[0].sort_key[-1] == "A"  # HIGH, 0.9, A
+    assert assets_sorted[1].sort_key[-1] == "B"  # HIGH, 0.9, B
+    assert assets_sorted[2].sort_key[-1] == "C"  # HIGH, 0.6, C
+    assert assets_sorted[3].sort_key[-1] == "E"  # MEDIUM, 0.4, E
+    assert assets_sorted[4].sort_key[-1] == "D"  # LOW, 0.4, D
