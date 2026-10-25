@@ -20,6 +20,10 @@ BENCHMARK_REPOS = [
 ]
 
 
+@pytest.mark.skipif(
+    not os.path.exists(CORPUS_ROOT) or not all(os.path.exists(os.path.join(CORPUS_ROOT, r[0])) for r in BENCHMARK_REPOS),
+    reason="dataset/corpus/ not found on disk (corpus is gitignored or not cloned in CI environment)"
+)
 def test_file_accounting_zero_untracked_discrepancy():
     """
     Asserts that every pinned repository has 0 discrepancy between
