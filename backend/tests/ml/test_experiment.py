@@ -28,11 +28,15 @@ def test_weak_supervision_training():
         label_source=LabelRegime.WEAK_SUPERVISION,
         model_configuration=ModelType.GATV2,
         seed=42,
+        epochs=2,
         software_version="1.0"
     )
     trainer = ModelTrainer(manifest)
     res = trainer.run_training_loop()
-    assert res["status"] == "INFRASTRUCTURE_READY"
+    assert res["status"] == "COMPLETED"
+    assert "metrics" in res
+    assert 0.0 <= res["metrics"]["accuracy"] <= 1.0
+    assert 0.0 <= res["metrics"]["macro_f1"] <= 1.0
 
 def test_leakage_ablation_infrastructure():
     manifest = ExperimentManifest(
@@ -44,8 +48,12 @@ def test_leakage_ablation_infrastructure():
         label_source=LabelRegime.WEAK_SUPERVISION,
         model_configuration=ModelType.GATV2,
         seed=42,
+        epochs=2,
         software_version="1.0"
     )
     trainer = ModelTrainer(manifest)
     res = trainer.run_leakage_ablation()
-    assert res["status"] == "INFRASTRUCTURE_READY"
+    assert res["status"] == "COMPLETED"
+    assert "without_base_risk" in res
+    assert "with_base_risk" in res
+    assert "leakage_gain_accuracy" in res

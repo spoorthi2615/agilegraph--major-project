@@ -343,6 +343,26 @@ def run_comprehensive_lopo_evaluation(artifacts, global_meta, seed=42, epochs=15
         shuf_acc = float(np.mean(np.array(fold_shuf_preds) == test_trues))
         leak_acc = float(np.mean(np.array(fold_leak_preds) == test_trues))
 
+        if test_pid == "python_cryptography":
+            f7_trues_arr = np.array(test_trues)
+            f7_shuf_arr = np.array(fold_shuf_preds)
+            f7_train_arr = np.array(train_labels)
+            f7_high_weight_val = float(weights[2])
+            f7_low_weight_val = float(weights[0])
+            f7_stats = {
+                "total_files": len(f7_trues_arr),
+                "train_high": int((f7_train_arr == 2).sum()),
+                "train_total": len(f7_train_arr),
+                "train_high_pct": (int((f7_train_arr == 2).sum()) / len(f7_train_arr)) * 100 if len(f7_train_arr) > 0 else 0.0,
+                "high_weight": f7_high_weight_val,
+                "weight_ratio": (f7_high_weight_val / f7_low_weight_val) if f7_low_weight_val > 0 else 0.0,
+                "pred_high": int((f7_shuf_arr == 2).sum()),
+                "true_high": int((f7_trues_arr == 2).sum()),
+                "high_tp": int(((f7_trues_arr == 2) & (f7_shuf_arr == 2)).sum()),
+                "true_med": int((f7_trues_arr == 1).sum()),
+                "med_as_high": int(((f7_trues_arr == 1) & (f7_shuf_arr == 2)).sum())
+            }
+
         fold_records.append({
             "fold": fold_idx + 1,
             "held_out_project": test_pid,
@@ -422,6 +442,20 @@ def run_comprehensive_lopo_evaluation(artifacts, global_meta, seed=42, epochs=15
         f"{m_maj['macro_f1']:<8.4f} | {'N/A':<17} | {m_maj.get('class_2_recall', 0)*100:6.2f}%"
     )
 
+    shuf_high_tp = int(((y_true == 2) & (p_shuf == 2)).sum())
+    shuf_high_pred_total = int((p_shuf == 2).sum())
+    shuf_high_recall_pct = m_shuf.get("class_2_recall", 0) * 100
+    shuf_high_prec_pct = m_shuf.get("class_2_precision", 0) * 100
+
+    degeneracy_note = (
+        f"Edge-shuffled control achieves {shuf_high_recall_pct:.2f}% HIGH recall due to an optimization degeneracy: "
+        f"in Fold 7 (python_cryptography), where training data has only {f7_stats.get('train_high', 4)} HIGH files ({f7_stats.get('train_high_pct', 1.1):.1f}%), "
+        f"the inverse-frequency class weight for HIGH is {f7_stats.get('high_weight', 28.5):.1f} ({f7_stats.get('weight_ratio', 68.9):.1f}x class 0). Under randomized message "
+        f"passing, the noisy unconstrained network overpredicts HIGH ({f7_stats.get('pred_high', 175)}/{f7_stats.get('total_files', 178)} files in fold 7), "
+        f"catching {f7_stats.get('high_tp', 99)}/{f7_stats.get('true_high', 99)} True HIGH files but also misclassifying {f7_stats.get('med_as_high', 76)} of {f7_stats.get('true_med', 77)} True MEDIUM files as High. "
+        f"Consequently, its HIGH precision collapses to {shuf_high_prec_pct:.1f}% ({shuf_high_tp}/{shuf_high_pred_total})."
+    )
+
     return {
         "fold_records": fold_records,
         "fold_level_summary": fold_level_summary,
@@ -432,14 +466,7 @@ def run_comprehensive_lopo_evaluation(artifacts, global_meta, seed=42, epochs=15
         "edge_shuffled_gatv2": {
             **m_shuf,
             **ci_shuf,
-            "degeneracy_note": (
-                "Edge-shuffled control achieves 97.09% HIGH recall due to an optimization degeneracy: "
-                "in Fold 7 (python_cryptography), where training data has only 4 HIGH files (1.1%), "
-                "the inverse-frequency class weight for HIGH is 28.5 (68.5x class 0). Under randomized message "
-                "passing, the noisy unconstrained network overpredicts HIGH (175/178 files in fold 7), "
-                "catching 99/99 True HIGH files but also misclassifying 76 of 77 True MEDIUM files as High. "
-                "Consequently, its HIGH precision collapses to 54.6% (100/183)."
-            )
+            "degeneracy_note": degeneracy_note
         },
         "target_leaked_gatv2": {**m_leak, **ci_leak},
         "majority": m_maj,
@@ -638,13 +665,64 @@ def run_leakage_ablation(artifacts, global_meta, seed=42, epochs=15, lopo_res=No
         clean_f1 = round(lopo_res["gatv2"]["macro_f1"], 4)
         leak_acc = round(lopo_res["target_leaked_gatv2"]["accuracy"], 4)
         leak_f1 = round(lopo_res["target_leaked_gatv2"]["macro_f1"], 4)
-        gain_str = f"+{(leak_acc - clean_acc)*100:.2f}%"
     else:
-        clean_acc = 0.6673
-        clean_f1 = 0.5560
-        leak_acc = 0.9673
-        leak_f1 = 0.9645
-        gain_str = "+30.00%"
+        # Dynamically compute cross-repository out-of-fold generalization on held-out python_cryptography
+        train_pids = [p for p in artifacts.keys() if p != "python_cryptography"]
+        test_d = artifacts["python_cryptography"]
+        test_trues = test_d["file"].y.cpu().numpy()
+
+        train_labels = []
+        for p in train_pids:
+            train_labels.extend(artifacts[p]["file"].y.tolist())
+        train_labels = np.array(train_labels)
+        counts = np.bincount(train_labels, minlength=3)
+        weights = len(train_labels) / (3.0 * np.maximum(counts, 1))
+        criterion = nn.CrossEntropyLoss(weight=torch.tensor(weights, dtype=torch.float32))
+
+        # 1. Clean GATv2 out-of-fold
+        set_seed(seed)
+        m_oof_clean = create_hetero_gatv2(global_meta, hidden_channels=32, num_heads=2)
+        p_oof_clean = TrainingPipeline(m_oof_clean, {"seed": seed})
+        opt_oof_clean = optim.Adam(m_oof_clean.parameters(), lr=0.005)
+        for _ in range(epochs):
+            for pid in train_pids:
+                p_oof_clean.train_step(artifacts[pid], opt_oof_clean, criterion)
+        m_oof_clean.eval()
+        with torch.no_grad():
+            oof_preds_clean = m_oof_clean(test_d.x_dict, test_d.edge_index_dict)["file"].argmax(dim=-1).cpu().numpy()
+        m_clean_oof = EvaluationMetrics.calculate_classification_metrics(test_trues, oof_preds_clean, target_classes=[0, 1, 2])
+        clean_acc = round(float(m_clean_oof["accuracy"]), 4)
+        clean_f1 = round(float(m_clean_oof["macro_f1"]), 4)
+
+        # 2. Leaked GATv2 out-of-fold
+        def make_leaked(d_in):
+            d_out = copy.deepcopy(d_in)
+            leak_col = torch.tensor(
+                [[0.15 if y == 0 else 0.45 if y == 1 else 0.85] for y in d_in["file"].y],
+                dtype=torch.float32
+            )
+            d_out["file"].x = torch.cat([d_out["file"].x, leak_col], dim=-1)
+            return d_out
+
+        leak_train = {pid: make_leaked(artifacts[pid]) for pid in train_pids}
+        leak_test = make_leaked(test_d)
+
+        set_seed(seed)
+        m_oof_leak = create_hetero_gatv2(global_meta, hidden_channels=32, num_heads=2)
+        p_oof_leak = TrainingPipeline(m_oof_leak, {"seed": seed})
+        opt_oof_leak = optim.Adam(m_oof_leak.parameters(), lr=0.005)
+        for _ in range(epochs):
+            for pid in train_pids:
+                p_oof_leak.train_step(leak_train[pid], opt_oof_leak, criterion)
+        m_oof_leak.eval()
+        with torch.no_grad():
+            oof_preds_leak = m_oof_leak(leak_test.x_dict, leak_test.edge_index_dict)["file"].argmax(dim=-1).cpu().numpy()
+        m_leak_oof = EvaluationMetrics.calculate_classification_metrics(test_trues, oof_preds_leak, target_classes=[0, 1, 2])
+        leak_acc = round(float(m_leak_oof["accuracy"]), 4)
+        leak_f1 = round(float(m_leak_oof["macro_f1"]), 4)
+
+    gain_acc = leak_acc - clean_acc
+    gain_str = f"+{gain_acc*100:.2f}%" if gain_acc >= 0 else f"{gain_acc*100:.2f}%"
 
     return {
         "intra_repo_resubstitution": {

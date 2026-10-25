@@ -1,6 +1,6 @@
 {
-  "execution_timestamp": "2026-10-25T21:27:26Z",
-  "total_elapsed_seconds": 82.31,
+  "execution_timestamp": "2026-10-25T21:40:56Z",
+  "total_elapsed_seconds": 102.07,
   "total_repositories": 8,
   "total_file_assets": 520,
   "evaluation_protocol": "8-Fold Leave-One-Project-Out (LOPO) Cross-Validation",
@@ -1294,7 +1294,7 @@
         0.7464
       ],
       "methodological_caveat": "These intervals are computed by resampling individual file predictions pooled across all 8 LOPO folds (N=520). They characterize descriptive within-sample estimation stability, NOT cluster-robust project-level generalization uncertainty. Because software repositories have clustered topologies and disparate sizes (1 to 178 files), a project-level cluster bootstrap with K=8 is statistically underpowered and volatile (e.g. 34.4% of project bootstrap samples omit the largest project python_cryptography). Project-level generalization uncertainty is properly characterized by the unweighted fold-level metrics.",
-      "degeneracy_note": "Edge-shuffled control achieves 97.09% HIGH recall due to an optimization degeneracy: in Fold 7 (python_cryptography), where training data has only 4 HIGH files (1.1%), the inverse-frequency class weight for HIGH is 28.5 (68.5x class 0). Under randomized message passing, the noisy unconstrained network overpredicts HIGH (175/178 files in fold 7), catching 99/99 True HIGH files but also misclassifying 76 of 77 True MEDIUM files as High. Consequently, its HIGH precision collapses to 54.6% (100/183)."
+      "degeneracy_note": "Edge-shuffled control achieves 97.09% HIGH recall due to an optimization degeneracy: in Fold 7 (python_cryptography), where training data has only 4 HIGH files (1.2%), the inverse-frequency class weight for HIGH is 28.5 (68.5x class 0). Under randomized message passing, the noisy unconstrained network overpredicts HIGH (175/178 files in fold 7), catching 99/99 True HIGH files but also misclassifying 76 of 77 True MEDIUM files as High. Consequently, its HIGH precision collapses to 54.6% (100/183)."
     },
     "target_leaked_gatv2": {
       "class_0_precision": 0.9748201438848921,
