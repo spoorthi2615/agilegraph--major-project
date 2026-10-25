@@ -7,7 +7,7 @@ from src.pipeline.runner import run_pipeline
 
 BACKEND_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 CORPUS_ROOT = os.path.join(BACKEND_DIR, "dataset", "corpus")
-BENCHMARK_DIR = os.path.join(BACKEND_DIR, "dataset", "benchmark_step3")
+BENCHMARK_DIR = os.path.join(BACKEND_DIR, "dataset", "benchmark")
 BENCHMARK_REPOS = [
     ("python_itsdangerous", 50),
     ("python_bcrypt", 23),

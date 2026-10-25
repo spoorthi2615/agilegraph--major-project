@@ -13,7 +13,7 @@ from src.graph.graph import AgileGraph
 from src.graph.schema import GraphNode, GraphEdge
 
 BACKEND_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-BENCHMARK_DIR = os.path.join(BACKEND_DIR, "dataset", "benchmark_step3")
+BENCHMARK_DIR = os.path.join(BACKEND_DIR, "dataset", "benchmark")
 CORPUS_DIR = os.path.join(BACKEND_DIR, "dataset", "corpus")
 
 def test_benchmark_manifest_structure_and_pinned_revisions():

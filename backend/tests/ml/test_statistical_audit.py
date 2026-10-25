@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from run_benchmark_step3 import compute_baseline_statistics
+from scripts.run_benchmark import compute_baseline_statistics
 
 
 def test_statistics_constant_rankings_zero_variance():

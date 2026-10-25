@@ -15,7 +15,12 @@ from scipy import stats
 from datetime import datetime, timezone
 from typing import Dict, Any, List
 
-sys.path.insert(0, os.path.abspath("src"))
+BACKEND_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if BACKEND_DIR not in sys.path:
+    sys.path.insert(0, BACKEND_DIR)
+src_dir = os.path.join(BACKEND_DIR, "src")
+if src_dir not in sys.path:
+    sys.path.insert(0, src_dir)
 
 from src.pipeline.runner import run_pipeline
 from src.ml.baselines import HeuristicBaseline, RuleBasedBaseline
@@ -99,8 +104,8 @@ BENCHMARK_REPOS = [
     }
 ]
 
-CORPUS_ROOT = "dataset/corpus"
-OUTPUT_DIR = "dataset/benchmark_step3"
+CORPUS_ROOT = os.path.join(BACKEND_DIR, "dataset", "corpus")
+OUTPUT_DIR = os.path.join(BACKEND_DIR, "dataset", "benchmark")
 
 
 def compute_baseline_statistics(h_scores: List[float], r_scores: List[float]) -> Dict[str, Any]:
