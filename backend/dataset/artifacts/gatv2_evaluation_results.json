@@ -1,6 +1,6 @@
 {
-  "execution_timestamp": "2026-10-25T19:23:29Z",
-  "total_elapsed_seconds": 43.37,
+  "execution_timestamp": "2026-10-25T21:27:26Z",
+  "total_elapsed_seconds": 82.31,
   "total_repositories": 8,
   "total_file_assets": 520,
   "evaluation_protocol": "8-Fold Leave-One-Project-Out (LOPO) Cross-Validation",
@@ -1386,7 +1386,7 @@
         2
       ]
     },
-    "empirical_finding": "Under cross-repository Leave-One-Project-Out (LOPO) evaluation, the Non-Graph MLP baseline achieves 81.22% +/- 0.55% accuracy (Macro-F1 0.7022 +/- 0.0040 across seeds) compared to GATv2's 71.60% +/- 6.09% (Macro-F1 0.6163 +/- 0.0810). Graph message passing exhibits cross-codebase topological sensitivity, demonstrating that local risk factor features dominate weak-label tier prediction."
+    "empirical_finding": "Under cross-repository Leave-One-Project-Out (LOPO) evaluation (seed=42), the Non-Graph MLP baseline achieves 81.92% accuracy (Macro-F1 0.7073, 95% CI [78.8%, 85.0%]) compared to GATv2's 66.73% (Macro-F1 0.5560, 95% CI [62.7%, 70.6%]). Graph message passing exhibits cross-codebase topological sensitivity, demonstrating that local risk factor features dominate weak-label tier prediction."
   },
   "task3_baselines_and_rank_correlation": {
     "rule_baseline": {
@@ -1500,5 +1500,76 @@
       }
     }
   },
-  "scientific_limitation_statement": "The GATv2 prototype is evaluated against heuristic-derived risk tiers. Its results characterize agreement with the heuristic labeling procedure and do not establish independent prediction of real-world cryptographic risk. Controlled comparisons against non-graph and graph-structure baselines reveal that local node factors dominate weak-tier prediction."
+  "scientific_limitation_statement": "The GATv2 prototype is evaluated against heuristic-derived risk tiers. Its results characterize agreement with the heuristic labeling procedure and do not establish independent prediction of real-world cryptographic risk. Controlled comparisons against non-graph and graph-structure baselines reveal that local node factors dominate weak-tier prediction.",
+  "task4_multi_seed_stability": {
+    "seeds": [
+      42,
+      100,
+      2026
+    ],
+    "epochs": 15,
+    "seed_records": {
+      "42": {
+        "gatv2": {
+          "accuracy": 0.6673,
+          "macro_f1": 0.556
+        },
+        "mlp": {
+          "accuracy": 0.8192,
+          "macro_f1": 0.7073
+        },
+        "edge_shuffled_gatv2": {
+          "accuracy": 0.7885,
+          "macro_f1": 0.7067
+        }
+      },
+      "100": {
+        "gatv2": {
+          "accuracy": 0.6788,
+          "macro_f1": 0.5621
+        },
+        "mlp": {
+          "accuracy": 0.8058,
+          "macro_f1": 0.6976
+        },
+        "edge_shuffled_gatv2": {
+          "accuracy": 0.7558,
+          "macro_f1": 0.6568
+        }
+      },
+      "2026": {
+        "gatv2": {
+          "accuracy": 0.8019,
+          "macro_f1": 0.7307
+        },
+        "mlp": {
+          "accuracy": 0.8115,
+          "macro_f1": 0.7016
+        },
+        "edge_shuffled_gatv2": {
+          "accuracy": 0.7904,
+          "macro_f1": 0.7167
+        }
+      }
+    },
+    "non_graph_mlp": {
+      "mean_accuracy": 0.8122,
+      "std_accuracy": 0.0068,
+      "mean_macro_f1": 0.7022,
+      "std_macro_f1": 0.0049
+    },
+    "heterogeneous_gatv2": {
+      "mean_accuracy": 0.716,
+      "std_accuracy": 0.0746,
+      "mean_macro_f1": 0.6163,
+      "std_macro_f1": 0.0991
+    },
+    "edge_shuffled_gatv2": {
+      "mean_accuracy": 0.7782,
+      "std_accuracy": 0.0195,
+      "mean_macro_f1": 0.6934,
+      "std_macro_f1": 0.0321
+    },
+    "empirical_finding": "Across 3 random seeds ([42, 100, 2026]), Non-Graph MLP achieves 81.22% +/- 0.68% accuracy (Macro-F1 0.7022 +/- 0.0049) compared to GATv2's 71.60% +/- 7.46% (Macro-F1 0.6163 +/- 0.0991). Graph message passing exhibits cross-codebase topological sensitivity, demonstrating that local risk factor features dominate weak-label tier prediction."
+  }
 }

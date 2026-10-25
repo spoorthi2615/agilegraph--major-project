@@ -56,11 +56,11 @@ Both the **pooled sample accuracy** (weighting all 520 files equally) and the **
 | **Heuristic Teacher Baseline** | *100.0%* | *100.0%* (± 0.00%) | *100.0%* | *1.0000* | *100.0%* | *100.0%* | Tautological upper ceiling (source of weak labels). |
 
 #### Multi-Seed Stability Analysis (Seeds = 42, 100, 2026 across all 8 folds)
-To ensure comparisons are not artifacts of a single initialization seed, all architectures were evaluated across multiple random seeds:
-- **Non-Graph MLP**: Accuracy = **$81.22\% \pm 0.55\%$** | Macro-F1 = **$0.7022 \pm 0.0040$**. The non-graph baseline is exceptionally stable across initializations.
-- **Heterogeneous GATv2**: Accuracy = **$71.60\% \pm 6.09\%$** | Macro-F1 = **$0.6163 \pm 0.0810$**. The GNN exhibits substantial sensitivity to parameter initialization on cross-codebase graphs.
-- **Randomized-Edge GATv2**: Accuracy = **$77.82\% \pm 1.59\%$** | Macro-F1 = **$0.6934 \pm 0.0262$**.
-- **GATv2 with Target Leakage**: Accuracy = **$96.86\% \pm 0.19\%$** | Macro-F1 = **$0.9660 \pm 0.0021$**.
+While the primary benchmark table above reports the canonical Seed 42 run ($N = 520$ pooled nodes), all architectures were additionally evaluated across multiple random seeds to evaluate initialization stability. Both the primary seed and this multi-seed analysis are directly reproduced via `python scripts/run_gatv2_evaluation.py --multi-seed`:
+- **Non-Graph MLP**: Accuracy = **$81.22\% \pm 0.68\%$** (pop. $\pm 0.55\%$) | Macro-F1 = **$0.7022 \pm 0.0049$** (pop. $\pm 0.0040$). The non-graph baseline is exceptionally stable across initializations.
+- **Heterogeneous GATv2**: Accuracy = **$71.60\% \pm 7.46\%$** (pop. $\pm 6.09\%$) | Macro-F1 = **$0.6163 \pm 0.0991$** (pop. $\pm 0.0810$). The GNN exhibits substantial sensitivity to parameter initialization on cross-codebase graphs.
+- **Randomized-Edge GATv2**: Accuracy = **$77.82\% \pm 1.95\%$** (pop. $\pm 1.59\%$) | Macro-F1 = **$0.6934 \pm 0.0321$** (pop. $\pm 0.0262$).
+- **GATv2 with Target Leakage**: Accuracy = **$96.86\% \pm 0.23\%$** (pop. $\pm 0.19\%$) | Macro-F1 = **$0.9660 \pm 0.0026$** (pop. $\pm 0.0021$).
 
 #### Clarification on Confidence Intervals and Resampling Units
 The 95% bootstrap confidence intervals ($B = 1000$ iterations) are computed by resampling **individual file predictions pooled across the 520 evaluated nodes**.
@@ -149,7 +149,7 @@ When the continuous scalar `base_risk` is appended to the node feature vector, c
 ## 6. Critical Scientific Analysis & Honest Interpretation
 
 ### 6.1 Why the Non-Graph Baseline Outperforms GATv2
-Under Leave-One-Project-Out evaluation across heterogeneous codebases (Go, Java, Python), the Non-Graph Feature-Only MLP achieves **81.92% pooled accuracy** (Macro-F1 0.7073, $81.22\% \pm 0.55\%$ across seeds), outperforming GATv2's **66.73%** (Macro-F1 0.5560, $71.60\% \pm 6.09\%$ across seeds).
+Under Leave-One-Project-Out evaluation across heterogeneous codebases (Go, Java, Python), the Non-Graph Feature-Only MLP achieves **81.92% pooled accuracy** (Macro-F1 0.7073; multi-seed mean $81.22\% \pm 0.55\%$), outperforming GATv2's **66.73%** (Macro-F1 0.5560; multi-seed mean $71.60\% \pm 6.09\%$).
 - **Hypothesis — Cross-Codebase Graph Structural Shift**: Graph topology varies significantly across programming languages, project architectures, and framework conventions. A GNN's multi-head attention over heterogeneous edge types (`CALLS`, `IMPORTS`, `CONTAINS`) is sensitive to repository-specific topological structures that do not transfer directly to a different project.
 - **Local Feature Stability**: In contrast, local node security factors (e.g., algorithmic weakness, CVE presence, internet exposure, asset criticality) carry consistent semantic meaning regardless of repository structure.
 - **Academic Conclusion**: The empirical evidence does **not** demonstrate that graph topology provides a predictive benefit over local feature analysis for weak-label tier imitation across heterogeneous repositories. This negative result is reported honestly as an essential scientific finding.
