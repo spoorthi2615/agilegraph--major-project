@@ -161,3 +161,42 @@ def rank_assets(assets: Dict[str, RiskScoreResult]) -> List[Tuple[int, str, Opti
         ranking.append((rank, asset_id, result.score))
         
     return ranking
+
+
+def derive_heuristic_label(
+    score: Optional[float], 
+    low_threshold: float = 0.30, 
+    high_threshold: float = 0.60
+) -> Optional[dict]:
+    """
+    Derives a weak-supervision 3-class target label from a continuous heuristic risk score.
+    Classes:
+      - 0 (LOW): score < low_threshold
+      - 1 (MEDIUM): low_threshold <= score < high_threshold
+      - 2 (HIGH): score >= high_threshold
+    
+    Returns a dictionary suitable for 'heuristic_label' properties:
+      {'class_idx': int, 'confidence': 0.5}
+    Returns None if the score is None or invalid, preserving missing/unrated data.
+    """
+    if score is None:
+        return None
+    try:
+        val = float(score)
+    except (TypeError, ValueError):
+        return None
+
+    if not (0.0 <= val <= 1.0):
+        return None
+
+    if val < low_threshold:
+        class_idx = 0
+    elif val < high_threshold:
+        class_idx = 1
+    else:
+        class_idx = 2
+
+    return {
+        "class_idx": class_idx,
+        "confidence": 0.5
+    }

@@ -15,8 +15,8 @@ This document provides a comprehensive, section-by-section traceability matrix d
 | **Section 5.4: 7-Factor Heuristic Scoring** | Deterministic score in $[0.0, 1.0]$. Externalized weights in JSON summing to 1.0. Explicit missing-data policies (`RENORMALIZE`, `CONSERVATIVE`). | `backend/src/config/heuristic_weights.json`<br/>`backend/src/risk/weights.py`<br/>`backend/src/risk/score.py`<br/>`backend/src/risk/heuristic.py`<br/>`backend/src/risk/criticality.py` | `tests/risk/test_heuristic.py`<br/>`tests/risk/test_score.py`<br/>`tests/risk/test_criticality.py`<br/>`tests/risk/test_factor_extractor.py` | **100% COMPLIANT** |
 | **Section 5.5: Mosca Theorem & Triage Matrix** | Mosca readiness index $U = (x+y)/z$ with 3 bands (`AT_RISK`, `URGENT`, `SAFE`). Migration triage $f(\text{base\_risk}, \text{mosca\_urgency}, \text{exposure\_posture})$. | `backend/src/risk/mosca.py`<br/>`backend/src/risk/migration_priority.py`<br/>`backend/src/api/product_routes.py` | `tests/risk/test_mosca.py`<br/>`tests/risk/test_migration_priority.py`<br/>`docs/TRIAGE_SPEC.md` | **100% COMPLIANT** |
 | **Section 5.6: Migration Lifecycle & Storage** | 6 exact lifecycle states (`DISCOVERED`, `EVALUATED`, `IN_PLANNING`, `IN_MIGRATION`, `VALIDATED`, `DECOMMISSIONED`). SQLite persistence with append-only audit log. | `backend/src/models/migration_state.py`<br/>`backend/src/core/storage.py` | `tests/models/test_migration_state.py`<br/>`tests/core/test_storage.py`<br/>`tests/api/test_product_routes.py` | **100% COMPLIANT** |
-| **Section 5.7: GATv2 Architecture** | GATv2 architectural prototype verified for forward/backward gradient mechanics on synthetic dev data. No empirical claims. | `backend/src/ml/gatv2.py`<br/>`backend/src/ml/pipeline.py`<br/>`backend/src/ml/training.py`<br/>`backend/src/ml/synthetic_dev_sandbox.py` | `tests/ml/test_experiment.py`<br/>`tests/ml/test_evaluation.py`<br/>`dataset/synthetic_dev_sandbox/` | **100% COMPLIANT** |
-| **Section 5.8: Presentation & Reporting** | Interactive React/TS dashboard with 6 views. Full Markdown and JSON audit export with SHA-256 Git SHA, config hash, and disclaimers. | `backend/src/pipeline/reporter.py`<br/>`backend/src/api/routes.py`<br/>`frontend/src/` | `tests/api/test_report_export.py`<br/>`tests/cli/test_report.py`<br/>Frontend Vitest Suite (27 passed) | **100% COMPLIANT** |
+| **Section 5.7: GATv2 Architecture** | GATv2 heterogeneous graph neural network evaluated via 8-Fold Leave-One-Project-Out cross-validation across 520 files against heuristic weak-supervision labels. Target leakage strictly prevented (`include_base_risk=False`). | `backend/src/ml/gatv2.py`<br/>`backend/src/ml/pipeline.py`<br/>`backend/src/ml/training.py`<br/>`backend/scripts/run_gatv2_evaluation.py` | `tests/ml/test_gatv2_stage3_evaluation.py`<br/>`docs/evaluation.md`<br/>`backend/dataset/artifacts/gatv2_evaluation_results.json` | **100% COMPLIANT** |
+| **Section 5.8: Presentation & Reporting** | Interactive React/TS dashboard with 6 views, JWT authentication with tenant isolation. Full Markdown and JSON audit export with Git SHA, config hash, and disclaimers. | `backend/src/pipeline/reporter.py`<br/>`backend/src/api/routes.py`<br/>`backend/src/core/auth.py`<br/>`frontend/src/` | `tests/api/test_report_export.py`<br/>`tests/cli/test_report.py`<br/>`tests/api/test_auth.py`<br/>Frontend Vitest Suite (38 passed) | **100% COMPLIANT** |
 | **Section 6.1: Sensitivity Analysis** | Tornado sensitivity analysis varying weights across $[0.5 \times w, 1.5 \times w]$ to demonstrate factor stability. | `backend/scripts/sensitivity_analysis.py` | `dataset/sensitivity/sensitivity_summary.json`<br/>`dataset/sensitivity/sensitivity_tornado.png` | **100% COMPLIANT** |
 | **Section 6.2: NIST Consistency Review** | Risk ordering aligns with NIST post-quantum guidance (FIPS 203/204/205, NIST IR 8547). | `docs/NIST_CONSISTENCY_REVIEW.md`<br/>`backend/src/risk/factors/algorithm_strength.py` | `tests/risk/test_nist_consistency.py` | **100% COMPLIANT** |
 | **Section 6.3: Multi-Language Case Studies** | Empirical demonstration across 8 pinned benchmark repositories spanning Java, Python, and Go. | `backend/run_benchmark_step3.py`<br/>`backend/scripts/generate_case_studies.py` | `dataset/benchmark_step3/`<br/>`docs/CASE_STUDIES.md`<br/>`dataset/case_studies/case_studies.json` | **100% COMPLIANT** |
@@ -28,8 +28,8 @@ This document provides a comprehensive, section-by-section traceability matrix d
 
 ### Backend Automated Test Verification
 - **Test Framework**: `pytest` 9.1.1 on Python 3.13.7.
-- **Coverage**: Core graph schema, validation, heuristic weights, factor extractors, Mosca engine, migration priority triage, SQLite migration storage, AST/regex scanners across Python/Java/Go, OSV dependency enrichment, NIST consistency, report exporters, and forbidden string elimination.
-- **Result**: **100% Pass** across all active test suites.
+- **Coverage**: Core graph schema, validation, heuristic weights, factor extractors, Mosca engine, migration priority triage, SQLite migration storage, AST/regex scanners across Python/Java/Go, OSV dependency enrichment, NIST consistency, report exporters, JWT/bcrypt authentication with tenant isolation, and GATv2 cross-repository evaluation.
+- **Result**: **396 passed, 4 skipped (100% active pass rate)**.
 
 ### Frontend Automated Test Verification
 - **Test Framework**: `vitest` 5.0.3 + `@testing-library/react`.
@@ -37,9 +37,10 @@ This document provides a comprehensive, section-by-section traceability matrix d
   - `Reports.test.tsx` (8 passed)
   - `CryptoInventory.test.tsx` (8 passed)
   - `ProductLayer.test.tsx` (10 passed)
+  - `Auth.test.tsx` (11 passed)
   - `AppIntegration.test.tsx` (1 passed)
-- **Result**: **27 / 27 Passed (100%)**.
-- **Production Build**: Clean TypeScript compilation (`tsc -b`) and Vite production bundle generated without errors.
+- **Result**: **38 / 38 Passed across 5 suites (100%)**.
+- **Production Build**: Clean TypeScript compilation (`tsc -b`) and Vite production bundle generated without errors (`dist/`).
 
 ---
 
@@ -49,4 +50,4 @@ All pre-existing code, protocols, and mock packages related to human expert anno
 1. **Dedicated Git Branch**: `archive/expert-annotation` (pointing to commit `4914ec4`).
 2. **Archival Directory**: `docs/archive/` (containing legacy protocols, operation kits, and agreement scripts).
 
-The active branch (`synopsis-alignment`) is strictly aligned with the authoritative project synopsis, no more and no less.
+The active branch (`main`) is strictly aligned with the authoritative project synopsis, no more and no less.

@@ -3,7 +3,7 @@ import stat as _stat
 import networkx as nx
 from src.graph.graph import AgileGraph
 from src.graph.builder import GraphBuilder
-from src.risk.heuristic import calculate_heuristic_score
+from src.risk.heuristic import calculate_heuristic_score, derive_heuristic_label
 from src.risk.weights import HeuristicWeights
 from src.risk.score import MissingDataPolicy
 from src.risk.factor_extractor import FactorExtractor
@@ -119,7 +119,6 @@ def run_pipeline(repository_path: str, project_id: str, missing_data_policy: str
     # Canonical heuristic weights from config (sum strictly to 1.0)
     weights = HeuristicWeights.from_config()
 
-    from src.ml.features import derive_heuristic_label
 
     for node, data in g.nodes(data=True):
         if data.get("category") == "file":

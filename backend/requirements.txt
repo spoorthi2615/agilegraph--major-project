@@ -12,3 +12,5 @@ matplotlib
 torch
 torch_geometric
 scikit-learn
+bcrypt
+PyJWT

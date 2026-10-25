@@ -171,7 +171,7 @@ def main():
             # Risk Scoring
             extractor = FactorExtractor(ag)
             weights = HeuristicWeights.from_config()
-            from src.ml.features import derive_heuristic_label
+            from src.risk.heuristic import derive_heuristic_label
 
             for node, data in ag.G.nodes(data=True):
                 if data.get("category") == "file":

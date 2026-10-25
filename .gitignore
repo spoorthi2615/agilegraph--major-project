@@ -11,6 +11,11 @@ venv/
 htmlcov/
 *.egg-info/
 
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
 # AgileGraph Dataset & Cache
 backend/dataset/corpus/
 backend/dataset/cache/*.db
