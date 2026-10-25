@@ -6,10 +6,7 @@
     "expected_category": "crypto_usage",
     "expected_algorithm": "rsa",
     "expected_operation": "key_generation",
-    "labeller_1_label": "crypto_usage",
-    "labeller_1_notes": "Explicit RSA key generation",
-    "labeller_2_label": "crypto_usage",
-    "labeller_2_notes": "RSA-2048 key gen",
+    "fixture_rationale": "Explicit RSA key generation using cryptography library",
     "consensus_label": "crypto_usage"
   },
   {
@@ -19,10 +16,7 @@
     "expected_category": "crypto_usage",
     "expected_algorithm": "sha256",
     "expected_operation": "hashing",
-    "labeller_1_label": "crypto_usage",
-    "labeller_1_notes": "SHA-256 hash",
-    "labeller_2_label": "crypto_usage",
-    "labeller_2_notes": "SHA-256 invocation",
+    "fixture_rationale": "Standard hashlib SHA-256 invocation",
     "consensus_label": "crypto_usage"
   },
   {
@@ -32,10 +26,7 @@
     "expected_category": "NEGATIVE",
     "expected_algorithm": "none",
     "expected_operation": "none",
-    "labeller_1_label": "NEGATIVE",
-    "labeller_1_notes": "Incidental crypto substring in string variable",
-    "labeller_2_label": "NEGATIVE",
-    "labeller_2_notes": "Non-cryptographic variable names",
+    "fixture_rationale": "Incidental crypto substring in string variable names",
     "consensus_label": "NEGATIVE"
   },
   {
@@ -45,10 +36,7 @@
     "expected_category": "crypto_usage",
     "expected_algorithm": "aes",
     "expected_operation": "encryption",
-    "labeller_1_label": "crypto_usage",
-    "labeller_1_notes": "PyCryptodome AES-GCM cipher",
-    "labeller_2_label": "crypto_usage",
-    "labeller_2_notes": "AES encryption",
+    "fixture_rationale": "PyCryptodome AES-GCM cipher instantiation",
     "consensus_label": "crypto_usage"
   },
   {
@@ -58,10 +46,7 @@
     "expected_category": "NEGATIVE",
     "expected_algorithm": "none",
     "expected_operation": "none",
-    "labeller_1_label": "NEGATIVE",
-    "labeller_1_notes": "Commented code only",
-    "labeller_2_label": "NEGATIVE",
-    "labeller_2_notes": "No executable crypto API call",
+    "fixture_rationale": "Function name with commented-out code only, no executable crypto call",
     "consensus_label": "NEGATIVE"
   },
   {
@@ -71,10 +56,7 @@
     "expected_category": "crypto_usage",
     "expected_algorithm": "RSA",
     "expected_operation": "key_generation",
-    "labeller_1_label": "crypto_usage",
-    "labeller_1_notes": "JCA RSA keygen initialized to 2048",
-    "labeller_2_label": "crypto_usage",
-    "labeller_2_notes": "KeyPairGenerator RSA",
+    "fixture_rationale": "JCA RSA keygen initialized to 2048",
     "consensus_label": "crypto_usage"
   },
   {
@@ -84,10 +66,7 @@
     "expected_category": "crypto_usage",
     "expected_algorithm": "AES/CBC/PKCS5Padding",
     "expected_operation": "encryption",
-    "labeller_1_label": "crypto_usage",
-    "labeller_1_notes": "AES cipher instantiation",
-    "labeller_2_label": "crypto_usage",
-    "labeller_2_notes": "Cipher AES",
+    "fixture_rationale": "AES cipher instantiation",
     "consensus_label": "crypto_usage"
   },
   {
@@ -97,10 +76,7 @@
     "expected_category": "NEGATIVE",
     "expected_algorithm": "none",
     "expected_operation": "none",
-    "labeller_1_label": "NEGATIVE",
-    "labeller_1_notes": "Thread pool initialize(8) - must not attach to crypto key size",
-    "labeller_2_label": "NEGATIVE",
-    "labeller_2_notes": "Concurrency pool method, not crypto",
+    "fixture_rationale": "Thread pool initialize(8) - must not attach to crypto key size",
     "consensus_label": "NEGATIVE"
   },
   {
@@ -110,10 +86,7 @@
     "expected_category": "crypto_usage",
     "expected_algorithm": "SecureRandom",
     "expected_operation": "random",
-    "labeller_1_label": "crypto_usage",
-    "labeller_1_notes": "Direct SecureRandom constructor instantiation",
-    "labeller_2_label": "crypto_usage",
-    "labeller_2_notes": "CSPRNG usage",
+    "fixture_rationale": "Direct SecureRandom constructor instantiation",
     "consensus_label": "crypto_usage"
   },
   {
@@ -123,10 +96,7 @@
     "expected_category": "NEGATIVE",
     "expected_algorithm": "none",
     "expected_operation": "none",
-    "labeller_1_label": "NEGATIVE",
-    "labeller_1_notes": "String literal with crypto URL",
-    "labeller_2_label": "NEGATIVE",
-    "labeller_2_notes": "Non-cryptographic string printing",
+    "fixture_rationale": "String literal with crypto URL",
     "consensus_label": "NEGATIVE"
   },
   {
@@ -136,10 +106,7 @@
     "expected_category": "crypto_usage",
     "expected_algorithm": "rsa",
     "expected_operation": "key_generation",
-    "labeller_1_label": "crypto_usage",
-    "labeller_1_notes": "Go standard library rsa.GenerateKey",
-    "labeller_2_label": "crypto_usage",
-    "labeller_2_notes": "RSA 2048 keygen",
+    "fixture_rationale": "Go standard library rsa.GenerateKey",
     "consensus_label": "crypto_usage"
   },
   {
@@ -149,10 +116,7 @@
     "expected_category": "crypto_usage",
     "expected_algorithm": "ed25519",
     "expected_operation": "key_generation",
-    "labeller_1_label": "crypto_usage",
-    "labeller_1_notes": "Ed25519 key pair generation",
-    "labeller_2_label": "crypto_usage",
-    "labeller_2_notes": "Ed25519 signature keygen",
+    "fixture_rationale": "Ed25519 key pair generation",
     "consensus_label": "crypto_usage"
   },
   {
@@ -162,10 +126,7 @@
     "expected_category": "crypto_usage",
     "expected_algorithm": "tls",
     "expected_operation": "tls_config",
-    "labeller_1_label": "crypto_usage",
-    "labeller_1_notes": "TLS Config instantiation",
-    "labeller_2_label": "crypto_usage",
-    "labeller_2_notes": "TLS configuration node",
+    "fixture_rationale": "TLS Config instantiation",
     "consensus_label": "crypto_usage"
   },
   {
@@ -175,10 +136,7 @@
     "expected_category": "NEGATIVE",
     "expected_algorithm": "none",
     "expected_operation": "none",
-    "labeller_1_label": "NEGATIVE",
-    "labeller_1_notes": "Financial crypto asset struct",
-    "labeller_2_label": "NEGATIVE",
-    "labeller_2_notes": "Negative example: struct naming",
+    "fixture_rationale": "Financial crypto asset struct",
     "consensus_label": "NEGATIVE"
   },
   {
@@ -188,10 +146,7 @@
     "expected_category": "NEGATIVE",
     "expected_algorithm": "none",
     "expected_operation": "none",
-    "labeller_1_label": "NEGATIVE",
-    "labeller_1_notes": "Commented Go code",
-    "labeller_2_label": "NEGATIVE",
-    "labeller_2_notes": "No active executable crypto",
+    "fixture_rationale": "Commented Go code",
     "consensus_label": "NEGATIVE"
   }
 ]
