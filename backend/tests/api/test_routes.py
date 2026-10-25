@@ -27,6 +27,8 @@ def test_scan_quotes_stripped(monkeypatch):
         })
         # If quotes are stripped, it finds the temp dir and succeeds.
         assert response.status_code == 200
+        from src.core.storage import default_storage
+        default_storage.delete_project("test_proj_quotes")
 
 def test_scan_github_url_rejected():
     response = client.post("/api/v1/scan", json={
@@ -64,6 +66,9 @@ def test_scan_and_fetch(monkeypatch):
         risk_data = risk_res.json()
         assert risk_data["ml_status"] == "ARCHITECTURAL_PROTOTYPE"
         assert "expert_validation_status" not in risk_data
+
+        from src.core.storage import default_storage
+        default_storage.delete_project("test_proj_2")
 
 def test_fetch_missing_project():
     res1 = client.get("/api/v1/projects/missing/graph")

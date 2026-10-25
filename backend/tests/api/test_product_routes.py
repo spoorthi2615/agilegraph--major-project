@@ -166,6 +166,9 @@ def test_actual_scan_backward_compatibility(monkeypatch):
         assert "asset_count" in data
         assert "scored_assets" in data
 
+        from src.core.storage import default_storage
+        default_storage.delete_project("test_proj_scan_compat")
+
 def test_product_endpoints_do_not_mutate_risk_or_graph():
     original_score = project_cache["test_proj"]["scores"][0]["score"]
     assert original_score == 0.8
