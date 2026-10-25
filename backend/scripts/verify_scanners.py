@@ -17,16 +17,17 @@ import json
 import time
 from typing import Dict, Any, List
 
-sys.path.insert(0, os.path.abspath("."))
-sys.path.insert(0, os.path.abspath("src"))
+BACKEND_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if BACKEND_DIR not in sys.path:
+    sys.path.insert(0, BACKEND_DIR)
 
 from src.scanners.python.scanner import scan_python_code
 from src.scanners.java.scanner import scan_java_code
 from src.scanners.go.scanner import scan_go_code
 from src.scanners.common.enums import AssetType
 
-REFERENCE_SET_PATH = "dataset/reference_set/reference_samples.json"
-REPORT_OUTPUT_PATH = "dataset/artifacts/scanner_evaluation_report.json"
+REFERENCE_SET_PATH = os.path.join(BACKEND_DIR, "dataset", "reference_set", "reference_samples.json")
+REPORT_OUTPUT_PATH = os.path.join(BACKEND_DIR, "dataset", "artifacts", "scanner_evaluation_report.json")
 
 
 def verify_scanners(ref_path: str = REFERENCE_SET_PATH) -> Dict[str, Any]:

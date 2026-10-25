@@ -106,3 +106,76 @@ def test_baseline_comparisons(corpus_data):
     r_res = res["rule_baseline"]
     assert r_res["accuracy"] < 1.0
     assert r_res["macro_f1"] < 0.60
+
+
+def test_edge_shuffled_control_invariants(corpus_data):
+    """
+    Directly tests the mathematical invariants of shuffle_edges:
+    1. Preserves total edge count for each typed edge relation.
+    2. Preserves 1D marginal out-degree of all source nodes.
+    3. Preserves 1D marginal in-degree of all destination nodes.
+    4. Preserves bipartite validity (destination indices strictly within valid node range).
+    5. Reproducible with fixed random seed.
+    """
+    from scripts.run_gatv2_evaluation import shuffle_edges
+    artifacts, _ = corpus_data
+
+    for pid, d in artifacts.items():
+        shuf1 = shuffle_edges(d.edge_index_dict, seed=42)
+        shuf2 = shuffle_edges(d.edge_index_dict, seed=42)
+
+        for edge_type, orig_edges in d.edge_index_dict.items():
+            if orig_edges.numel() == 0:
+                continue
+            e_shuf1 = shuf1[edge_type]
+            e_shuf2 = shuf2[edge_type]
+
+            # Invariant 1: Edge count preserved
+            assert orig_edges.size(1) == e_shuf1.size(1), f"{pid} {edge_type} edge count changed"
+
+            # Invariant 2: 1D Source out-degree preserved
+            orig_src_deg = torch.bincount(orig_edges[0])
+            shuf_src_deg = torch.bincount(e_shuf1[0])
+            assert torch.equal(orig_src_deg, shuf_src_deg), f"{pid} {edge_type} source degree changed"
+
+            # Invariant 3: 1D Destination in-degree preserved
+            orig_dst_deg = torch.bincount(orig_edges[1])
+            shuf_dst_deg = torch.bincount(e_shuf1[1])
+            assert torch.equal(orig_dst_deg, shuf_dst_deg), f"{pid} {edge_type} destination degree changed"
+
+            # Invariant 4: Bipartite validity
+            dst_node_type = edge_type[2]
+            max_dst_idx = d[dst_node_type].num_nodes - 1
+            assert (e_shuf1[1] <= max_dst_idx).all(), f"{pid} {edge_type} invalid destination index"
+            assert (e_shuf1[1] >= 0).all(), f"{pid} {edge_type} negative destination index"
+
+            # Invariant 5: Reproducibility under fixed seed
+            assert torch.equal(e_shuf1, e_shuf2), f"{pid} {edge_type} non-deterministic under same seed"
+
+
+def test_non_graph_mlp_baseline_forward(corpus_data):
+    """Verifies that FileNodeMLP operates strictly on 14-dim features without graph connectivity."""
+    from scripts.run_gatv2_evaluation import FileNodeMLP
+    artifacts, _ = corpus_data
+    d = artifacts["python_cryptography"]
+
+    mlp = FileNodeMLP(in_channels=14, hidden_channels=32, out_channels=3)
+    out = mlp(d["file"].x)
+    assert out.shape == (d["file"].num_nodes, 3), f"Unexpected MLP output shape: {out.shape}"
+    assert not torch.isnan(out).any(), "MLP produced NaN values"
+
+
+def test_node_level_bootstrap_computation():
+    """Verifies that compute_bootstrap_ci computes valid 95% non-parametric confidence intervals."""
+    from scripts.run_gatv2_evaluation import compute_bootstrap_ci
+    y_true = np.array([0, 1, 2] * 40)
+    y_pred = np.array([0, 1, 2] * 35 + [1, 2, 0] * 5)
+
+    ci = compute_bootstrap_ci(y_true, y_pred, n_bootstraps=100, seed=42)
+    assert "accuracy_ci_95" in ci
+    assert "macro_f1_ci_95" in ci
+    acc_ci = ci["accuracy_ci_95"]
+    f1_ci = ci["macro_f1_ci_95"]
+    assert 0.0 <= acc_ci[0] <= acc_ci[1] <= 1.0
+    assert 0.0 <= f1_ci[0] <= f1_ci[1] <= 1.0
+

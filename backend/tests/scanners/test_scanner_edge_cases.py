@@ -229,3 +229,62 @@ def test_large_input_scaling():
 
     findings = scan_python_code("repo", "large.py", large_code)
     assert findings == []
+
+
+# ============================================================================
+# 7. Code On Same Line As Block Comments (Positive Detection)
+# ============================================================================
+
+def test_java_code_after_inline_block_comment_detected():
+    code = '/* header notice */ KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");'
+    findings = scan_java_code("repo", "App.java", code)
+    crypto_findings = [f for f in findings if f.asset_type == AssetType.CRYPTO_USAGE]
+    assert len(crypto_findings) == 1
+    assert crypto_findings[0].algorithm == "RSA"
+
+
+def test_go_code_after_inline_block_comment_detected():
+    code = '/* header notice */ key, _ := rsa.GenerateKey(rand.Reader, 2048)'
+    findings = scan_go_code("repo", "app.go", code)
+    crypto_findings = [f for f in findings if f.asset_type == AssetType.CRYPTO_USAGE]
+    assert len(crypto_findings) == 1
+    assert crypto_findings[0].algorithm == "rsa"
+
+
+def test_java_code_on_multiline_comment_closing_line_detected():
+    code = """/*
+ * Multi-line license block
+ */ KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+"""
+    findings = scan_java_code("repo", "App.java", code)
+    crypto_findings = [f for f in findings if f.asset_type == AssetType.CRYPTO_USAGE]
+    assert len(crypto_findings) == 1
+    assert crypto_findings[0].algorithm == "RSA"
+    assert crypto_findings[0].line == 3
+
+
+def test_go_code_on_multiline_comment_closing_line_detected():
+    code = """/*
+ * Multi-line license block
+ */ key, _ := rsa.GenerateKey(rand.Reader, 2048)
+"""
+    findings = scan_go_code("repo", "app.go", code)
+    crypto_findings = [f for f in findings if f.asset_type == AssetType.CRYPTO_USAGE]
+    assert len(crypto_findings) == 1
+    assert crypto_findings[0].algorithm == "rsa"
+    assert crypto_findings[0].line == 3
+
+
+def test_url_slashes_in_string_literals_do_not_break_scanner():
+    java_code = 'String endpoint = "https://api.example.com/v1/auth"; // comment\nCipher c = Cipher.getInstance("AES");'
+    findings = scan_java_code("repo", "App.java", java_code)
+    crypto = [f for f in findings if f.asset_type == AssetType.CRYPTO_USAGE]
+    assert len(crypto) == 1
+    assert crypto[0].algorithm == "AES"
+
+    go_code = 'url := "https://api.example.com/v1/auth" // comment\nc, _ := aes.NewCipher(key)'
+    findings_go = scan_go_code("repo", "app.go", go_code)
+    crypto_go = [f for f in findings_go if f.asset_type == AssetType.CRYPTO_USAGE]
+    assert len(crypto_go) == 1
+    assert crypto_go[0].algorithm == "aes"
+

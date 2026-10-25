@@ -33,6 +33,52 @@ JAVA_JJWT_ENUM_PATTERN = re.compile(r'\bSignatureAlgorithm\.([A-Z0-9_]+)\b')
 JAVA_INIT_PATTERN = re.compile(r'\b(\w+)\.initialize\s*\(\s*(\d+)\s*\)')
 
 
+def strip_code_comments(line: str, in_block: bool) -> tuple[str, bool]:
+    """
+    Strips single-line and multi-line comments from a line of Java code,
+    respecting string literals and tracking multi-line block comment state.
+    Returns (active_code_string, remaining_in_block_boolean).
+    """
+    out = []
+    i = 0
+    n = len(line)
+    in_quote = None
+
+    while i < n:
+        if in_block:
+            end_idx = line.find("*/", i)
+            if end_idx == -1:
+                return "".join(out), True
+            else:
+                in_block = False
+                i = end_idx + 2
+        else:
+            ch = line[i]
+            if in_quote is not None:
+                out.append(ch)
+                if ch == '\\' and i + 1 < n:
+                    out.append(line[i + 1])
+                    i += 2
+                    continue
+                elif ch == in_quote:
+                    in_quote = None
+                i += 1
+            else:
+                if ch in ('"', "'"):
+                    in_quote = ch
+                    out.append(ch)
+                    i += 1
+                elif line[i:i + 2] == "//":
+                    break
+                elif line[i:i + 2] == "/*":
+                    in_block = True
+                    i += 2
+                else:
+                    out.append(ch)
+                    i += 1
+    return "".join(out), in_block
+
+
 def scan_java_code(repository: str, filepath: str, code: str) -> List[FindingRecord]:
     findings = []
     lines = code.split('\n')
@@ -43,28 +89,17 @@ def scan_java_code(repository: str, filepath: str, code: str) -> List[FindingRec
     in_block_comment = False
     for i, line in enumerate(lines):
         line_num = i + 1
-        stripped = line.strip()
-        
-        if in_block_comment:
-            if "*/" in stripped:
-                in_block_comment = False
-            continue
-            
-        if stripped.startswith("/*"):
-            if "*/" not in stripped[2:]:
-                in_block_comment = True
-            continue
-            
-        if stripped.startswith("//") or stripped.startswith("*"):
+        active_code, in_block_comment = strip_code_comments(line, in_block_comment)
+        if not active_code.strip():
             continue
 
         # Track string variables
-        str_match = JAVA_STRING_VAR_PATTERN.search(line)
+        str_match = JAVA_STRING_VAR_PATTERN.search(active_code)
         if str_match:
             string_vars[str_match.group(1)] = str_match.group(2)
 
         # ── imports ─────────────────────────────────────────────────────────
-        import_match = JAVA_IMPORT_PATTERN.search(line)
+        import_match = JAVA_IMPORT_PATTERN.search(active_code)
         if import_match:
             pkg = import_match.group(1)
             findings.append(FindingRecord(
@@ -79,10 +114,10 @@ def scan_java_code(repository: str, filepath: str, code: str) -> List[FindingRec
             ))
 
         # ── variable declarations (track which var holds which keygen) ───────
-        varname_match = JAVA_VARNAME_PATTERN.search(line)
+        varname_match = JAVA_VARNAME_PATTERN.search(active_code)
 
         # ── direct new SecureRandom() instantiation ──────────────────────────
-        if JAVA_SECURE_RANDOM_NEW_PATTERN.search(line):
+        if JAVA_SECURE_RANDOM_NEW_PATTERN.search(active_code):
             findings.append(FindingRecord(
                 asset_type=AssetType.CRYPTO_USAGE,
                 repository=repository,
@@ -98,7 +133,7 @@ def scan_java_code(repository: str, filepath: str, code: str) -> List[FindingRec
             ))
 
         # ── algorithm usages via getInstance() ──────────────────────────────
-        usage_match = JAVA_ALGO_PATTERN.search(line)
+        usage_match = JAVA_ALGO_PATTERN.search(active_code)
         if usage_match:
             api_class = usage_match.group(1)
             algorithm_raw = usage_match.group(2).strip()
@@ -141,7 +176,7 @@ def scan_java_code(repository: str, filepath: str, code: str) -> List[FindingRec
                 keygen_vars[var] = finding
 
         # ── initialize(N) — associate with the specific variable ────────────
-        for init_match in JAVA_INIT_PATTERN.finditer(line):
+        for init_match in JAVA_INIT_PATTERN.finditer(active_code):
             var = init_match.group(1)
             key_size = int(init_match.group(2))
 
@@ -154,7 +189,7 @@ def scan_java_code(repository: str, filepath: str, code: str) -> List[FindingRec
                     f.evidence = f"{f.evidence} ... Key size {key_size}"
 
         # ── jjwt enum algorithm usages ─────────────────────────────────────
-        for enum_match in JAVA_JJWT_ENUM_PATTERN.finditer(line):
+        for enum_match in JAVA_JJWT_ENUM_PATTERN.finditer(active_code):
             algo = enum_match.group(1)
             findings.append(FindingRecord(
                 asset_type=AssetType.CRYPTO_USAGE,

@@ -229,28 +229,31 @@ AgileGraph implements a Heterogeneous Graph Attention Network (GATv2) using PyTo
 
 ### Controlled LOPO Benchmark Results ($N = 520$ Files)
 
-All models and baselines are evaluated using the identical 8-fold LOPO cross-validation splits and target labels derived from the deterministic heuristic risk engine:
+All models and baselines are evaluated using identical 8-fold LOPO cross-validation splits and target labels derived from the deterministic heuristic risk engine. Both pooled sample accuracy (520 files) and unweighted fold-level mean (8 folds) are reported:
 
-| Model / Baseline Architecture | Accuracy (95% CI) | Balanced Acc | Macro-F1 (95% CI) | HIGH Recall | Role & Scientific Finding |
-| :--- | :---: | :---: | :---: | :---: | :--- |
-| **Non-Graph Feature-Only MLP** | **81.92%** [78.8%, 85.0%] | **72.05%** | **0.7073** [0.665, 0.750] | **27.18%** (28/103) | **Feature-only baseline**: Local node factors generalize consistently across codebases. |
-| **Edge-Shuffled GATv2 Control** | **78.85%** [75.2%, 82.1%] | **75.24%** | **0.7067** [0.661, 0.746] | **97.09%** (100/103) | **Graph-structure control**: Degree-preserving edge randomization removes semantic topology. |
-| **Heterogeneous GATv2 (14-dim)** | **66.73%** [62.7%, 70.6%] | **54.18%** | **0.5560** [0.506, 0.605] | **27.18%** (28/103) | **Proposed GNN**: Subject to cross-codebase graph structural shift across languages. |
-| **GATv2 with Target Leakage (15-dim)**| *96.73%* [95.2%, 98.1%] | *96.30%* | *0.9645* [0.946, 0.979] | *97.09%* (100/103) | **Ablation check**: Demonstrates +30.00% artificial boost when scalar label source is exposed. |
-| **Static Rule Baseline** | 42.12% | 43.14% | 0.4119 | 30.10% (31/103) | Rule-based heuristic matching on primary weakness. |
-| **Majority Class Baseline** | 22.69% | 14.95% | 0.1321 | 0.00% (0/103) | Statistical majority floor across folds. |
-| **Heuristic Teacher Baseline** | *100.0%* | *100.0%* | *1.0000* | *100.0%* | Tautological ceiling (source of weak supervision labels). |
+| Model / Baseline Architecture | Pooled Acc (95% CI) | Unweighted Fold Mean (Std Dev) | Balanced Acc | Macro-F1 (95% CI) | HIGH Recall | HIGH Precision | Role & Scientific Finding |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **Non-Graph Feature-Only MLP** | **81.92%** [78.8%, 85.0%] | 63.13% (± 41.09%) | **72.05%** | **0.7073** [0.665, 0.750] | **27.18%** (28/103) | **90.32%** (28/31) | **Feature-only baseline**: Local node factors generalize consistently across codebases. |
+| **Randomized-Edge GATv2 Control** | **78.85%** [75.2%, 82.1%] | 74.35% (± 23.44%) | **75.24%** | **0.7067** [0.661, 0.746] | **97.09%** (100/103) | **54.64%** (100/183) | **Graph-structure control**: Degree-preserving edge randomization removes semantic topology. |
+| **Heterogeneous GATv2 (14-dim)** | **66.73%** [62.7%, 70.6%] | **72.44%** (± 31.26%) | **54.18%** | **0.5560** [0.506, 0.605] | **27.18%** (28/103) | **90.32%** (28/31) | **Proposed GNN**: Subject to cross-codebase graph structural shift across languages. |
+| **GATv2 with Target Leakage (15-dim)**| *96.73%* [95.2%, 98.1%] | 85.74% (± 22.59%) | *96.30%* | *0.9645* [0.946, 0.979] | *97.09%* (100/103) | *97.09%* (100/103) | **Ablation check**: Demonstrates +30.00% artificial boost when scalar label source is exposed. |
+| **Static Rule Baseline** | 42.12% | 46.88% (± 24.11%) | 43.14% | 0.4119 | 30.10% (31/103) | 35.63% (31/87) | Rule-based heuristic matching on primary weakness. |
+| **Majority Class Baseline** | 22.69% | 22.69% (± 0.00%) | 14.95% | 0.1321 | 0.00% (0/103) | 0.00% (0/0) | Statistical majority floor across folds. |
+| **Heuristic Teacher Baseline** | *100.0%* | *100.0%* (± 0.00%) | *100.0%* | *1.0000* | *100.0%* | *100.0%* | Tautological ceiling (source of weak supervision labels). |
 
-*Confidence Intervals*: 95% bootstrap confidence intervals ($B = 1000$ iterations) computed across the out-of-fold sample ($N = 520$).
+*Confidence Intervals*: 95% bootstrap confidence intervals ($B = 1000$ iterations) are computed across the pooled out-of-fold node sample ($N = 520$). They characterize descriptive sample stability rather than project-level generalization uncertainty (which is reflected in the unweighted fold-level standard deviations).
 
 ### Key Empirical Findings
-1. **Local Node Factors vs. Graph Topology**: The Non-Graph MLP outperforms GATv2 (81.92% vs 66.73%) because local cryptographic factors (algorithm weakness, CVEs, internet exposure) generalize consistently across programming languages, whereas graph message-passing overfits repository-specific topological conventions (cross-codebase graph structural shift).
-2. **Continuous Score Rank Concordance**: Evaluating continuous GNN projection against the continuous heuristic risk score reveals strong monotonic correlation across all 520 assets:
-   - **Spearman Rank Correlation**: $\rho = 0.8091$ ($p = 1.15 \times 10^{-121}$)
-   - **Kendall Tau Correlation**: $\tau = 0.6630$ ($p = 1.12 \times 10^{-76}$)
-3. **High-Risk Class Imbalance**: HIGH recall is 27.18% (28/103) across both GATv2 and the Non-Graph MLP because 99 of the 103 high-risk files reside in `python_cryptography`. When that project is held out in LOPO fold 7, the training set contains only 4 high-risk files ($1.1\%$), starving the models of high-risk signals.
-4. **Architectural Safeguard**: Because a 27.2% HIGH recall cannot be trusted as an autonomous security filter, AgileGraph uses deterministic AST scanners as the authoritative ground for detecting quantum-vulnerable primitives; GNN ranking is strictly an experimental enrichment layer.
-5. **Operational Independence**: Static scanning and deterministic heuristic scoring operate independently of PyTorch. All cryptographic findings remain 100% visible and actionable even on lightweight CPU environments without PyTorch installed.
+1. **Local Node Factors vs. Graph Topology**: The Non-Graph MLP outperforms GATv2 in pooled accuracy (81.92% vs 66.73%) and demonstrates exceptional stability across initialization seeds ($81.22\% \pm 0.55\%$ vs $71.60\% \pm 6.09\%$). Local cryptographic factors generalize consistently across programming languages, whereas graph message-passing overfits repository-specific topological conventions (cross-codebase graph structural shift).
+2. **Continuous Score Rank Concordance**: Evaluating rank agreement across all 520 assets demonstrates strong monotonic concordance with the continuous heuristic score:
+   - **Continuous Heuristic Score vs. Discrete Tiers**: Spearman $\rho = 0.9090$ ($p = 5.05 \times 10^{-199}$), Kendall $\tau = 0.7950$ ($p = 1.19 \times 10^{-115}$).
+   - **Out-of-Fold GATv2 Continuous Predictions vs. Heuristic**: Spearman $\rho = 0.8038$ ($p = 6.07 \times 10^{-119}$), Kendall $\tau = 0.6063$ ($p = 1.65 \times 10^{-88}$).
+   - **Out-of-Fold MLP Continuous Predictions vs. Heuristic**: Spearman $\rho = 0.8207$ ($p = 4.88 \times 10^{-128}$), Kendall $\tau = 0.6471$ ($p = 2.18 \times 10^{-100}$).
+   - *Note*: These correlations evaluate fidelity to the heuristic ranking formula, not independent real-world risk validity.
+3. **Randomized-Edge Control & High Recall Degeneracy**: The randomized-edge control preserves 1D degree sequences per relation triplet while destroying semantic paths. Its 97.09% HIGH recall is an artifact of class-weight sensitivity under noise in Fold 7 (where training has only 4 HIGH files, inverse frequency weight = 28.5), causing the randomized model to predict HIGH for 175 of 178 files in fold 7. This drops HIGH precision to 54.64% (100/183) compared to 90.32% for genuine GATv2 and MLP.
+4. **Target Leakage Framing**: Excluding the continuous scalar `base_risk` prevents trivial scalar thresholding (+30.00% artificial boost). However, the 14-dimensional feature vector contains the 7 constituent factors that calculate `base_risk`; the model is an empirical formula approximator over component factors, not an independent real-world predictor.
+5. **High-Risk Class Imbalance**: HIGH recall is 27.18% (28/103) across both GATv2 and the Non-Graph MLP because 99 of the 103 high-risk files reside in `python_cryptography`. When that project is held out in LOPO fold 7, the training set contains only 4 high-risk files ($1.1\%$), starving the models of high-risk signals.
+6. **Architectural Safeguards**: In production scans, cryptographic findings are cataloged 100% deterministically by AST/regex scanners and scored by the 7-factor engine. The PyTorch GATv2 model is isolated as an architectural prototype (`ml_status: ARCHITECTURAL_PROTOTYPE`) and cannot suppress or alter scanner findings.
 
 ---
 
