@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-25T19:25:33Z",
+  "timestamp": "2026-10-25T20:42:24Z",
   "provenance": "DEVELOPER_AUTHORED_REGRESSION_FIXTURES",
   "scientific_caveat": "Deterministic static rules detect supported cryptographic patterns. Coverage depends on the language-specific parser, supported APIs, and implemented detection rules. These metrics validate parser mechanics on seeded fixtures and do not imply exhaustive real-world detection.",
   "summary": {

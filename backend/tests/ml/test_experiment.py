@@ -9,46 +9,30 @@ def test_manifest_completeness():
         project_split={"train": ["a"], "val": ["b"], "test": ["c"]},
         feature_configuration="test_cfg",
         include_base_risk=True,
-        label_source=LabelRegime.SYNTHETIC,
+        label_source=LabelRegime.WEAK_SUPERVISION,
         model_configuration=ModelType.GATV2,
         seed=42,
         software_version="1.0"
     )
     assert manifest.experiment_id == "test_exp"
     assert manifest.include_base_risk is True
-    assert manifest.label_source == LabelRegime.SYNTHETIC
+    assert manifest.label_source == LabelRegime.WEAK_SUPERVISION
 
-def test_training_refusal_without_expert_labels():
+def test_weak_supervision_training():
     manifest = ExperimentManifest(
         experiment_id="test_exp",
         dataset_version="v1",
         project_split={"train": ["a"], "val": ["b"], "test": ["c"]},
         feature_configuration="test_cfg",
         include_base_risk=True,
-        label_source=LabelRegime.EXPERT,
+        label_source=LabelRegime.WEAK_SUPERVISION,
         model_configuration=ModelType.GATV2,
         seed=42,
         software_version="1.0"
     )
     trainer = ModelTrainer(manifest)
     res = trainer.run_training_loop()
-    assert res["status"] == "NOT_APPLICABLE"
-    
-def test_synthetic_smoke_test():
-    manifest = ExperimentManifest(
-        experiment_id="test_exp",
-        dataset_version="v1",
-        project_split={"train": ["a"], "val": ["b"], "test": ["c"]},
-        feature_configuration="test_cfg",
-        include_base_risk=True,
-        label_source=LabelRegime.SYNTHETIC,
-        model_configuration=ModelType.GATV2,
-        seed=42,
-        software_version="1.0"
-    )
-    trainer = ModelTrainer(manifest)
-    res = trainer.run_training_loop()
-    assert res["status"] == "INFRASTRUCTURE_VALIDATED_SYNTHETIC"
+    assert res["status"] == "INFRASTRUCTURE_READY"
 
 def test_leakage_ablation_infrastructure():
     manifest = ExperimentManifest(
@@ -57,7 +41,7 @@ def test_leakage_ablation_infrastructure():
         project_split={"train": ["a"], "val": ["b"], "test": ["c"]},
         feature_configuration="test_cfg",
         include_base_risk=True, # WITH_BASE_RISK
-        label_source=LabelRegime.SYNTHETIC,
+        label_source=LabelRegime.WEAK_SUPERVISION,
         model_configuration=ModelType.GATV2,
         seed=42,
         software_version="1.0"

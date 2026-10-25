@@ -78,12 +78,6 @@ def test_ablation_independence():
     assert 0.1 not in feat_low_abl.tolist()
     assert 1.0 not in feat_low_abl.tolist()
     
-def test_target_label_extraction_expert():
-    props = {"expert_label": {"class_idx": 2, "confidence": 1.0}}
-    label = extract_target_label(props)
-    assert label.source == LabelSource.EXPERT
-    assert label.class_idx == 2
-
 def test_target_label_extraction_heuristic():
     props = {"heuristic_label": {"class_idx": 1, "confidence": 0.8}}
     label = extract_target_label(props)

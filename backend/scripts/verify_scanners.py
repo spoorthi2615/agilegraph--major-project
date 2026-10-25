@@ -7,8 +7,8 @@ computing empirical Precision, Recall, and F1 score against expected fixture lab
 SCIENTIFIC PROVENANCE NOTE:
 These samples are developer-authored regression test fixtures designed to verify
 AST and pattern-matching correctness on supported cryptographic APIs across Python,
-Java, and Go. They validate parser mechanics and do not represent independent
-expert consensus or real-world predictive validity on arbitrary codebases.
+Java, and Go. They validate parser mechanics and do not represent
+external multi-annotator consensus or real-world predictive validity on arbitrary codebases.
 """
 
 import os
@@ -43,7 +43,7 @@ def verify_scanners(ref_path: str = REFERENCE_SET_PATH) -> Dict[str, Any]:
     # 1. Validation check: Enforce non-empty reference labels
     unlabeled_items = []
     for item in samples:
-        c_label = item.get("consensus_label") or item.get("expected_category")
+        c_label = item.get("expected_label") or item.get("expected_category")
         if not c_label or str(c_label).strip() == "":
             unlabeled_items.append(item.get("item_id", "unknown"))
 
@@ -65,7 +65,7 @@ def verify_scanners(ref_path: str = REFERENCE_SET_PATH) -> Dict[str, Any]:
         iid = item.get("item_id")
         lang = item.get("language")
         code = item.get("code")
-        expected = item.get("consensus_label") or item.get("expected_category")
+        expected = item.get("expected_label") or item.get("expected_category")
 
         if lang not in metrics_by_lang:
             continue

@@ -1,6 +1,6 @@
 # AgileGraph: Graph-Learned Crypto-Agility Risk Scoring for Post-Quantum Migration
 
-[![Backend Tests](https://img.shields.io/badge/Backend%20Tests-420%20Passed%20(4%20skipped)-success?style=flat-square&logo=pytest)](docs/evaluation.md)
+[![Backend Tests](https://img.shields.io/badge/Backend%20Tests-410%20Passed%20(4%20skipped)-success?style=flat-square&logo=pytest)](docs/evaluation.md)
 [![Frontend Tests](https://img.shields.io/badge/Frontend%20Tests-38%20Passed-success?style=flat-square&logo=vitest)](frontend/)
 [![Python Version](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue?style=flat-square&logo=python)](backend/)
 [![React Version](https://img.shields.io/badge/Frontend-React%2019%20%7C%20TypeScript%20%7C%20Vite-61dafb?style=flat-square&logo=react)](frontend/)
@@ -419,11 +419,13 @@ agilegraph--major-project/
 ├── backend/
 │   ├── dataset/
 │   │   ├── artifacts/             # Pinned corpus artifacts and evaluation results
+│   │   ├── benchmark/             # Pinned 8-repository benchmark dataset
 │   │   ├── cache/                 # SQLite migration/auth DB and OSV caches
-│   │   └── synthetic_dev_sandbox/ # Synthetic benchmark fixtures
+│   │   └── reference_set/         # Unit scanner regression test fixtures
 │   ├── scripts/
 │   │   ├── build_corpus.py        # Benchmark corpus build pipeline
 │   │   ├── corpus_summary.py      # Corpus descriptive summary utility
+│   │   ├── run_benchmark.py       # Pinned repository benchmark runner
 │   │   └── run_gatv2_evaluation.py # GATv2 LOPO evaluation runner
 │   ├── src/
 │   │   ├── api/                   # FastAPI routes (auth, product, core)
@@ -436,7 +438,7 @@ agilegraph--major-project/
 │   │   ├── scanners/              # Python AST, Java, Go, manifest scanners
 │   │   ├── cli.py                 # Command-line interface
 │   │   └── main.py                # FastAPI app entrypoint
-│   └── tests/                     # 420 passing pytest tests
+│   └── tests/                     # 410 passing pytest tests
 ├── docs/                          # Architectural specs, benchmarks, and project synopsis
 │   ├── AgileGraph – Project Synopsis.pdf
 │   ├── AgileGraph – Project Synopsis.docx
@@ -471,7 +473,7 @@ Every component of AgileGraph is covered by automated unit, integration, and sec
 
 | Test Suite | Framework | Total Tests | Passed | Skipped | Status |
 | :--- | :--- | :---: | :---: | :---: | :---: |
-| **Backend Suite** | `pytest` | 400 | **396** | 4* | **100% Pass** |
+| **Backend Suite** | `pytest` | 414 | **410** | 4* | **100% Pass** |
 | **Frontend Suite** | `vitest` | 38 | **38** | 0 | **100% Pass** |
 | **Frontend Production Build** | `tsc -b && vite build` | — | **Exit 0** | 0 | **Clean** |
 

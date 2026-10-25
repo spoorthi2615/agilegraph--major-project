@@ -4,8 +4,6 @@ from enum import Enum
 import torch
 
 class LabelSource(str, Enum):
-    EXPERT = "EXPERT"
-    SYNTHETIC = "SYNTHETIC"
     HEURISTIC = "HEURISTIC"
     UNKNOWN = "UNKNOWN"
 
@@ -69,14 +67,6 @@ def extract_target_label(properties: dict) -> TargetLabel:
     Extracts the target label and explicitly tracks its provenance.
     If no label is present, it returns an UNKNOWN source without fabricating one.
     """
-    label_info = properties.get("expert_label")
-    if label_info:
-        return TargetLabel(
-            class_idx=label_info.get("class_idx"),
-            source=LabelSource.EXPERT,
-            confidence=label_info.get("confidence", 1.0)
-        )
-        
     # Check for heuristic label (weak supervision)
     heuristic_info = properties.get("heuristic_label")
     if heuristic_info and heuristic_info.get("class_idx") is not None:

@@ -24,7 +24,7 @@ class TrainingPipeline:
     def validate_data_for_training(self, hetero_data):
         """
         Scans data to ensure we have actual labels before training.
-        Refuses to train if no expert (or heuristic, if explicitly allowed) labels are present.
+        Refuses to train if no weak-supervision heuristic labels are present.
         """
         has_labels = False
         

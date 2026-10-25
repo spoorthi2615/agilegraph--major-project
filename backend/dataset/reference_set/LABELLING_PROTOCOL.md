@@ -23,7 +23,7 @@ Each reference fixture is specified across the following attributes:
 | `expected_algorithm` | Exact cryptographic algorithm | e.g. `rsa`, `aes`, `ecdsa`, `sha256`, `none` |
 | `expected_operation` | Cryptographic primitive operation | `key_generation`, `encryption`, `signature`, `hashing`, `random`, `tls_config`, `none` |
 | `fixture_rationale` | Technical reason for classification | Free-text technical explanation |
-| `consensus_label` | Adjudicated expected outcome for test runner | Category name or `NEGATIVE` |
+| `expected_label` | Expected outcome for test runner | Category name or `NEGATIVE` |
 
 ---
 

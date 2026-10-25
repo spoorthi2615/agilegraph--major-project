@@ -4,7 +4,7 @@ This document records the design decisions and syntax edge cases evaluated durin
 
 > [!NOTE]
 > **Provenance & Purpose**  
-> These entries reflect developer-defined regression test design decisions to ensure scanners avoid common AST/regex pitfalls (such as matching comments, string variables, or unrelated method names sharing cryptographic keywords). They do not represent an external multi-annotator human consensus panel.
+> These entries reflect developer-defined regression test design decisions to ensure scanners avoid common AST/regex pitfalls (such as matching comments, string variables, or unrelated method names sharing cryptographic keywords). They do not represent an external multi-annotator human panel.
 
 | Item ID | Snippet Pattern | Primary Risk of Misclassification | Expected Label | Resolution & Design Rationale |
 | :--- | :--- | :--- | :---: | :--- |

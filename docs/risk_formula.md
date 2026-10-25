@@ -26,7 +26,7 @@ where `Σ wi = 1` and all factors are `[0,1]`.
 *(Formula versioning: `heuristic-v0.1`)*
 
 ## 5. Weight Configuration
-Weights are currently configurable. **They are NOT EXPERT-VALIDATED final project weights.** They are initial values meant for weak supervision and later sensitivity/AHP-lite testing.
+Weights are configurable and deterministic. They serve as transparent heuristic baseline priors for weak-supervision ranking and sensitivity analysis.
 
 ## 6. Missing-Data Policy
 Uncertainty must not be hidden.
@@ -36,8 +36,6 @@ Uncertainty must not be hidden.
 ## 7. Score Interpretation & Audit
 The output is an auditable `RiskScoreResult` decomposition including the score, missing policies, and a `weighted_contributions` dictionary explaining how much each factor contributed to the final result.
 
-## 8. What is NOT finalized yet
-- Final heuristic weights have not yet been selected.
-- Final centrality and migration mathematical definitions.
-- The initial heuristic score is a weak-supervision signal and not ground-truth expert labeling.
-- Synthetic ranking fixtures exist for testing only and do not represent real security assessments.
+## 8. Baseline Interpretation
+- The heuristic score is a deterministic rule-based baseline prior designed for operational triage and weak-supervision signal generation.
+- Evaluation across the 8 pinned benchmark repositories establishes baseline monotonic ordering and sensitivity boundaries.

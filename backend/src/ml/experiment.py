@@ -4,8 +4,6 @@ from pydantic import BaseModel, Field
 import datetime
 
 class LabelRegime(str, Enum):
-    SYNTHETIC = "SYNTHETIC" # Only for software validation
-    EXPERT = "EXPERT"       # Actual human validation target
     WEAK_SUPERVISION = "WEAK_SUPERVISION" # Heuristic-derived weak labels for GNN training
 
 class AblationRegime(str, Enum):

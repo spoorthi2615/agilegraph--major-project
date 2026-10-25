@@ -7,7 +7,7 @@
     "expected_algorithm": "rsa",
     "expected_operation": "key_generation",
     "fixture_rationale": "Explicit RSA key generation using cryptography library",
-    "consensus_label": "crypto_usage"
+    "expected_label": "crypto_usage"
   },
   {
     "item_id": "REF-PY-002",
@@ -17,7 +17,7 @@
     "expected_algorithm": "sha256",
     "expected_operation": "hashing",
     "fixture_rationale": "Standard hashlib SHA-256 invocation",
-    "consensus_label": "crypto_usage"
+    "expected_label": "crypto_usage"
   },
   {
     "item_id": "REF-PY-003",
@@ -27,7 +27,7 @@
     "expected_algorithm": "none",
     "expected_operation": "none",
     "fixture_rationale": "Incidental crypto substring in string variable names",
-    "consensus_label": "NEGATIVE"
+    "expected_label": "NEGATIVE"
   },
   {
     "item_id": "REF-PY-004",
@@ -37,7 +37,7 @@
     "expected_algorithm": "aes",
     "expected_operation": "encryption",
     "fixture_rationale": "PyCryptodome AES-GCM cipher instantiation",
-    "consensus_label": "crypto_usage"
+    "expected_label": "crypto_usage"
   },
   {
     "item_id": "REF-PY-005",
@@ -47,7 +47,7 @@
     "expected_algorithm": "none",
     "expected_operation": "none",
     "fixture_rationale": "Function name with commented-out code only, no executable crypto call",
-    "consensus_label": "NEGATIVE"
+    "expected_label": "NEGATIVE"
   },
   {
     "item_id": "REF-JV-001",
@@ -57,7 +57,7 @@
     "expected_algorithm": "RSA",
     "expected_operation": "key_generation",
     "fixture_rationale": "JCA RSA keygen initialized to 2048",
-    "consensus_label": "crypto_usage"
+    "expected_label": "crypto_usage"
   },
   {
     "item_id": "REF-JV-002",
@@ -67,7 +67,7 @@
     "expected_algorithm": "AES/CBC/PKCS5Padding",
     "expected_operation": "encryption",
     "fixture_rationale": "AES cipher instantiation",
-    "consensus_label": "crypto_usage"
+    "expected_label": "crypto_usage"
   },
   {
     "item_id": "REF-JV-003",
@@ -77,7 +77,7 @@
     "expected_algorithm": "none",
     "expected_operation": "none",
     "fixture_rationale": "Thread pool initialize(8) - must not attach to crypto key size",
-    "consensus_label": "NEGATIVE"
+    "expected_label": "NEGATIVE"
   },
   {
     "item_id": "REF-JV-004",
@@ -87,7 +87,7 @@
     "expected_algorithm": "SecureRandom",
     "expected_operation": "random",
     "fixture_rationale": "Direct SecureRandom constructor instantiation",
-    "consensus_label": "crypto_usage"
+    "expected_label": "crypto_usage"
   },
   {
     "item_id": "REF-JV-005",
@@ -97,7 +97,7 @@
     "expected_algorithm": "none",
     "expected_operation": "none",
     "fixture_rationale": "String literal with crypto URL",
-    "consensus_label": "NEGATIVE"
+    "expected_label": "NEGATIVE"
   },
   {
     "item_id": "REF-GO-001",
@@ -107,7 +107,7 @@
     "expected_algorithm": "rsa",
     "expected_operation": "key_generation",
     "fixture_rationale": "Go standard library rsa.GenerateKey",
-    "consensus_label": "crypto_usage"
+    "expected_label": "crypto_usage"
   },
   {
     "item_id": "REF-GO-002",
@@ -117,7 +117,7 @@
     "expected_algorithm": "ed25519",
     "expected_operation": "key_generation",
     "fixture_rationale": "Ed25519 key pair generation",
-    "consensus_label": "crypto_usage"
+    "expected_label": "crypto_usage"
   },
   {
     "item_id": "REF-GO-003",
@@ -127,7 +127,7 @@
     "expected_algorithm": "tls",
     "expected_operation": "tls_config",
     "fixture_rationale": "TLS Config instantiation",
-    "consensus_label": "crypto_usage"
+    "expected_label": "crypto_usage"
   },
   {
     "item_id": "REF-GO-004",
@@ -137,7 +137,7 @@
     "expected_algorithm": "none",
     "expected_operation": "none",
     "fixture_rationale": "Financial crypto asset struct",
-    "consensus_label": "NEGATIVE"
+    "expected_label": "NEGATIVE"
   },
   {
     "item_id": "REF-GO-005",
@@ -147,6 +147,6 @@
     "expected_algorithm": "none",
     "expected_operation": "none",
     "fixture_rationale": "Commented Go code",
-    "consensus_label": "NEGATIVE"
+    "expected_label": "NEGATIVE"
   }
 ]

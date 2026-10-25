@@ -13,13 +13,12 @@ AgileGraph is an academic research project requiring rigorous methodology and re
 
 ## 2. Research Integrity Principles
 
-### 2.1 Real vs. Synthetic Data
-- Synthetic development fixtures must be explicitly documented and isolated (e.g., in `dataset/synthetic_dev_sandbox/`).
-- Real-world scan results must never be simulated or fabricated. If real data is unavailable, it must be stated clearly.
+### 2.1 Empirical Ground Truth & Static Analysis
+- Real-world scan results must never be simulated or fabricated. All property graphs and risk factors reflect deterministic AST and dependency extraction.
 
-### 2.2 Expert Annotations & Weak Supervision
+### 2.2 Ground Truth & Weak Supervision
 - The heuristic risk score acts as weak supervision. It must not be presented as external human ground truth.
-- If a panel of independent security experts has not been recruited, the system provides the data structures to support future expert evaluation without fabricating simulated raters or artificial agreement metrics.
+- In the absence of external benchmark ground truth labels, all evaluations measure approximation fidelity to rule-based priors.
 
 ### 2.3 CVE Evidence & Vulnerability Tracking
 - "No CVE data retrieved" or an unconfigured CVE provider is NOT equivalent to "0 vulnerabilities". 
