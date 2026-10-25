@@ -1,11 +1,11 @@
 # AgileGraph: Graph-Learned Crypto-Agility Risk Scoring for Post-Quantum Migration
 
-[![Backend Tests](https://img.shields.io/badge/Backend%20Tests-412%20Passed%20(4%20skipped)-success?style=flat-square&logo=pytest)](docs/FINAL_VERIFICATION_REPORT.md)
-[![Frontend Tests](https://img.shields.io/badge/Frontend%20Tests-38%20Passed-success?style=flat-square&logo=vitest)](docs/PHASE_3_LANDING_AUTH_REPORT.md)
+[![Backend Tests](https://img.shields.io/badge/Backend%20Tests-420%20Passed%20(4%20skipped)-success?style=flat-square&logo=pytest)](docs/evaluation.md)
+[![Frontend Tests](https://img.shields.io/badge/Frontend%20Tests-38%20Passed-success?style=flat-square&logo=vitest)](frontend/)
 [![Python Version](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue?style=flat-square&logo=python)](backend/)
 [![React Version](https://img.shields.io/badge/Frontend-React%2019%20%7C%20TypeScript%20%7C%20Vite-61dafb?style=flat-square&logo=react)](frontend/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
-[![Academic Project](https://img.shields.io/badge/B.Tech%20Cyber%20Security-Final%20Year%20Project%20(2026)-darkblue?style=flat-square)](AgileGraph%20%E2%80%93%20Project%20Synopsis.pdf)
+[![Academic Project](https://img.shields.io/badge/B.Tech%20Cyber%20Security-Final%20Year%20Project%20(2026)-darkblue?style=flat-square)](docs/AgileGraph%20%E2%80%93%20Project%20Synopsis.pdf)
 
 AgileGraph is an automated cryptographic discovery, typed property-graph modeling, and crypto-agility risk scoring system engineered for post-quantum cryptographic (PQC) migration. It inventories cryptographic primitives across multi-language codebases (Python, Java, Go, and package manifests), constructs formal 6-node property graphs, computes deterministic 7-factor heuristic risk scores enriched with contextual factor analysis, evaluates quantum migration urgency via Mosca's theorem, tracks migration across a 6-state remediation lifecycle, and provides an architectural Heterogeneous Graph Attention Network (GATv2) model for structural risk propagation.
 
@@ -436,15 +436,21 @@ agilegraph--major-project/
 │   │   ├── scanners/              # Python AST, Java, Go, manifest scanners
 │   │   ├── cli.py                 # Command-line interface
 │   │   └── main.py                # FastAPI app entrypoint
-│   └── tests/                     # 396 passing pytest tests
-├── docs/                          # Comprehensive technical and verification reports
-│   ├── FINAL_VERIFICATION_REPORT.md
-│   ├── FUNCTIONAL_AUDIT_REPORT.md
-│   ├── PHASE_1_FUNCTIONAL_VERIFICATION.md
-│   ├── PHASE_3_LANDING_AUTH_REPORT.md
+│   └── tests/                     # 420 passing pytest tests
+├── docs/                          # Architectural specs, benchmarks, and project synopsis
+│   ├── AgileGraph – Project Synopsis.pdf
+│   ├── AgileGraph – Project Synopsis.docx
+│   ├── architecture.md
+│   ├── graph_schema.md
+│   ├── risk_formula.md
+│   ├── product_layer.md
+│   ├── dataset.md
 │   ├── evaluation.md
-│   ├── quality_control.md
-│   └── reproducibility.md
+│   ├── reproducibility.md
+│   ├── SCANNER_SCOPE.md
+│   ├── CASE_STUDIES.md
+│   ├── NIST_CONSISTENCY_REVIEW.md
+│   └── ethics_authorization.md
 ├── frontend/                      # React 19 / TypeScript / Vite web application
 │   ├── src/
 │   │   ├── api/                   # Axios API client and auth headers
@@ -452,7 +458,6 @@ agilegraph--major-project/
 │   │   ├── context/               # AuthContext for session management
 │   │   └── tests/                 # 38 passing Vitest tests
 ├── .github/workflows/ci.yml       # Continuous integration workflow
-├── AgileGraph – Project Synopsis.pdf  # Authoritative Project Synopsis
 ├── .gitignore
 ├── LICENSE
 └── README.md
