@@ -17,6 +17,11 @@ from src.core.storage import default_storage
 
 client = TestClient(app)
 
+BACKEND_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+TEST_REPO_PATH = os.path.join(BACKEND_DIR, "dataset", "corpus", "python_itsdangerous")
+if not os.path.exists(TEST_REPO_PATH):
+    TEST_REPO_PATH = BACKEND_DIR
+
 @pytest.fixture(autouse=True)
 def clean_test_users(monkeypatch):
     # Ensure strict authentication mode for auth tests by default
@@ -251,7 +256,7 @@ def test_cross_user_isolation_read_write_scan_export_delete(monkeypatch):
     r_bob_scan = client.post(
         "/api/v1/scan",
         json={
-            "repository_path": os.path.abspath("backend/dataset/corpus/python_itsdangerous"),
+            "repository_path": TEST_REPO_PATH,
             "project_id": "alice_private_project"
         },
         headers=headers_bob
@@ -323,7 +328,7 @@ def test_unknown_and_legacy_project_ownership_policy(monkeypatch):
     r_scan_shared = client.post(
         "/api/v1/scan",
         json={
-            "repository_path": os.path.abspath("backend/dataset/corpus/python_itsdangerous"),
+            "repository_path": TEST_REPO_PATH,
             "project_id": "agile"
         },
         headers=headers_bob
