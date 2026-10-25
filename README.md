@@ -403,12 +403,18 @@ Visit `http://localhost:5173` to explore the public landing page, create an acco
 
 ### Environment Configuration
 
+Configuration is managed via `.env` (copy from `.env.example`). Key variables include:
+
 | Variable | Default | Purpose |
 | :--- | :--- | :--- |
-| `AGILEGRAPH_ENV` | `development` | Deployment environment (`development` or `production`). |
+| `AGILEGRAPH_ENV` (or `ENV`) | `development` | Deployment environment (`development` or `production`). |
 | `AGILEGRAPH_SECRET_KEY` | *(dev fallback)* | Secret key for JWT signing. Must be $\ge 32$ chars in production. |
 | `AGILEGRAPH_ALLOW_ANONYMOUS`| `0` | Dev/test only flag to bypass auth. Ignored in production. |
-| `AGILEGRAPH_AUTH_DB` | `backend/dataset/cache/agilegraph_migrations.db` | Path to SQLite authentication and migration database. |
+| `AGILEGRAPH_AUTH_DB` | `dataset/cache/agilegraph_migrations.db` | Path to SQLite authentication and migration database. |
+| `DATABASE_URL` | `sqlite:///./dataset/cache/agilegraph.db` | SQLite connection URL for scan and project data storage. |
+| `AGILEGRAPH_SCAN_ROOT` | `.` | Optional directory boundary restricting static code scanning. |
+| `OSV_API_URL` | `https://api.osv.dev/v1/query` | Remote OSV vulnerability intelligence endpoint. |
+| `OSV_TIMEOUT_SECONDS` | `5.0` | Timeout threshold for OSV network queries. |
 
 ---
 

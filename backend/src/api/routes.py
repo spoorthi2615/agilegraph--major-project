@@ -109,7 +109,7 @@ def trigger_scan(request: ScanRequest, current_user: User = Depends(get_current_
     if not os.path.exists(repo_path):
         raise HTTPException(status_code=400, detail="Repository path does not exist.")
         
-    allowed_root_env = os.environ.get("AGILEGRAPH_SCAN_ROOT")
+    allowed_root_env = os.environ.get("AGILEGRAPH_SCAN_ROOT") or os.environ.get("ALLOWED_SCAN_ROOT")
     allowed_root = os.path.realpath(allowed_root_env) if allowed_root_env else None
     
     req_root = os.path.realpath(repo_path)
