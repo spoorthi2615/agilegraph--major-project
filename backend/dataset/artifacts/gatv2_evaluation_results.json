@@ -1,8 +1,9 @@
 {
-  "execution_timestamp": "2026-10-25T09:32:43Z",
-  "total_elapsed_seconds": 10.7,
+  "execution_timestamp": "2026-10-25T18:04:53Z",
+  "total_elapsed_seconds": 32.99,
   "total_repositories": 8,
   "total_file_assets": 520,
+  "evaluation_protocol": "8-Fold Leave-One-Project-Out (LOPO) Cross-Validation",
   "task1_training_verification": {
     "status": "VERIFIED",
     "initial_loss": 1.301689624786377,
@@ -12,209 +13,81 @@
     "epochs": 10
   },
   "task2_lopo_cross_validation": {
-    "fold_results": [
+    "fold_records": [
       {
         "fold": 1,
         "held_out_project": "go_crypto",
-        "test_assets": 111,
-        "accuracy": 0.954954954954955,
-        "macro_f1": 0.6370328953499208,
-        "balanced_accuracy": 0.6533333333333333,
-        "confusion_matrix": [
-          [
-            72,
-            3,
-            0
-          ],
-          [
-            0,
-            34,
-            0
-          ],
-          [
-            0,
-            2,
-            0
-          ]
-        ]
+        "n_test_files": 111,
+        "gatv2_accuracy": 0.955,
+        "mlp_accuracy": 0.964,
+        "edge_shuffled_accuracy": 0.8919,
+        "leaked_accuracy": 0.982
       },
       {
         "fold": 2,
         "held_out_project": "go_jwt",
-        "test_assets": 20,
-        "accuracy": 0.75,
-        "macro_f1": 0.4995822890559733,
-        "balanced_accuracy": 0.5277777777777778,
-        "confusion_matrix": [
-          [
-            7,
-            5,
-            0
-          ],
-          [
-            0,
-            8,
-            0
-          ],
-          [
-            0,
-            0,
-            0
-          ]
-        ]
+        "n_test_files": 20,
+        "gatv2_accuracy": 0.75,
+        "mlp_accuracy": 0.95,
+        "edge_shuffled_accuracy": 0.6,
+        "leaked_accuracy": 0.95
       },
       {
         "fold": 3,
         "held_out_project": "go_jwt_go",
-        "test_assets": 19,
-        "accuracy": 0.7894736842105263,
-        "macro_f1": 0.5079365079365079,
-        "balanced_accuracy": 0.5,
-        "confusion_matrix": [
-          [
-            3,
-            3,
-            0
-          ],
-          [
-            0,
-            12,
-            0
-          ],
-          [
-            0,
-            1,
-            0
-          ]
-        ]
+        "n_test_files": 19,
+        "gatv2_accuracy": 0.7895,
+        "mlp_accuracy": 0.7368,
+        "edge_shuffled_accuracy": 0.6842,
+        "leaked_accuracy": 0.7895
       },
       {
         "fold": 4,
         "held_out_project": "java_java_jwt",
-        "test_assets": 18,
-        "accuracy": 0.8333333333333334,
-        "macro_f1": 0.30303030303030304,
-        "balanced_accuracy": 0.3333333333333333,
-        "confusion_matrix": [
-          [
-            15,
-            0,
-            0
-          ],
-          [
-            3,
-            0,
-            0
-          ],
-          [
-            0,
-            0,
-            0
-          ]
-        ]
+        "n_test_files": 18,
+        "gatv2_accuracy": 0.8333,
+        "mlp_accuracy": 0.8333,
+        "edge_shuffled_accuracy": 0.8889,
+        "leaked_accuracy": 0.8333
       },
       {
         "fold": 5,
         "held_out_project": "java_jjwt",
-        "test_assets": 170,
-        "accuracy": 0.9764705882352941,
-        "macro_f1": 0.49598393574297184,
-        "balanced_accuracy": 0.4444444444444444,
-        "confusion_matrix": [
-          [
-            164,
-            0,
-            0
-          ],
-          [
-            4,
-            2,
-            0
-          ],
-          [
-            0,
-            0,
-            0
-          ]
-        ]
+        "n_test_files": 170,
+        "gatv2_accuracy": 0.9765,
+        "mlp_accuracy": 0.9765,
+        "edge_shuffled_accuracy": 0.9765,
+        "leaked_accuracy": 0.9765
       },
       {
         "fold": 6,
         "held_out_project": "python_bcrypt",
-        "test_assets": 1,
-        "accuracy": 1.0,
-        "macro_f1": 0.3333333333333333,
-        "balanced_accuracy": 0.3333333333333333,
-        "confusion_matrix": [
-          [
-            0,
-            0,
-            0
-          ],
-          [
-            0,
-            1,
-            0
-          ],
-          [
-            0,
-            0,
-            0
-          ]
-        ]
+        "n_test_files": 1,
+        "gatv2_accuracy": 1.0,
+        "mlp_accuracy": 0.0,
+        "edge_shuffled_accuracy": 1.0,
+        "leaked_accuracy": 1.0
       },
       {
         "fold": 7,
         "held_out_project": "python_cryptography",
-        "test_assets": 178,
-        "accuracy": 0.15730337078651685,
-        "macro_f1": 0.14808148981377328,
-        "balanced_accuracy": 0.25757575757575757,
-        "confusion_matrix": [
-          [
-            1,
-            1,
-            0
-          ],
-          [
-            76,
-            0,
-            1
-          ],
-          [
-            26,
-            46,
-            27
-          ]
-        ]
+        "n_test_files": 178,
+        "gatv2_accuracy": 0.1573,
+        "mlp_accuracy": 0.5899,
+        "edge_shuffled_accuracy": 0.573,
+        "leaked_accuracy": 0.9944
       },
       {
         "fold": 8,
         "held_out_project": "python_itsdangerous",
-        "test_assets": 3,
-        "accuracy": 0.3333333333333333,
-        "macro_f1": 0.16666666666666666,
-        "balanced_accuracy": 0.3333333333333333,
-        "confusion_matrix": [
-          [
-            0,
-            0,
-            2
-          ],
-          [
-            0,
-            0,
-            0
-          ],
-          [
-            0,
-            0,
-            1
-          ]
-        ]
+        "n_test_files": 3,
+        "gatv2_accuracy": 0.3333,
+        "mlp_accuracy": 0.0,
+        "edge_shuffled_accuracy": 0.3333,
+        "leaked_accuracy": 0.3333
       }
     ],
-    "aggregate_gatv2": {
+    "gatv2": {
       "class_0_precision": 0.706199460916442,
       "class_0_recall": 0.9492753623188406,
       "class_0_f1": 0.8098918083462133,
@@ -251,9 +124,158 @@
         0,
         1,
         2
+      ],
+      "accuracy_ci_95": [
+        0.6269,
+        0.7058
+      ],
+      "macro_f1_ci_95": [
+        0.506,
+        0.6049
       ]
     },
-    "aggregate_majority": {
+    "mlp": {
+      "class_0_precision": 0.9676258992805755,
+      "class_0_recall": 0.9746376811594203,
+      "class_0_f1": 0.9711191335740073,
+      "class_1_precision": 0.6113744075829384,
+      "class_1_recall": 0.9148936170212766,
+      "class_1_f1": 0.7329545454545453,
+      "class_2_precision": 0.9032258064516129,
+      "class_2_recall": 0.27184466019417475,
+      "class_2_f1": 0.417910447761194,
+      "status": "COMPUTED",
+      "macro_precision": 0.8274087044383757,
+      "macro_recall": 0.7204586527916238,
+      "macro_f1": 0.7073280422632489,
+      "balanced_accuracy": 0.7204586527916238,
+      "accuracy": 0.8192307692307692,
+      "confusion_matrix": [
+        [
+          269,
+          7,
+          0
+        ],
+        [
+          9,
+          129,
+          3
+        ],
+        [
+          0,
+          75,
+          28
+        ]
+      ],
+      "classes": [
+        0,
+        1,
+        2
+      ],
+      "accuracy_ci_95": [
+        0.7885,
+        0.85
+      ],
+      "macro_f1_ci_95": [
+        0.6647,
+        0.7499
+      ]
+    },
+    "edge_shuffled_gatv2": {
+      "class_0_precision": 0.9392857142857143,
+      "class_0_recall": 0.9528985507246377,
+      "class_0_f1": 0.9460431654676259,
+      "class_1_precision": 0.8245614035087719,
+      "class_1_recall": 0.3333333333333333,
+      "class_1_f1": 0.4747474747474747,
+      "class_2_precision": 0.546448087431694,
+      "class_2_recall": 0.970873786407767,
+      "class_2_f1": 0.6993006993006993,
+      "status": "COMPUTED",
+      "macro_precision": 0.7700984017420601,
+      "macro_recall": 0.7523685568219127,
+      "macro_f1": 0.7066971131719333,
+      "balanced_accuracy": 0.7523685568219127,
+      "accuracy": 0.7884615384615384,
+      "confusion_matrix": [
+        [
+          263,
+          7,
+          6
+        ],
+        [
+          17,
+          47,
+          77
+        ],
+        [
+          0,
+          3,
+          100
+        ]
+      ],
+      "classes": [
+        0,
+        1,
+        2
+      ],
+      "accuracy_ci_95": [
+        0.7519,
+        0.8212
+      ],
+      "macro_f1_ci_95": [
+        0.6606,
+        0.7464
+      ]
+    },
+    "target_leaked_gatv2": {
+      "class_0_precision": 0.9748201438848921,
+      "class_0_recall": 0.9818840579710145,
+      "class_0_f1": 0.9783393501805054,
+      "class_1_precision": 0.9428571428571428,
+      "class_1_recall": 0.9361702127659575,
+      "class_1_f1": 0.9395017793594306,
+      "class_2_precision": 0.9803921568627451,
+      "class_2_recall": 0.970873786407767,
+      "class_2_f1": 0.975609756097561,
+      "status": "COMPUTED",
+      "macro_precision": 0.96602314786826,
+      "macro_recall": 0.9629760190482464,
+      "macro_f1": 0.9644836285458324,
+      "balanced_accuracy": 0.9629760190482464,
+      "accuracy": 0.9673076923076923,
+      "confusion_matrix": [
+        [
+          271,
+          5,
+          0
+        ],
+        [
+          7,
+          132,
+          2
+        ],
+        [
+          0,
+          3,
+          100
+        ]
+      ],
+      "classes": [
+        0,
+        1,
+        2
+      ],
+      "accuracy_ci_95": [
+        0.9519,
+        0.9808
+      ],
+      "macro_f1_ci_95": [
+        0.9456,
+        0.9793
+      ]
+    },
+    "majority": {
       "class_0_precision": 0.32,
       "class_0_recall": 0.4057971014492754,
       "class_0_f1": 0.35782747603833864,
@@ -291,103 +313,10 @@
         1,
         2
       ]
-    }
-  },
-  "task3_repository_split": {
-    "train_projects": [
-      "python_cryptography",
-      "java_jjwt",
-      "go_crypto"
-    ],
-    "val_projects": [
-      "python_bcrypt",
-      "java_java_jwt",
-      "go_jwt"
-    ],
-    "test_projects": [
-      "python_itsdangerous",
-      "go_jwt_go"
-    ],
-    "test_metrics": {
-      "class_0_precision": 0.4166666666666667,
-      "class_0_recall": 0.625,
-      "class_0_f1": 0.5,
-      "class_1_precision": 0.5,
-      "class_1_recall": 0.4166666666666667,
-      "class_1_f1": 0.45454545454545453,
-      "class_2_precision": 0.0,
-      "class_2_recall": 0.0,
-      "class_2_f1": 0.0,
-      "status": "COMPUTED",
-      "macro_precision": 0.3055555555555556,
-      "macro_recall": 0.34722222222222227,
-      "macro_f1": 0.3181818181818182,
-      "balanced_accuracy": 0.34722222222222227,
-      "accuracy": 0.45454545454545453,
-      "confusion_matrix": [
-        [
-          5,
-          3,
-          0
-        ],
-        [
-          7,
-          5,
-          0
-        ],
-        [
-          0,
-          2,
-          0
-        ]
-      ],
-      "classes": [
-        0,
-        1,
-        2
-      ]
-    }
-  },
-  "task4_baselines": {
-    "heuristic_baseline": {
-      "class_0_precision": 1.0,
-      "class_0_recall": 1.0,
-      "class_0_f1": 1.0,
-      "class_1_precision": 1.0,
-      "class_1_recall": 1.0,
-      "class_1_f1": 1.0,
-      "class_2_precision": 1.0,
-      "class_2_recall": 1.0,
-      "class_2_f1": 1.0,
-      "status": "COMPUTED",
-      "macro_precision": 1.0,
-      "macro_recall": 1.0,
-      "macro_f1": 1.0,
-      "balanced_accuracy": 1.0,
-      "accuracy": 1.0,
-      "confusion_matrix": [
-        [
-          276,
-          0,
-          0
-        ],
-        [
-          0,
-          141,
-          0
-        ],
-        [
-          0,
-          0,
-          103
-        ]
-      ],
-      "classes": [
-        0,
-        1,
-        2
-      ]
     },
+    "empirical_finding": "Under cross-repository Leave-One-Project-Out (LOPO) evaluation, the Non-Graph MLP baseline achieves 81.92% accuracy (Macro-F1 0.7073) compared to GATv2's 66.73% (Macro-F1 0.5560). Graph message passing suffers from cross-codebase structural shift across heterogeneous ecosystems, demonstrating that local risk factor features dominate weak-label tier prediction."
+  },
+  "task3_baselines_and_rank_correlation": {
     "rule_baseline": {
       "class_0_precision": 0.9514563106796117,
       "class_0_recall": 0.35507246376811596,
@@ -426,98 +355,52 @@
         1,
         2
       ]
-    }
-  },
-  "task5_leakage_ablation": {
-    "intra_repo_resubstitution": {
-      "without_base_risk": {
-        "class_0_precision": 0.0,
-        "class_0_recall": 0.0,
-        "class_0_f1": 0.0,
-        "class_1_precision": 1.0,
-        "class_1_recall": 0.987012987012987,
-        "class_1_f1": 0.9934640522875817,
-        "class_2_precision": 0.9705882352941176,
-        "class_2_recall": 1.0,
-        "class_2_f1": 0.9850746268656716,
-        "status": "COMPUTED",
-        "macro_precision": 0.6568627450980392,
-        "macro_recall": 0.6623376623376623,
-        "macro_f1": 0.6595128930510844,
-        "balanced_accuracy": 0.6623376623376623,
-        "accuracy": 0.9831460674157303,
-        "confusion_matrix": [
-          [
-            0,
-            0,
-            2
-          ],
-          [
-            0,
-            76,
-            1
-          ],
-          [
-            0,
-            0,
-            99
-          ]
-        ],
-        "classes": [
-          0,
-          1,
-          2
-        ]
-      },
-      "with_base_risk": {
-        "class_0_precision": 0.0,
-        "class_0_recall": 0.0,
-        "class_0_f1": 0.0,
-        "class_1_precision": 1.0,
-        "class_1_recall": 0.987012987012987,
-        "class_1_f1": 0.9934640522875817,
-        "class_2_precision": 0.9705882352941176,
-        "class_2_recall": 1.0,
-        "class_2_f1": 0.9850746268656716,
-        "status": "COMPUTED",
-        "macro_precision": 0.6568627450980392,
-        "macro_recall": 0.6623376623376623,
-        "macro_f1": 0.6595128930510844,
-        "balanced_accuracy": 0.6623376623376623,
-        "accuracy": 0.9831460674157303,
-        "confusion_matrix": [
-          [
-            0,
-            0,
-            2
-          ],
-          [
-            0,
-            76,
-            1
-          ],
-          [
-            0,
-            0,
-            99
-          ]
-        ],
-        "classes": [
-          0,
-          1,
-          2
-        ]
-      },
-      "audit_note": "Evaluated on training examples; saturates at 98.31% because 14 factor inputs already define the score."
     },
-    "cross_repo_lopo_leakage_impact": {
-      "without_leakage_lopo_accuracy": 0.6673,
-      "without_leakage_lopo_macro_f1": 0.556,
-      "with_leakage_lopo_accuracy": 0.8308,
-      "with_leakage_lopo_macro_f1": 0.7185,
-      "leakage_gain_accuracy": "+16.35%",
-      "audit_note": "Target leakage artificially inflates out-of-fold generalization across repositories by bypassing domain shift."
+    "teacher_baseline": {
+      "class_0_precision": 1.0,
+      "class_0_recall": 1.0,
+      "class_0_f1": 1.0,
+      "class_1_precision": 1.0,
+      "class_1_recall": 1.0,
+      "class_1_f1": 1.0,
+      "class_2_precision": 1.0,
+      "class_2_recall": 1.0,
+      "class_2_f1": 1.0,
+      "status": "COMPUTED",
+      "macro_precision": 1.0,
+      "macro_recall": 1.0,
+      "macro_f1": 1.0,
+      "balanced_accuracy": 1.0,
+      "accuracy": 1.0,
+      "confusion_matrix": [
+        [
+          276,
+          0,
+          0
+        ],
+        [
+          0,
+          141,
+          0
+        ],
+        [
+          0,
+          0,
+          103
+        ]
+      ],
+      "classes": [
+        0,
+        1,
+        2
+      ]
+    },
+    "rank_correlations": {
+      "spearman_rho": 0.8091,
+      "spearman_pvalue": 1.1542371105880137e-121,
+      "kendall_tau": 0.663,
+      "kendall_pvalue": 1.1169774515258437e-76
     }
   },
-  "scientific_limitation_statement": "Weak-supervision labels were derived from the AgileGraph continuous heuristic risk score. Evaluations measure representation distillation and cross-repository structural generalization, not independently validated real-world post-quantum migration risk."
+  "scientific_limitation_statement": "The GATv2 prototype is evaluated against heuristic-derived risk tiers. Its results characterize agreement with the heuristic labeling procedure and do not establish independent prediction of real-world cryptographic risk. Controlled comparisons against non-graph and graph-structure baselines reveal that local node factors dominate weak-tier prediction."
 }

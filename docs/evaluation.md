@@ -27,39 +27,61 @@ Node features for file nodes strictly contain 14 dimensions:
 - **7 Observation Masks**: $0.0$ if the factor is observed, $1.0$ if missing.
 
 ### 3.2 Target Leakage Safeguard
-By default, `FeatureConfig.include_base_risk=False`. Continuous `base_risk` is **strictly excluded** from node features. The model is forced to learn structural relationships (`IMPORTS`, `CONTAINS`, `CALLS`, `DEPENDS_ON`) and constituent factors rather than performing a scalar shortcut.
+By default, `FeatureConfig.include_base_risk=False`. Continuous `base_risk` is strictly excluded from node features to prevent the network from directly copying the continuous scalar used to assign heuristic class labels.
 
 ---
 
 ## 4. Empirical Evaluation Results
 
-### 4.1 Leave-One-Project-Out (LOPO) Cross-Validation ($N = 520$ Files)
-To prevent intra-repository data leakage, each fold held out exactly one repository as the test set while training strictly on the remaining seven:
+> [!IMPORTANT]
+> **Scientific Framing & Evaluation Disclaimer**
+> “The GATv2 prototype is evaluated against heuristic-derived risk tiers. Its results characterize agreement with the heuristic labeling procedure and do not establish independent prediction of real-world cryptographic risk. The contribution of graph topology requires controlled comparisons against appropriate non-graph and graph-structure baselines.”
 
-| Metric | GATv2 (LOPO Out-of-Fold) | Majority Baseline | Corrected Static Rule Baseline | Heuristic Teacher Baseline |
-|---|---|---|---|---|
-| **Overall Accuracy** | **66.73%** | 22.69% | 42.12% | *100.0%* |
-| **Balanced Accuracy** | **54.18%** | 14.95% | 43.14% | *100.0%* |
-| **Macro-F1** | **0.5560** | 0.1321 | 0.4119 | *1.0000* |
-| **Macro-Precision** | **69.75%** | 11.84% | 40.05% | *100.0%* |
-| **Macro-Recall** | **54.18%** | 14.95% | 43.14% | *100.0%* |
+### 4.1 Leave-One-Project-Out (LOPO) Controlled Cross-Validation ($N = 520$ Files)
+To prevent intra-repository data leakage, each fold held out exactly one repository as the test set while training strictly on the remaining seven. All model architectures and controls were evaluated on identical held-out folds using identical target labels:
 
-*Note on Static Rule Baseline*: An audit identified an earlier feature-index error in `run_gatv2_evaluation.py` (querying index 0 instead of index 3 for `crypto_weakness`). The corrected metric is **42.12% accuracy and 0.4119 macro-F1** (not the previously reported 40.38% and 0.3022).
+| Model / Control Architecture | Accuracy (95% CI) | Balanced Acc | Macro-F1 (95% CI) | HIGH Recall (Class 2) | Role & Scientific Finding |
+|---|---|---|---|---|---|
+| **Non-Graph Feature-Only MLP** | **81.92%** [78.85%, 85.00%] | **72.05%** | **0.7073** [0.6647, 0.7499] | **27.18%** (28/103) | **Feature-only baseline**: Local node factors generalize consistently across repositories. |
+| **Edge-Shuffled GATv2 Control** | **78.85%** [75.19%, 82.12%] | **75.24%** | **0.7067** [0.6606, 0.7464] | **97.09%** (100/103) | **Graph-structure control**: Degree-preserving edge randomization removes semantic topology. |
+| **Heterogeneous GATv2 (14-dim)** | **66.73%** [62.69%, 70.58%] | **54.18%** | **0.5560** [0.5060, 0.6049] | **27.18%** (28/103) | **Proposed GNN**: Subject to cross-codebase graph structural shift across languages. |
+| **GATv2 with Target Leakage (15-dim)**| *96.73%* [95.19%, 98.08%] | *96.30%* | *0.9645* [0.9456, 0.9793] | *97.09%* (100/103) | **Ablation check**: Demonstrates +30.00% artificial boost when scalar label source is exposed. |
+| **Static Rule Baseline** | 42.12% | 43.14% | 0.4119 | 30.10% (31/103) | Rule-based heuristic matching on primary weakness. |
+| **Majority Class Baseline** | 22.69% | 14.95% | 0.1321 | 0.00% (0/103) | Statistical majority floor across folds. |
+| **Heuristic Teacher Baseline** | *100.0%* | *100.0%* | *1.0000* | *100.0%* | Tautological upper ceiling (source of weak labels). |
 
-*Note on Heuristic Teacher Baseline*: The 100.0% concordance is the expected agreement with its own weak supervision formula, serving as the distillation upper bound.
+*Confidence Intervals*: 95% bootstrap confidence intervals ($B = 1000$ iterations) computed across the evaluated out-of-fold sample ($N = 520$).
 
-### 4.2 Aggregate Confusion Matrix ($N = 520$ Files)
+### 4.2 Aggregate Confusion Matrices ($N = 520$ Files)
 
+#### Heterogeneous GATv2 (Genuine 14-dim):
 $$\begin{pmatrix} 
 & \text{Pred LOW} & \text{Pred MED} & \text{Pred HIGH} \\
 \text{True LOW (0)} & \mathbf{262} & 12 & 2 \\
 \text{True MED (1)} & 83 & \mathbf{57} & 1 \\
 \text{True HIGH (2)} & 26 & 49 & \mathbf{28}
 \end{pmatrix}$$
-
 - **Class 0 (LOW, $N=276$)**: Precision = $70.6\%$, Recall = **$94.9\%$**, F1 = **$0.810$**
 - **Class 1 (MED, $N=141$)**: Precision = $48.3\%$, Recall = **$40.4\%$**, F1 = **$0.440$**
 - **Class 2 (HIGH, $N=103$)**: Precision = **$90.3\%$**, Recall = **$27.2\%$**, F1 = **$0.418$**
+
+#### Non-Graph Feature-Only MLP (14-dim):
+$$\begin{pmatrix} 
+& \text{Pred LOW} & \text{Pred MED} & \text{Pred HIGH} \\
+\text{True LOW (0)} & \mathbf{269} & 7 & 0 \\
+\text{True MED (1)} & 9 & \mathbf{129} & 3 \\
+\text{True HIGH (2)} & 0 & 75 & \mathbf{28}
+\end{pmatrix}$$
+- **Class 0 (LOW, $N=276$)**: Precision = $96.8\%$, Recall = **$97.5\%$**, F1 = **$0.971$**
+- **Class 1 (MED, $N=141$)**: Precision = $61.1\%$, Recall = **$91.5\%$**, F1 = **$0.733$**
+- **Class 2 (HIGH, $N=103$)**: Precision = **$90.3\%$**, Recall = **$27.2\%$**, F1 = **$0.418$**
+
+### 4.3 Continuous Score Rank Correlations
+Evaluating rank agreement between continuous GNN-projected risk scores and the continuous heuristic teacher score across all $N = 520$ assets:
+- **Spearman Rank Correlation**: $\rho = 0.8091$ ($p = 1.15 \times 10^{-121}$)
+- **Kendall Tau Correlation**: $\tau = 0.6630$ ($p = 1.12 \times 10^{-76}$)
+
+Both rank statistics indicate strong monotonic concordance with the underlying continuous heuristic risk formula.
 
 ---
 
@@ -67,23 +89,28 @@ $$\begin{pmatrix}
 
 | Configuration | Input Dim | Evaluation Mode | Accuracy | Balanced Acc | Macro-F1 | Finding |
 |---|---|---|---|---|---|---|
-| **WITHOUT_BASE_RISK (Genuine)** | 14 | Cross-Repo LOPO | **66.73%** | **54.18%** | **0.5560** | Genuine structural generalization |
-| **WITH_BASE_RISK (Target Leaked)** | 15 | Cross-Repo LOPO | **83.08%** | **73.23%** | **0.7185** | **+16.35% Artificial Leakage Boost** |
-| *Intra-Repo Resubstitution* | 14 vs 15 | Train Set (`python_cryptography`) | 98.31% | 66.23% | 0.6595 | Both saturate on training examples |
+| **WITHOUT_BASE_RISK (Genuine)** | 14 | Cross-Repo LOPO | **66.73%** | **54.18%** | **0.5560** | Evaluated without continuous target leakage |
+| **WITH_BASE_RISK (Target Leaked)** | 15 | Cross-Repo LOPO | **96.73%** | **96.30%** | **0.9645** | **+30.00% Artificial Leakage Boost** |
 
-*Audit Finding*: Earlier reports noted identical 98.31% performance because the ablation evaluated on training examples of `python_cryptography` ($N=178$), where 15k parameters memorized the 178 nodes in both cases. Testing on out-of-fold cross-codebase LOPO clearly demonstrates that target leakage inflates accuracy by $+16.35\%$.
+When the continuous scalar `base_risk` is included in the node feature vector, cross-repository accuracy jumps from 66.73% to 96.73% (+30.00%). This demonstrates that models easily learn a scalar shortcut if target leakage is not strictly prevented.
 
 ---
 
-## 6. Critical Scientific Limitations & System Safeguards
+## 6. Critical Scientific Analysis & Honest Interpretation
 
-### 6.1 High-Risk Recall is 27.2%
-The model identified 28 of 103 High-risk files. This is directly tied to cross-codebase domain concentration: **99 of the 103 High-risk files in the entire corpus reside in `python_cryptography`**. When `python_cryptography` is held out, the training set contains only 4 High-risk examples ($1.1\%$), starving the model of high-risk signals.
+### 6.1 Why the Non-Graph Baseline Outperforms GATv2
+Under Leave-One-Project-Out evaluation across heterogeneous codebases (Go, Java, Python), the Non-Graph Feature-Only MLP achieves **81.92% accuracy** (Macro-F1 0.7073), outperforming GATv2's **66.73%** (Macro-F1 0.5560).
+- **Cross-Codebase Graph Structural Shift**: Graph topology varies significantly across programming languages, project architectures, and framework conventions. A GNN's multi-head attention over heterogeneous edge types (`CALLS`, `IMPORTS`, `CONTAINS`) overfits repository-specific topological structures that do not transfer directly to a different project.
+- **Local Feature Stability**: In contrast, local node security factors (e.g., algorithmic weakness, CVE presence, internet exposure, asset criticality) carry consistent semantic meaning regardless of repository structure.
+- **Academic Conclusion**: The empirical evidence does **not** demonstrate that graph topology provides a predictive benefit over local feature analysis for weak-label tier imitation across heterogeneous repositories. This negative result is reported honestly as an essential scientific finding.
 
-### 6.2 Architectural Safeguard
-Because a 27.2% recall on High-risk code cannot be trusted as a standalone filter, AgileGraph enforces a strict safeguard:
-- **GNN as an Enrichment & Prioritization Layer**: The GNN provides graph-structural representation and learned risk ranking.
-- **Deterministic Scanners as Authoritative Ground**: Deterministic AST scanners and heuristic rules independently compute and report all detected cryptographic weaknesses. Known quantum-vulnerable primitives (e.g. RSA, DSA) are **never** suppressed or bypassed by the GNN.
+### 6.2 High-Risk Recall is 27.2% Across Both Models
+Both GATv2 and the Non-Graph MLP achieve identical HIGH recall of **27.18% (28/103)**. This is directly driven by class distribution concentration:
+- **99 of the 103 High-risk files in the entire corpus reside in `python_cryptography`**.
+- In the remaining 7 repositories, High-risk files are nearly absent (only 4 files across 7 projects).
+- When `python_cryptography` is held out during LOPO fold 7, the training set contains only 4 High-risk examples out of 342 files ($1.1\%$), starving both models of high-risk training signals.
 
-### 6.3 Weak Supervision Caveat
-The discrete labels were derived from AgileGraph's heuristic risk formula. The experiment demonstrates representation distillation—how well the GNN reproduces multi-factor risk categorization from graph structure—not independent predictive validity against real-world post-quantum exploits or measured migration labor.
+### 6.3 Architectural Safeguards
+Because a 27.2% recall on High-risk code cannot be trusted as a standalone triage filter in a security tool, AgileGraph enforces a strict architectural boundary:
+1. **Deterministic Scanners as Authoritative Ground**: Deterministic static AST/regex scanners independently identify and catalog all cryptographic weaknesses. Known quantum-vulnerable primitives (e.g., RSA, DSA, ECC) are **never** suppressed or bypassed by the GNN.
+2. **GNN as an Experimental Ranking Layer**: The GNN provides graph-structural representation and learned risk distillation, while the deterministic 7-factor engine provides the auditable, explainable risk score for production migration decisions.

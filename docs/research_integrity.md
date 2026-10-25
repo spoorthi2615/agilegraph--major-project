@@ -21,7 +21,7 @@ AgileGraph is an academic research project requiring rigorous methodology. Optim
 
 ### Model Results & Weak Supervision
 - The heuristic risk score acts as weak supervision. Do not accidentally treat the heuristic label as the ultimate ground truth.
-- Train/test leakage must be prevented. The leakage-ablation experiment is a strict requirement to verify that the GNN is learning structural context rather than just copying the heuristic label.
+- Train/test leakage must be prevented. The leakage-ablation and non-graph baseline experiments are strict requirements to evaluate whether the GNN benefits from graph structure or relies on local node factors, without copying the continuous scalar heuristic label.
 
 ### Scan Authorization
 - Active TLS/Endpoint scanning is strictly limited to infrastructure controlled by the team or for which explicit written permission exists.

@@ -40,10 +40,22 @@ def scan_java_code(repository: str, filepath: str, code: str) -> List[FindingRec
     keygen_vars: dict[str, FindingRecord] = {}
     string_vars: dict[str, str] = {}
 
+    in_block_comment = False
     for i, line in enumerate(lines):
         line_num = i + 1
         stripped = line.strip()
-        if stripped.startswith("//") or stripped.startswith("/*") or stripped.startswith("*"):
+        
+        if in_block_comment:
+            if "*/" in stripped:
+                in_block_comment = False
+            continue
+            
+        if stripped.startswith("/*"):
+            if "*/" not in stripped[2:]:
+                in_block_comment = True
+            continue
+            
+        if stripped.startswith("//") or stripped.startswith("*"):
             continue
 
         # Track string variables

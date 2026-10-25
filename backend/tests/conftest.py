@@ -6,7 +6,12 @@ import pytest
 _test_db_handle = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
 _test_db_path = _test_db_handle.name
 _test_db_handle.close()
-os.environ.setdefault("AGILEGRAPH_AUTH_DB", _test_db_path)
+os.environ["AGILEGRAPH_AUTH_DB"] = _test_db_path
+
+# Force default_auth_storage to re-bind to the test database in case it was imported
+from src.core.auth_storage import default_auth_storage
+default_auth_storage.db_path = os.path.realpath(_test_db_path)
+default_auth_storage._init_db()
 
 @pytest.fixture(scope="session", autouse=True)
 def isolate_test_database():

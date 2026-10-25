@@ -23,7 +23,6 @@ LEGACY_BENCHMARK_PROJECTS = frozenset({
     "audit_test_project",
     "demo-project",
     "demo_project",
-    "test",
     "test_proj",
     "test_proj_2",
     "test_proj_scan_compat",

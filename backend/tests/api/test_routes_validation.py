@@ -51,12 +51,19 @@ def test_scan_legitimate_path(monkeypatch):
     repo = os.path.normpath("/var/www/myrepo")
     
     monkeypatch.setenv("AGILEGRAPH_SCAN_ROOT", allowed)
-    monkeypatch.setattr(os.path, "exists", lambda x: True)
+    orig_exists = os.path.exists
+    monkeypatch.setattr(os.path, "exists", lambda p: True if p in (repo, allowed) else orig_exists(p))
     
     # Let realpath just return the normpath'd inputs directly
     monkeypatch.setattr(os.path, "realpath", lambda x: os.path.normpath(x))
     
-    # This shouldn't throw 403, but it will throw 500 because run_pipeline will fail since it's a mocked path
-    # But as long as it's not 403, the security check passed.
-    response = client.post("/api/v1/scan", json={"repository_path": repo, "project_id": "test"})
-    assert response.status_code != 403
+    from src.core.storage import default_storage
+    from src.core.auth_storage import default_auth_storage
+    proj_id = "test_legit_scan_validation"
+    try:
+        # This shouldn't throw 403, as long as it's not 403, the security check passed.
+        response = client.post("/api/v1/scan", json={"repository_path": repo, "project_id": proj_id})
+        assert response.status_code != 403
+    finally:
+        default_storage.delete_project(proj_id)
+        default_auth_storage.delete_project_owner(proj_id)

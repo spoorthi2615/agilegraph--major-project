@@ -1,16 +1,20 @@
 """
-AgileGraph Scanner Ground-Truth Verification Tooling.
+AgileGraph Scanner Regression Verification Tooling.
 
 Runs static scanners against the curated multi-language reference benchmark set,
-computing empirical Precision, Recall, and F1 score against consensus labels.
+computing empirical Precision, Recall, and F1 score against expected fixture labels.
 
-Enforces empirical integrity: Strictly refuses to report metrics if any sample
-contains an empty or unadjudicated consensus label.
+SCIENTIFIC PROVENANCE NOTE:
+These samples are developer-authored regression test fixtures designed to verify
+AST and pattern-matching correctness on supported cryptographic APIs across Python,
+Java, and Go. They validate parser mechanics and do not represent independent
+expert consensus or real-world predictive validity on arbitrary codebases.
 """
 
 import os
 import sys
 import json
+import time
 from typing import Dict, Any, List
 
 sys.path.insert(0, os.path.abspath("."))
@@ -22,6 +26,7 @@ from src.scanners.go.scanner import scan_go_code
 from src.scanners.common.enums import AssetType
 
 REFERENCE_SET_PATH = "dataset/reference_set/reference_samples.json"
+REPORT_OUTPUT_PATH = "dataset/artifacts/scanner_evaluation_report.json"
 
 
 def verify_scanners(ref_path: str = REFERENCE_SET_PATH) -> Dict[str, Any]:
@@ -34,18 +39,16 @@ def verify_scanners(ref_path: str = REFERENCE_SET_PATH) -> Dict[str, Any]:
     if not samples:
         raise ValueError("Reference set is empty! Refusing to report metrics.")
 
-    # 1. Validation check: Enforce non-empty consensus labels
+    # 1. Validation check: Enforce non-empty reference labels
     unlabeled_items = []
     for item in samples:
-        c_label = item.get("consensus_label")
+        c_label = item.get("consensus_label") or item.get("expected_category")
         if not c_label or str(c_label).strip() == "":
             unlabeled_items.append(item.get("item_id", "unknown"))
 
     if unlabeled_items:
         raise ValueError(
-            f"Reference set contains unadjudicated or empty consensus labels "
-            f"for {len(unlabeled_items)} items: {unlabeled_items}. "
-            f"Verification REFUSES to compute metrics on incomplete ground truth."
+            f"Reference set contains unlabelled items for {len(unlabeled_items)} items: {unlabeled_items}."
         )
 
     # 2. Evaluation per language
@@ -58,10 +61,13 @@ def verify_scanners(ref_path: str = REFERENCE_SET_PATH) -> Dict[str, Any]:
     item_results = []
 
     for item in samples:
-        iid = item["item_id"]
-        lang = item["language"].upper()
-        code = item["code"]
-        expected = item["consensus_label"]
+        iid = item.get("item_id")
+        lang = item.get("language")
+        code = item.get("code")
+        expected = item.get("consensus_label") or item.get("expected_category")
+
+        if lang not in metrics_by_lang:
+            continue
 
         if lang == "PYTHON":
             findings = scan_python_code("ref_repo", "sample.py", code)
@@ -70,11 +76,10 @@ def verify_scanners(ref_path: str = REFERENCE_SET_PATH) -> Dict[str, Any]:
         elif lang == "GO":
             findings = scan_go_code("ref_repo", "sample.go", code)
         else:
-            continue
+            findings = []
 
         crypto_findings = [f for f in findings if f.asset_type == AssetType.CRYPTO_USAGE]
         has_detection = len(crypto_findings) > 0
-
         is_positive = (expected != "NEGATIVE")
 
         if is_positive and has_detection:
@@ -135,10 +140,29 @@ def verify_scanners(ref_path: str = REFERENCE_SET_PATH) -> Dict[str, Any]:
         "total_evaluated_samples": len(samples)
     }
 
-    return {
+    full_report = {
+        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "provenance": "DEVELOPER_AUTHORED_REGRESSION_FIXTURES",
+        "scientific_caveat": (
+            "Deterministic static rules detect supported cryptographic patterns. "
+            "Coverage depends on the language-specific parser, supported APIs, and implemented detection rules. "
+            "These metrics validate parser mechanics on seeded fixtures and do not imply exhaustive real-world detection."
+        ),
         "summary": summary,
         "item_details": item_results
     }
+
+    # Save artifact
+    try:
+        out_dir = os.path.dirname(REPORT_OUTPUT_PATH)
+        if out_dir:
+            os.makedirs(out_dir, exist_ok=True)
+        with open(REPORT_OUTPUT_PATH, "w", encoding="utf-8") as f:
+            json.dump(full_report, f, indent=2)
+    except Exception as e:
+        print(f"[WARN] Failed to write {REPORT_OUTPUT_PATH}: {e}")
+
+    return full_report
 
 
 def main():
@@ -162,7 +186,7 @@ def main():
             f"{s['precision']:<9.4f} | {s['recall']:<8.4f} | {s['f1_score']:<6.4f}"
         )
     print("=" * 65)
-    print("All reference benchmark samples verified successfully.")
+    print(f"Verified {summary['OVERALL']['total_evaluated_samples']} reference samples. Report written to {REPORT_OUTPUT_PATH}")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,151 @@
+{
+  "timestamp": "2026-10-25T18:10:45Z",
+  "provenance": "DEVELOPER_AUTHORED_REGRESSION_FIXTURES",
+  "scientific_caveat": "Deterministic static rules detect supported cryptographic patterns. Coverage depends on the language-specific parser, supported APIs, and implemented detection rules. These metrics validate parser mechanics on seeded fixtures and do not imply exhaustive real-world detection.",
+  "summary": {
+    "PYTHON": {
+      "TP": 3,
+      "FP": 0,
+      "FN": 0,
+      "TN": 2,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0
+    },
+    "JAVA": {
+      "TP": 3,
+      "FP": 0,
+      "FN": 0,
+      "TN": 2,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0
+    },
+    "GO": {
+      "TP": 3,
+      "FP": 0,
+      "FN": 0,
+      "TN": 2,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0
+    },
+    "OVERALL": {
+      "TP": 9,
+      "FP": 0,
+      "FN": 0,
+      "TN": 6,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "total_evaluated_samples": 15
+    }
+  },
+  "item_details": [
+    {
+      "item_id": "REF-PY-001",
+      "language": "PYTHON",
+      "expected": "crypto_usage",
+      "detected_findings": 1,
+      "verdict": "TP"
+    },
+    {
+      "item_id": "REF-PY-002",
+      "language": "PYTHON",
+      "expected": "crypto_usage",
+      "detected_findings": 1,
+      "verdict": "TP"
+    },
+    {
+      "item_id": "REF-PY-003",
+      "language": "PYTHON",
+      "expected": "NEGATIVE",
+      "detected_findings": 0,
+      "verdict": "TN"
+    },
+    {
+      "item_id": "REF-PY-004",
+      "language": "PYTHON",
+      "expected": "crypto_usage",
+      "detected_findings": 1,
+      "verdict": "TP"
+    },
+    {
+      "item_id": "REF-PY-005",
+      "language": "PYTHON",
+      "expected": "NEGATIVE",
+      "detected_findings": 0,
+      "verdict": "TN"
+    },
+    {
+      "item_id": "REF-JV-001",
+      "language": "JAVA",
+      "expected": "crypto_usage",
+      "detected_findings": 1,
+      "verdict": "TP"
+    },
+    {
+      "item_id": "REF-JV-002",
+      "language": "JAVA",
+      "expected": "crypto_usage",
+      "detected_findings": 1,
+      "verdict": "TP"
+    },
+    {
+      "item_id": "REF-JV-003",
+      "language": "JAVA",
+      "expected": "NEGATIVE",
+      "detected_findings": 0,
+      "verdict": "TN"
+    },
+    {
+      "item_id": "REF-JV-004",
+      "language": "JAVA",
+      "expected": "crypto_usage",
+      "detected_findings": 1,
+      "verdict": "TP"
+    },
+    {
+      "item_id": "REF-JV-005",
+      "language": "JAVA",
+      "expected": "NEGATIVE",
+      "detected_findings": 0,
+      "verdict": "TN"
+    },
+    {
+      "item_id": "REF-GO-001",
+      "language": "GO",
+      "expected": "crypto_usage",
+      "detected_findings": 1,
+      "verdict": "TP"
+    },
+    {
+      "item_id": "REF-GO-002",
+      "language": "GO",
+      "expected": "crypto_usage",
+      "detected_findings": 1,
+      "verdict": "TP"
+    },
+    {
+      "item_id": "REF-GO-003",
+      "language": "GO",
+      "expected": "crypto_usage",
+      "detected_findings": 1,
+      "verdict": "TP"
+    },
+    {
+      "item_id": "REF-GO-004",
+      "language": "GO",
+      "expected": "NEGATIVE",
+      "detected_findings": 0,
+      "verdict": "TN"
+    },
+    {
+      "item_id": "REF-GO-005",
+      "language": "GO",
+      "expected": "NEGATIVE",
+      "detected_findings": 0,
+      "verdict": "TN"
+    }
+  ]
+}

@@ -87,7 +87,32 @@ In addition to language source scanners, AgileGraph executes:
 
 ---
 
-## 5. Explicit Scanner Non-Goals & Limitations
+## 5. Scanner Capabilities, Risks & Boundary Analysis
 
-1. **Static Approximation**: Scanners identify cryptographic calls and constants statically. Dynamic reflection (`Class.forName(...)` with runtime variables or Go interface indirection) is not executed.
-2. **Deterministic Evidence Only**: Scanners emit observations accompanied by source line numbers, file paths, and verbatim code evidence snippets. No heuristic guesses or confidence inflation occurs.
+> [!IMPORTANT]
+> **Scientific Caveat on Static Analysis**
+> “Deterministic static rules detect supported cryptographic patterns. Coverage depends on the language-specific parser, supported APIs, and implemented detection rules.”
+
+### Detailed Scanner Breakdown
+
+| Scanner | Supported Extensions & Formats | Parsing Technique | Cryptographic Primitives Covered | Known False-Positive Risks | Known False-Negative Risks | Non-Analyzed Constructs |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Python Scanner** | `.py` | Native AST Semantic Visitor (`ast.parse`) | `hashlib`, `hmac`, `Crypto.Cipher`, `Crypto.PublicKey`, `cryptography.hazmat` (AES, 3DES, RSA, DSA, ECDSA, Ed25519, X25519) | Constant string literals resembling algorithm names inside dictionaries or mock configurations. | Dynamically computed algorithm strings (e.g. `getattr(hashlib, algo_var)`), obfuscated imports, or wrapped factory functions. | Bytecode, C-extensions (`.so`/`.pyd`), interprocedural taint flow across module boundaries. |
+| **Java Scanner** | `.java` | Multi-line Regex with variable tracking & block comment state (`in_block_comment`) | JCA/JCE (`Cipher`, `MessageDigest`, `KeyPairGenerator`, `KeyGenerator`, `Signature`, `Mac`, `KeyAgreement`, `SecureRandom`), `jjwt`, Auth0 `java-jwt` | Identifiers sharing substrings with algorithms (mitigated by word boundaries `\b`). | Dynamic provider loading (`Class.forName(...)`), reflection, dependency-injection factories (`Spring @Bean`), or variables initialized across disparate methods. | Bytecode (`.class`), JVM reflection execution, multi-project classpath resolution. |
+| **Go Scanner** | `.go` | Line/pattern parser with import resolution & block comment state (`in_block_comment`) | `crypto/rsa`, `crypto/ecdsa`, `crypto/ed25519`, `crypto/elliptic`, `crypto/tls`, `crypto/aes`, `crypto/des`, `crypto/md5`, `crypto/sha1`, `crypto/sha256`, `crypto/sha512`, `crypto/hmac`, `golang-jwt` | Variable names containing algorithm tokens (mitigated by token tokenization). | Custom interface wrappers, non-standard third-party crypto packages, or indirect function pointers. | Interprocedural pointer analysis, compiled binaries, cgo foreign code. |
+| **Certificate / PEM** | `.pem`, `.crt`, `.cer`, `.key`, `.pub`, and inline blocks in `.py`/`.java`/`.go` | Regex PEM block extraction + `cryptography.x509` RFC 5280 parsing | RSA, DSA, ECDSA, Ed25519 certificates and public/private keys; key length, expiration, subject/issuer extraction | Truncated synthetic PEM examples in test comments or documentation blocks. | Encrypted private keys with unknown passphrases, non-standard DER encodings without PEM headers. | Hardware Security Module (HSM) tokens, PKCS#11 devices, OS trust stores. |
+| **Dependency Manifest** | `requirements.txt`, `pom.xml`, `go.mod` | Lexical line parsers & XML DOM parsing | Package names and version constraints mapped to OSV database for known CVEs | Package name collisions across ecosystems (e.g. generic names). | Transitive dependencies not resolved in lockfiles, unpinned `*` versions, private internal mirrors. | Dynamic runtime package installations (`pip install` inside scripts). |
+| **Endpoint Scanner** | Source files (`.py`, `.java`, `.go`, `.json`, `.yaml`) | URL regex & network bind patterns (`0.0.0.0`, port numbers) | HTTP/HTTPS endpoints, service bindings, route decorators | Non-routable example URLs in documentation or comments. | Environment variable URL construction (`f"{BASE_URL}/api"`), service discovery lookups (Kubernetes DNS). | Runtime network traffic capture, service mesh routing (Istio). |
+| **Sensitive Data** | Source files & configuration manifests | High-entropy Shannon calculation + secret regex patterns | API tokens, passwords, private keys, bearer tokens | High-entropy test hashes, UUIDs, or random test vectors. | Low-entropy passwords, encrypted secrets, or secrets loaded from vault at runtime. | Memory dumps, environment variables loaded externally. |
+
+---
+
+## 6. Regression Testing & Test-Set Provenance
+
+The regression test suites (`backend/tests/scanners/test_scanner_edge_cases.py` and `backend/tests/scanners/test_scanner_fixtures.py`) contain 16 targeted edge cases and 15 reference fixtures:
+- **Block Comments**: Validated that code enclosed in multi-line block comments (`/* ... */`) is ignored in Java and Go.
+- **Identifier Substrings**: Validated that variable identifiers like `DESTINATION_PATH` (containing `DES`) or `UNIVERSAL_ACCESS` (containing `RSA`) do not trigger false positives.
+- **Malformed Input**: Validated that syntax errors, unclosed strings, and empty files do not crash the scan engine.
+- **Machine-Readable Report**: The reference set verification script (`backend/scripts/verify_scanners.py`) exports `backend/dataset/artifacts/scanner_evaluation_report.json`.
+- **Defensive Ground-Truth Disclosure**: The 15 reference cases are developer-authored regression fixtures designed to verify parser mechanics on supported API invocations. They **must not** be cited as independent empirical evidence of real-world recall across open-source codebases.
+
