@@ -234,8 +234,14 @@ AgileGraph implements a Heterogeneous Graph Attention Network (GATv2) using PyTo
 | **Heterogeneous GATv2** | **66.73%** | **0.5560** | 8-Fold Leave-One-Project-Out (520 files) | Graph Structural Risk Prioritization |
 | **Static Rule Baseline** | 42.12% | 0.4119 | Classical severity matching rules | Static Rule Reference Baseline |
 | **Majority Class Baseline**| 22.69% | 0.1233 | Predicts most frequent class | Statistical Floor Baseline |
+| *Heuristic Baseline (Teacher)* | *100.0%* | *1.0000* | Discretized heuristic score (Ceiling) | Conceptual Upper Bound / Label Source |
 
-> **Operational Distinction**: The deterministic 7-factor heuristic engine serves as the authoritative operational baseline and guarantees that all detected cryptographic weaknesses are surfaced. The GATv2 model provides experimental structural prioritization under weak supervision.
+> [!NOTE]
+> **Research Integrity & Scientific Framing**
+> - **Weak Supervision Nature**: Discrete target labels (`LOW < 0.30`, `MEDIUM 0.30–0.60`, `HIGH >= 0.60`) are derived deterministically from the continuous 7-factor heuristic score. The GATv2 model evaluates how well graph attention message passing reproduces risk tiers under cross-codebase distribution shifts; it does **not** claim independent empirical validation against real-world breach events.
+> - **Heuristic Baseline Agreement**: The heuristic baseline achieves 100% agreement tautologically because the labels originate from it. This represents a teacher-model ceiling, not an independent validation result.
+> - **Implemented Ablations**: Target leakage ablation (`WITHOUT_BASE_RISK` 14-dim vs. `WITH_BASE_RISK` 15-dim) is fully evaluated. The `STRUCTURE_ONLY` ablation is verified on synthetic unit fixtures; extending `STRUCTURE_ONLY` to full 8-repository cross-validation, along with bootstrap 95% confidence intervals and multi-seed continuous Spearman rank correlations, is documented as planned future work.
+> - **Operational Guarantee**: Static scanning and deterministic heuristic scoring operate independently of PyTorch. All cryptographic findings remain 100% visible and actionable even if ML dependencies are offline.
 
 ---
 
