@@ -81,8 +81,10 @@ export default function MigrationPriority() {
             onChange={e => setMoscaStatus(e.target.value)}
             className="bg-slate-900 border border-slate-700 rounded-md px-3 py-1 text-sm outline-none focus:ring-1 focus:ring-blue-500"
           >
-            <option value="NOT_AT_RISK">Mosca: Not At Risk</option>
+            <option value="SAFE">Mosca: Safe</option>
+            <option value="URGENT">Mosca: Urgent</option>
             <option value="AT_RISK">Mosca: At Risk</option>
+            <option value="NOT_AT_RISK">Mosca: Not At Risk</option>
             <option value="INSUFFICIENT_DATA">Mosca: Insufficient Data</option>
           </select>
           <button type="submit" disabled={loading} className="bg-blue-600 hover:bg-blue-500 px-3 py-1 rounded-md text-sm font-medium">
@@ -142,7 +144,8 @@ export default function MigrationPriority() {
                         <div className="flex flex-col gap-1">
                           <span className={`text-xs font-semibold ${
                             asset.mosca_status === 'AT_RISK' ? 'text-red-400' : 
-                            asset.mosca_status === 'NOT_AT_RISK' ? 'text-emerald-400' : 'text-slate-400'
+                            (asset.mosca_status === 'SAFE' || asset.mosca_status === 'NOT_AT_RISK') ? 'text-emerald-400' : 
+                            asset.mosca_status === 'URGENT' ? 'text-amber-400' : 'text-slate-400'
                           }`}>
                             {asset.mosca_status}
                           </span>

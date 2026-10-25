@@ -83,7 +83,7 @@ export default function CryptoGraph() {
                   value={projectId} 
                   onChange={e => setProjectId(e.target.value)}
                   className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-ring outline-none transition-shadow"
-                  placeholder="e.g. org/repo"
+                  placeholder="e.g. org_repo or my-project"
                   required
                 />
               </div>

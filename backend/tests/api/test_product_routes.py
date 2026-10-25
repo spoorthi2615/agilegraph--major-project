@@ -64,6 +64,22 @@ def test_pqc_readiness_endpoint():
     assert data["unknown_algorithms"] == 1
     assert "Preliminary heuristic" in data["status"]
 
+def test_pqc_readiness_extracts_from_category_crypto_usage():
+    # Regression test: nodes created by GraphBuilder have category="crypto_usage"
+    g = nx.MultiDiGraph()
+    g.add_node("node_sha1", category="crypto_usage", algorithm="sha1")
+    g.add_node("node_file", category="file")
+    project_cache["test_category_proj"] = {
+        "graph": g,
+        "scores": [{"asset_id": "node_file", "score": 0.6, "missing_factors": []}]
+    }
+    response = client.get("/api/v1/product/test_category_proj/pqc-readiness")
+    assert response.status_code == 200
+    data = response.json()
+    assert "sha1" in data["recognized_algorithms"]
+    assert data["asset_count"] == 2
+    assert data["assessed_assets"] == 1
+
 def test_mosca_endpoint():
     response = client.post("/api/v1/product/mosca", json={"x": 24, "y": 12, "z": 30})
     assert response.status_code == 200

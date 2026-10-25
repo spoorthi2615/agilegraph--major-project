@@ -2,7 +2,7 @@
 
 This document describes how to build and run the AgileGraph heuristic scanner deterministically using the containerized CLI.
 
-**IMPORTANT:** This represents *reproducibility infrastructure*. Final end-to-end reproducibility requires the locked expert dataset and empirical model evaluation, which are currently BLOCKED pending expert annotations.
+**IMPORTANT:** This represents *reproducibility infrastructure*. The deterministic heuristic pipeline and graph construction are fully verifiable; empirical GNN training and evaluation are future research work.
 
 ## 1. Prerequisites
 
@@ -41,7 +41,7 @@ The CLI outputs a structured JSON report.
 
 **Integrity Constraints:**
 - `analysis_type` is hardcoded to `HEURISTIC`.
-- `ml_status` and `expert_validation_status` are hardcoded to `BLOCKED`.
+- `ml_status` is `ARCHITECTURAL_PROTOTYPE`.
 - The report includes `provenance` metadata to link the heuristic results directly to the scanned files.
 
 Example inspection:
@@ -50,8 +50,7 @@ Example inspection:
 {
   "project_id": "my-project",
   "analysis_type": "HEURISTIC",
-  "ml_status": "BLOCKED",
-  "expert_validation_status": "BLOCKED",
+  "ml_status": "ARCHITECTURAL_PROTOTYPE",
   "missing_data_policy": "RENORMALIZE",
   "provenance": {
     "scanned_files": 42,

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import App from '../App';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
@@ -15,15 +15,61 @@ vi.mock('../api/client', () => ({
     scan: vi.fn(),
     getGraph: vi.fn(),
     getRisk: vi.fn(),
+    getMe: vi.fn(),
+    login: vi.fn(),
+    register: vi.fn(),
+    logout: vi.fn(),
   }
 }));
 
 describe('App Integration & Routing Tests', () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    localStorage.clear();
   });
 
-  it('11. Navigates between all required routes', async () => {
+  it('renders the public landing page at root /', async () => {
+    window.history.pushState({}, '', '/');
+    render(<App />);
+
+    // Landing page header and brand
+    expect(screen.getAllByText(/AgileGraph/i)[0]).toBeInTheDocument();
+    expect(screen.getAllByText(/Platform Capabilities/i)[0]).toBeInTheDocument();
+    expect(screen.getAllByText(/How It Works/i)[0]).toBeInTheDocument();
+    expect(screen.getAllByText(/Research & Methodology/i)[0]).toBeInTheDocument();
+    expect(screen.getAllByText(/Technology Stack/i)[0]).toBeInTheDocument();
+
+    // CTA links
+    expect(screen.getAllByRole('link', { name: /Sign In/i })[0]).toBeInTheDocument();
+    expect(screen.getAllByRole('link', { name: /Get Started/i })[0]).toBeInTheDocument();
+  });
+
+  it('redirects unauthenticated user accessing /app to /login', async () => {
+    window.history.pushState({}, '', '/app');
+    render(<App />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Sign in to your account/i)).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Sign In/i })).toBeInTheDocument();
+    });
+  });
+
+  it('11. Navigates between all required routes when authenticated', async () => {
+    localStorage.setItem('agilegraph_token', 'test-valid-token');
+    localStorage.setItem(
+      'agilegraph_user',
+      JSON.stringify({
+        username: 'researcher',
+        email: 'researcher@agilegraph.org',
+        role: 'researcher'
+      })
+    );
+
+    vi.mocked(apiClient.getMe).mockResolvedValue({
+      username: 'researcher',
+      email: 'researcher@agilegraph.org',
+      role: 'researcher'
+    });
     vi.mocked(apiClient.getPqcReadiness).mockResolvedValue({
       project_id: "demo-project",
       pqc_algorithm_found: false,
@@ -39,10 +85,11 @@ describe('App Integration & Routing Tests', () => {
       edges: []
     });
 
+    window.history.pushState({}, '', '/app');
     render(<App />);
 
     // Initially on Overview -> Dashboard should be visible
-    expect(screen.getByText(/Project Overview/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Project Overview/i)).toBeInTheDocument();
 
     // Click PQC Readiness
     const pqcLinks = screen.getAllByRole('link', { name: /PQC Readiness/i });
@@ -85,3 +132,4 @@ describe('App Integration & Routing Tests', () => {
     expect(await screen.findByText(/Crypto Graph/i, { selector: 'h2' })).toBeInTheDocument();
   });
 });
+

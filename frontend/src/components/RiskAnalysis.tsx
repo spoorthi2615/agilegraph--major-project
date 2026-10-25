@@ -59,7 +59,7 @@ export default function RiskAnalysis() {
   const totalAssets = graphData?.nodes.length || 0;
   const scoredAssets = riskData?.assets.filter(a => a.score !== null && a.score !== undefined).length || 0;
   const unassessedAssets = riskData?.assets.filter(a => a.score === null || a.score === undefined).length || 0;
-  const highRiskAssets = riskData?.assets.filter(a => (a.score || 0) > 0.7).length || 0;
+  const highRiskAssets = riskData?.assets.filter(a => a.score !== null && a.score !== undefined && a.score >= 0.6).length || 0;
 
   return (
     <div className="flex flex-col gap-8 w-full max-w-7xl mx-auto font-sans animate-fade-up">
@@ -95,7 +95,7 @@ export default function RiskAnalysis() {
                   value={projectId} 
                   onChange={e => setProjectId(e.target.value)}
                   className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-ring outline-none transition-shadow"
-                  placeholder="e.g. org/repo"
+                  placeholder="e.g. org_repo or my-project"
                   required
                 />
               </div>

@@ -6,6 +6,7 @@ import datetime
 class LabelRegime(str, Enum):
     SYNTHETIC = "SYNTHETIC" # Only for software validation
     EXPERT = "EXPERT"       # Actual human validation target
+    WEAK_SUPERVISION = "WEAK_SUPERVISION" # Heuristic-derived weak labels for GNN training
 
 class AblationRegime(str, Enum):
     WITH_BASE_RISK = "WITH_BASE_RISK"

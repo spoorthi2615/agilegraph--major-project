@@ -33,7 +33,7 @@ describe('Product Layer Components', () => {
   describe('PqcReadiness', () => {
     it('1. PQC readiness renders real API fields', async () => {
       vi.mocked(apiClient.getPqcReadiness).mockResolvedValue({
-        status: "Preliminary heuristic \u2014 expert validation pending",
+        status: "Preliminary heuristic \u2014 initial configurable weights",
         semantic_disclaimer: "Inventory/coverage summary, not a scientifically validated PQC readiness score.",
         asset_count: 5,
         assessed_assets: 4,
@@ -55,7 +55,7 @@ describe('Product Layer Components', () => {
 
     it('2. Readiness disclaimer is visible', async () => {
       vi.mocked(apiClient.getPqcReadiness).mockResolvedValue({
-        status: "Preliminary heuristic \u2014 expert validation pending",
+        status: "Preliminary heuristic \u2014 initial configurable weights",
         semantic_disclaimer: "Inventory/coverage summary, not a scientifically validated PQC readiness score.",
       });
 
@@ -102,6 +102,34 @@ describe('Product Layer Components', () => {
 
       await waitFor(() => {
         expect(screen.getByText('INSUFFICIENT_DATA')).toBeInTheDocument();
+      });
+    });
+
+    it('4b. Mosca SAFE status renders successfully with <= operator', async () => {
+      vi.mocked(apiClient.evaluateMosca).mockResolvedValue({
+        total: 18, z: 24, status: "SAFE", explanation: "Safe (U = 0.75 < 0.8)"
+      });
+
+      render(<MoscaReadiness />);
+      fireEvent.click(screen.getByText('Evaluate Mosca'));
+
+      await waitFor(() => {
+        expect(screen.getByText('SAFE')).toBeInTheDocument();
+        expect(screen.getByText('≤')).toBeInTheDocument();
+      });
+    });
+
+    it('4c. Mosca URGENT status renders successfully', async () => {
+      vi.mocked(apiClient.evaluateMosca).mockResolvedValue({
+        total: 20, z: 24, status: "URGENT", explanation: "Urgent (0.8 <= U <= 1.0)"
+      });
+
+      render(<MoscaReadiness />);
+      fireEvent.click(screen.getByText('Evaluate Mosca'));
+
+      await waitFor(() => {
+        expect(screen.getByText('URGENT')).toBeInTheDocument();
+        expect(screen.getByText('≤')).toBeInTheDocument();
       });
     });
   });

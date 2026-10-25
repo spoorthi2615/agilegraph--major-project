@@ -4,18 +4,19 @@ import pytest
 import torch
 from src.dataset.models import CorpusManifest
 
-ARTIFACTS_DIR = os.path.join(os.path.dirname(__file__), '..', 'dataset', 'artifacts')
+ARTIFACTS_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'dataset', 'artifacts')
 
-@pytest.mark.skipif(not os.path.exists(os.path.join(ARTIFACTS_DIR, "manifest.json")), reason="Phase 11 corpus not generated yet")
-def test_phase11_manifest_validity():
+
+@pytest.mark.skipif(not os.path.exists(os.path.join(ARTIFACTS_DIR, "manifest.json")), reason="Corpus artifacts not generated yet")
+def test_corpus_manifest_validity():
     manifest_path = os.path.join(ARTIFACTS_DIR, "manifest.json")
-    with open(manifest_path, "r") as f:
+    with open(manifest_path, "r", encoding="utf-8") as f:
         data = json.load(f)
     
     # Pydantic validation
     manifest = CorpusManifest(**data)
     
-    assert manifest.manifest_id == "phase11_corpus"
+    assert manifest.manifest_id == "corpus_v1"
     assert len(manifest.projects) == 8
     
     # Check that all artifacts exist
@@ -28,10 +29,11 @@ def test_phase11_manifest_validity():
         assert pyg_data is not None
         assert hasattr(pyg_data, "node_types")
 
-@pytest.mark.skipif(not os.path.exists(os.path.join(ARTIFACTS_DIR, "report.json")), reason="Phase 11 corpus not generated yet")
-def test_phase11_report_splits():
+
+@pytest.mark.skipif(not os.path.exists(os.path.join(ARTIFACTS_DIR, "report.json")), reason="Corpus report not generated yet")
+def test_corpus_report_splits():
     report_path = os.path.join(ARTIFACTS_DIR, "report.json")
-    with open(report_path, "r") as f:
+    with open(report_path, "r", encoding="utf-8") as f:
         report = json.load(f)
         
     splits = report["splits"]

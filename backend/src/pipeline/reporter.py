@@ -35,7 +35,7 @@ def generate_markdown_report(json_path: str, output_path: str):
     except Exception as e:
         raise ValueError(f"Failed to read or parse JSON file: {e}")
         
-    required_keys = ["project_id", "analysis_type", "ml_status", "expert_validation_status", "missing_data_policy", "provenance", "assets", "graph"]
+    required_keys = ["project_id", "analysis_type", "ml_status", "missing_data_policy", "provenance", "assets", "graph"]
     for k in required_keys:
         if k not in data:
             raise ValueError(f"Missing required field in JSON payload: {k}")
@@ -62,7 +62,7 @@ def generate_markdown_report(json_path: str, output_path: str):
         out.write(f"## ⚠️ RESEARCH STATUS & INTEGRITY GATE\n\n")
         out.write(f"This report presents a **{data['analysis_type']} ANALYSIS** generated through static code scanning and rule-based priors. It is designed for operational review.\n\n")
         out.write(f"- **GATv2**: `ARCHITECTURAL_PROTOTYPE`\n")
-        out.write(f"- **Validation status**: `{data.get('expert_validation_status', 'HEURISTIC_DETERMINISTIC')}`\n")
+        out.write(f"- **Scoring engine**: `HEURISTIC_DETERMINISTIC`\n")
         out.write(f"- **Empirical evaluation**: `{data['ml_status']}`\n\n")
         out.write(f"> **Important**: No fabricated empirical metrics, kappa scores, F1/accuracy results, or p-values are claimed in this report.\n\n")
         

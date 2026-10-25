@@ -14,6 +14,9 @@ app = FastAPI(title="AgileGraph API", description="Graph-Learned Crypto-Agility 
 
 app.include_router(router, prefix="/api/v1")
 
+from src.api.auth_routes import router as auth_router
+app.include_router(auth_router, prefix="/api/v1")
+
 from src.api.product_routes import router as product_router
 app.include_router(product_router, prefix="/api/v1")
 

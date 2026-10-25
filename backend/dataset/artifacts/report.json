@@ -10,7 +10,7 @@
     "SMALL": 5,
     "LARGE": 3
   },
-  "findings": 1760,
+  "findings": 2154,
   "graphs": 8,
   "failed_scans": 0,
   "details": [
@@ -24,8 +24,8 @@
     {
       "id": "python_bcrypt",
       "sha": "59b41aaa24c025d1cd231c37d2755b94184a3e67",
-      "nodes": 1,
-      "edges": 0,
+      "nodes": 2,
+      "edges": 1,
       "findings": 1
     },
     {
@@ -38,37 +38,37 @@
     {
       "id": "java_java_jwt",
       "sha": "29f252b2d6fea74df6576803d5fce5f6d6799cf3",
-      "nodes": 50,
-      "edges": 69,
-      "findings": 69
+      "nodes": 74,
+      "edges": 93,
+      "findings": 93
     },
     {
       "id": "java_jjwt",
       "sha": "fb71496164c71442d08adec4571d9616ed5e1b8d",
-      "nodes": 254,
-      "edges": 458,
-      "findings": 479
+      "nodes": 261,
+      "edges": 484,
+      "findings": 489
     },
     {
       "id": "go_jwt",
       "sha": "73c870b18e68b6e654b2b03f485aa3c9fab32cea",
-      "nodes": 17,
-      "edges": 14,
-      "findings": 14
+      "nodes": 114,
+      "edges": 108,
+      "findings": 108
     },
     {
       "id": "go_jwt_go",
       "sha": "9742bd7fca1c67ba2eb793750f56ee3094d1b04f",
-      "nodes": 12,
-      "edges": 10,
-      "findings": 10
+      "nodes": 53,
+      "edges": 56,
+      "findings": 56
     },
     {
       "id": "go_crypto",
       "sha": "b39ff6d641ecc5bb4b241737cb0c6b646f3e12a9",
-      "nodes": 182,
-      "edges": 234,
-      "findings": 239
+      "nodes": 347,
+      "edges": 459,
+      "findings": 459
     }
   ],
   "splits": {

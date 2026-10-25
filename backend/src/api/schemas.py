@@ -34,8 +34,7 @@ class RiskScore(BaseModel):
 class RiskResponse(BaseModel):
     project_id: str
     assets: List[RiskScore]
-    ml_status: str = "BLOCKED"
-    expert_validation_status: str = "BLOCKED"
+    ml_status: str = "ARCHITECTURAL_PROTOTYPE"
 
 class GraphResponse(BaseModel):
     project_id: str

@@ -1,3 +1,11 @@
+"""
+Corpus Building and Graph Artifact Generation Pipeline (corpus_v1).
+
+Maintains the 8 pinned benchmark repositories across Python, Java, and Go,
+runs AST and regex static scanners, builds canonical property graphs,
+computes deterministic heuristic risk scores, and serializes PyG HeteroData artifacts.
+"""
+
 import os
 import sys
 import json
@@ -5,7 +13,10 @@ import subprocess
 import torch
 from datetime import datetime, timezone
 
-sys.path.insert(0, os.path.abspath('src'))
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+BACKEND_DIR = os.path.dirname(SCRIPT_DIR)
+sys.path.insert(0, BACKEND_DIR)
+
 from src.dataset.models import CorpusManifest, CorpusProject, DataOrigin, ProjectStatus, SizeTier, Language, ScannerProvenance, GraphProvenance
 from src.dataset.manager import DatasetManager
 from src.scanners.python.scanner import scan_python_code
@@ -23,7 +34,7 @@ from src.ml.converter import convert_agilegraph_to_pyg
 from src.ml.features import FeatureConfig
 from src.ml.pipeline import set_seed
 
-# The target repositories with pinned SHAs for reproducibility
+# The target repositories with pinned SHAs for exact reproducibility
 REPOS = [
     {"id": "python_itsdangerous", "url": "https://github.com/pallets/itsdangerous", "sha": "672971d66a2ef9f85151e53283113f33d642dabd", "lang": Language.PYTHON, "size": SizeTier.SMALL},
     {"id": "python_bcrypt", "url": "https://github.com/pyca/bcrypt", "sha": "59b41aaa24c025d1cd231c37d2755b94184a3e67", "lang": Language.PYTHON, "size": SizeTier.SMALL},
@@ -35,14 +46,16 @@ REPOS = [
     {"id": "go_crypto", "url": "https://github.com/golang/crypto", "sha": "b39ff6d641ecc5bb4b241737cb0c6b646f3e12a9", "lang": Language.GO, "size": SizeTier.LARGE}
 ]
 
-CORPUS_DIR = "dataset/corpus"
-ARTIFACTS_DIR = "dataset/artifacts"
+CORPUS_DIR = os.path.join(BACKEND_DIR, "dataset", "corpus")
+ARTIFACTS_DIR = os.path.join(BACKEND_DIR, "dataset", "artifacts")
+
 
 def run_cmd(cmd, cwd=None):
     res = subprocess.run(cmd, shell=True, cwd=cwd, capture_output=True, text=True)
     if res.returncode != 0:
         print(f"Command failed: {cmd}\n{res.stderr}")
     return res.stdout.strip()
+
 
 def clone_and_get_sha(repo):
     repo_dir = os.path.join(CORPUS_DIR, repo["id"])
@@ -57,6 +70,7 @@ def clone_and_get_sha(repo):
         
     sha = run_cmd("git rev-parse HEAD", cwd=repo_dir)
     return sha, repo_dir
+
 
 def scan_files(repo_id, repo_dir, lang):
     findings = []
@@ -78,8 +92,8 @@ def scan_files(repo_id, repo_dir, lang):
                         code = f.read()
                     f_findings = scan_fn(repo_id, rel_path, code)
                     findings.extend(f_findings)
-                except Exception as e:
-                    pass # Ignore read errors
+                except Exception:
+                    pass
     
     # 2. Dependency scanning
     manifests = ["requirements.txt", "pom.xml", "build.gradle", "go.mod"]
@@ -91,10 +105,11 @@ def scan_files(repo_id, repo_dir, lang):
                     content = f.read()
                 df = scan_manifest(repo_id, m, content)
                 findings.extend(df)
-            except:
+            except Exception:
                 pass
                 
     return findings
+
 
 def main():
     set_seed(42)
@@ -112,7 +127,6 @@ def main():
         "failed_scans": 0,
         "details": []
     }
-    
 
     for r in REPOS:
         try:
@@ -156,26 +170,30 @@ def main():
             
             # Risk Scoring
             extractor = FactorExtractor(ag)
+            weights = HeuristicWeights.from_config()
+            from src.ml.features import derive_heuristic_label
+
             for node, data in ag.G.nodes(data=True):
                 if data.get("category") == "file":
-                    props = data.get("properties", {})
+                    props = dict(data)
+                    if "properties" in data and isinstance(data["properties"], dict):
+                        props.update(data["properties"])
                     factors = extractor.extract(node, props, {}, {})
-                    # Convert factors to dict for properties
-                    props = data.setdefault("properties", {})
-                    props["risk_factors"] = {k: getattr(factors, k).value for k in factors.model_fields.keys() if getattr(factors, k).value is not None}
+                    props["risk_factors"] = {k: getattr(factors, k).value for k in type(factors).model_fields.keys() if getattr(factors, k).value is not None}
                     
-                    # Heuristic score
-                    w = 1.0 / 7.0
-                    weights = HeuristicWeights(
-                        data_sensitivity=w, asset_criticality=w, internet_exposure=w,
-                        crypto_weakness=w, cve_risk=w, library_centrality=w, migration_difficulty=w
-                    )
                     try:
                         result = calculate_heuristic_score(factors, weights, policy=MissingDataPolicy.RENORMALIZE)
                         props["base_risk"] = result.score
                         props["heuristic_audit"] = result.model_dump()
+                        if result.score is not None:
+                            h_label = derive_heuristic_label(result.score)
+                            if h_label:
+                                props["heuristic_label"] = h_label
+                                data["heuristic_label"] = h_label
+                        data["base_risk"] = result.score
+                        data["properties"] = props
                     except ValueError:
-                        pass # No valid factors
+                        pass
             
             p.status = ProjectStatus.RISK_SCORED
             
@@ -205,7 +223,7 @@ def main():
             
     # Manifest
     manifest = CorpusManifest(
-        manifest_id="phase11_corpus",
+        manifest_id="corpus_v1",
         dataset_generation_version="1.0",
         projects=projects
     )
@@ -227,8 +245,12 @@ def main():
     with open(os.path.join(ARTIFACTS_DIR, "report.json"), "w") as f:
         json.dump(report, f, indent=2)
 
-    print("Phase 11 Corpus Generation Complete")
+    print("Corpus v1 Generation Complete")
     print(json.dumps(report, indent=2))
 
+
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="Corpus Building and Graph Artifact Generation Pipeline (corpus_v1).")
+    args = parser.parse_args()
     main()

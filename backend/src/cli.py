@@ -1,7 +1,13 @@
 import argparse
 import sys
+import os
 import json
 import networkx as nx
+
+backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if backend_dir not in sys.path:
+    sys.path.insert(0, backend_dir)
+
 from src.pipeline.runner import run_pipeline
 from src.pipeline.reporter import generate_markdown_report
 
@@ -35,8 +41,7 @@ def main():
         output_payload = {
             "project_id": args.project_id,
             "analysis_type": "HEURISTIC",
-            "ml_status": "BLOCKED",
-            "expert_validation_status": "BLOCKED",
+            "ml_status": "ARCHITECTURAL_PROTOTYPE",
             "missing_data_policy": args.missing_data_policy,
             "provenance": result["provenance"],
             "assets": result["scores"],

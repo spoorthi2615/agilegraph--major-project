@@ -387,6 +387,14 @@ class ProjectStorage:
             logger.warning(f"Failed to load roadmap state for {project_id}: {e}")
             return {}
 
+    def project_exists(self, project_id: str) -> bool:
+        """Check if project data directory exists on disk."""
+        try:
+            project_dir = self._get_project_dir(project_id)
+            return os.path.exists(project_dir)
+        except Exception:
+            return False
+
     def delete_project(self, project_id: str):
         try:
             self.sqlite_storage.delete_project_records(project_id)

@@ -130,7 +130,7 @@ export default function MoscaReadiness() {
                   </div>
                   
                   <div className="flex items-center justify-center font-mono text-4xl text-primary font-bold px-4">
-                    {data.status === 'AT_RISK' ? '>' : data.status === 'NOT_AT_RISK' ? '≤' : '?'}
+                    {data.status === 'AT_RISK' ? '>' : (data.status === 'SAFE' || data.status === 'NOT_AT_RISK' || data.status === 'URGENT') ? '≤' : '?'}
                   </div>
 
                   <div className="flex flex-col items-center gap-2 flex-1 max-w-[200px]">
@@ -144,19 +144,19 @@ export default function MoscaReadiness() {
 
                 <div className={`w-full max-w-2xl p-6 rounded-2xl border flex flex-col items-center text-center gap-3 ${
                   data.status === 'AT_RISK' ? 'bg-destructive/10 border-destructive/30' :
-                  data.status === 'NOT_AT_RISK' ? 'bg-success/10 border-success/30' :
+                  (data.status === 'SAFE' || data.status === 'NOT_AT_RISK') ? 'bg-success/10 border-success/30' :
                   'bg-warning/10 border-warning/30'
                 }`}>
                   <span className={`text-sm font-bold uppercase tracking-widest px-3 py-1 rounded-full border ${
                     data.status === 'AT_RISK' ? 'bg-destructive/20 text-destructive border-destructive/30' :
-                    data.status === 'NOT_AT_RISK' ? 'bg-success/20 text-success border-success/30' :
+                    (data.status === 'SAFE' || data.status === 'NOT_AT_RISK') ? 'bg-success/20 text-success border-success/30' :
                     'bg-warning/20 text-warning border-warning/30'
                   }`}>
                     {data.status}
                   </span>
                   <p className={`text-base font-medium ${
                     data.status === 'AT_RISK' ? 'text-destructive' :
-                    data.status === 'NOT_AT_RISK' ? 'text-success' :
+                    (data.status === 'SAFE' || data.status === 'NOT_AT_RISK') ? 'text-success' :
                     'text-warning'
                   }`}>
                     {data.explanation}

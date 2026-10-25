@@ -35,8 +35,8 @@ def test_cli_scan_valid():
             
         assert data["project_id"] == "test-project"
         assert data["analysis_type"] == "HEURISTIC"
-        assert data["ml_status"] == "BLOCKED"
-        assert data["expert_validation_status"] == "BLOCKED"
+        assert data["ml_status"] == "ARCHITECTURAL_PROTOTYPE"
+        assert "expert_validation_status" not in data
         assert data["missing_data_policy"] == "RENORMALIZE"
         assert "provenance" in data
         assert data["provenance"]["scanned_files"] > 0

@@ -84,8 +84,7 @@ describe('Reports Component', () => {
       vi.mocked(apiClient.getRisk).mockResolvedValue({
         project_id: 'test-project',
         assets: [],
-        ml_status: 'GATv2: BLOCKED',
-        expert_validation_status: 'NOT_APPLICABLE'
+        ml_status: 'GATv2: BLOCKED'
       });
 
       render(<Reports />);
@@ -122,8 +121,7 @@ describe('Reports Component', () => {
             }
           }
         ],
-        ml_status: 'GATv2: BLOCKED',
-        expert_validation_status: 'NOT_APPLICABLE'
+        ml_status: 'GATv2: BLOCKED'
       });
 
       vi.mocked(apiClient.getMigrationPriority).mockResolvedValue({
@@ -170,8 +168,7 @@ describe('Reports Component', () => {
           score: 0.5,
           factors: {}
         }],
-        ml_status: 'GATv2: BLOCKED',
-        expert_validation_status: 'NOT_APPLICABLE'
+        ml_status: 'GATv2: BLOCKED'
       });
 
       vi.mocked(apiClient.getMigrationPriority).mockResolvedValue({

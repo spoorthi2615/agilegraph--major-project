@@ -19,9 +19,9 @@ function ScoreBadge({ score }: { score: number | null }) {
     );
   }
   const colorClass =
-    score > 0.7 ? 'bg-destructive/15 text-destructive border border-destructive/20' :
-    score > 0.4 ? 'bg-warning/15 text-warning border border-warning/20' :
-                  'bg-success/15 text-success border border-success/20';
+    score >= 0.6 ? 'bg-destructive/15 text-destructive border border-destructive/20' :
+    score >= 0.3 ? 'bg-warning/15 text-warning border border-warning/20' :
+                   'bg-success/15 text-success border border-success/20';
   return (
     <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${colorClass}`}>
       {score.toFixed(4)}

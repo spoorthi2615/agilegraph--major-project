@@ -116,12 +116,10 @@ def run_pipeline(repository_path: str, project_id: str, missing_data_policy: str
     scored_assets = []
     unrated_assets = []
     
-    # Heuristic weights sum to 1.0
-    w = 1.0 / 7.0
-    weights = HeuristicWeights(
-        data_sensitivity=w, asset_criticality=w, internet_exposure=w,
-        crypto_weakness=w, cve_risk=w, library_centrality=w, migration_difficulty=w
-    )
+    # Canonical heuristic weights from config (sum strictly to 1.0)
+    weights = HeuristicWeights.from_config()
+
+    from src.ml.features import derive_heuristic_label
 
     for node, data in g.nodes(data=True):
         if data.get("category") == "file":
@@ -142,6 +140,11 @@ def run_pipeline(repository_path: str, project_id: str, missing_data_policy: str
                 elif score_res.score is None:
                     unrated_assets.append(score_dict)
                 else:
+                    h_label = derive_heuristic_label(score_res.score)
+                    if h_label:
+                        score_dict["heuristic_label"] = h_label
+                        g.nodes[node]["heuristic_label"] = h_label
+                    g.nodes[node]["base_risk"] = score_res.score
                     scored_assets.append(score_dict)
             except ValueError:
                 # STRICT policy violation — record as skipped

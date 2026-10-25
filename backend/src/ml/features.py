@@ -60,6 +60,46 @@ def extract_node_features(properties: dict, config: FeatureConfig) -> torch.Tens
     # Concatenate features and their corresponding missingness masks
     return torch.tensor(feat_list + missing_list, dtype=torch.float)
 
+
+def derive_heuristic_label(
+    score: Optional[float], 
+    low_threshold: float = 0.30, 
+    high_threshold: float = 0.60
+) -> Optional[dict]:
+    """
+    Derives a weak-supervision 3-class target label from a continuous heuristic risk score.
+    Classes:
+      - 0 (LOW): score < low_threshold
+      - 1 (MEDIUM): low_threshold <= score < high_threshold
+      - 2 (HIGH): score >= high_threshold
+    
+    Returns a dictionary suitable for 'heuristic_label' properties:
+      {'class_idx': int, 'confidence': float}
+    Returns None if the score is None or invalid, preserving missing/unrated data.
+    """
+    if score is None:
+        return None
+    try:
+        val = float(score)
+    except (TypeError, ValueError):
+        return None
+
+    if not (0.0 <= val <= 1.0):
+        return None
+
+    if val < low_threshold:
+        class_idx = 0
+    elif val < high_threshold:
+        class_idx = 1
+    else:
+        class_idx = 2
+
+    return {
+        "class_idx": class_idx,
+        "confidence": 0.5
+    }
+
+
 def extract_target_label(properties: dict) -> TargetLabel:
     """
     Extracts the target label and explicitly tracks its provenance.
@@ -75,11 +115,11 @@ def extract_target_label(properties: dict) -> TargetLabel:
         
     # Check for heuristic label (weak supervision)
     heuristic_info = properties.get("heuristic_label")
-    if heuristic_info:
+    if heuristic_info and heuristic_info.get("class_idx") is not None:
         return TargetLabel(
-            class_idx=heuristic_info.get("class_idx"),
+            class_idx=int(heuristic_info.get("class_idx")),
             source=LabelSource.HEURISTIC,
-            confidence=heuristic_info.get("confidence", 0.5)
+            confidence=float(heuristic_info.get("confidence", 0.5))
         )
         
     return TargetLabel(class_idx=None, source=LabelSource.UNKNOWN, confidence=0.0)

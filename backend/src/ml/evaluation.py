@@ -3,30 +3,32 @@ from typing import Dict, List, Tuple, Any, Optional
 
 class EvaluationMetrics:
     @staticmethod
-    def calculate_classification_metrics(y_true: np.ndarray, y_pred: np.ndarray) -> Dict[str, Any]:
-        """Calculates macro-F1, precision, recall, and accuracy."""
+    def calculate_classification_metrics(y_true: np.ndarray, y_pred: np.ndarray, target_classes: Optional[List[int]] = None) -> Dict[str, Any]:
+        """Calculates macro-F1, precision, recall, accuracy, balanced accuracy, and confusion matrix."""
         if len(y_true) == 0 or len(y_pred) == 0:
             return {
                 "status": "NOT_APPLICABLE",
                 "macro_f1": None,
                 "macro_precision": None,
                 "macro_recall": None,
-                "accuracy": None
+                "accuracy": None,
+                "balanced_accuracy": None,
+                "confusion_matrix": None
             }
             
-        classes = np.unique(np.concatenate((y_true, y_pred)))
+        classes = np.array(target_classes) if target_classes is not None else np.unique(np.concatenate((y_true, y_pred)))
         metrics = {}
         
         macro_p, macro_r, macro_f1 = 0.0, 0.0, 0.0
         
         for c in classes:
-            tp = np.sum((y_pred == c) & (y_true == c))
-            fp = np.sum((y_pred == c) & (y_true != c))
-            fn = np.sum((y_pred != c) & (y_true == c))
+            tp = int(np.sum((y_pred == c) & (y_true == c)))
+            fp = int(np.sum((y_pred == c) & (y_true != c)))
+            fn = int(np.sum((y_pred != c) & (y_true == c)))
             
-            p = tp / (tp + fp) if (tp + fp) > 0 else 0.0
-            r = tp / (tp + fn) if (tp + fn) > 0 else 0.0
-            f1 = 2 * (p * r) / (p + r) if (p + r) > 0 else 0.0
+            p = float(tp / (tp + fp)) if (tp + fp) > 0 else 0.0
+            r = float(tp / (tp + fn)) if (tp + fn) > 0 else 0.0
+            f1 = float(2 * (p * r) / (p + r)) if (p + r) > 0 else 0.0
             
             metrics[f"class_{c}_precision"] = p
             metrics[f"class_{c}_recall"] = r
@@ -38,10 +40,20 @@ class EvaluationMetrics:
             
         n_classes = len(classes) if len(classes) > 0 else 1
         metrics["status"] = "COMPUTED"
-        metrics["macro_precision"] = macro_p / n_classes
-        metrics["macro_recall"] = macro_r / n_classes
-        metrics["macro_f1"] = macro_f1 / n_classes
-        metrics["accuracy"] = np.sum(y_true == y_pred) / len(y_true) if len(y_true) > 0 else 0.0
+        metrics["macro_precision"] = float(macro_p / n_classes)
+        metrics["macro_recall"] = float(macro_r / n_classes)
+        metrics["macro_f1"] = float(macro_f1 / n_classes)
+        metrics["balanced_accuracy"] = float(macro_r / n_classes)
+        metrics["accuracy"] = float(np.sum(y_true == y_pred) / len(y_true)) if len(y_true) > 0 else 0.0
+        
+        cm = []
+        for i in classes:
+            row = []
+            for j in classes:
+                row.append(int(np.sum((y_true == i) & (y_pred == j))))
+            cm.append(row)
+        metrics["confusion_matrix"] = cm
+        metrics["classes"] = [int(c) for c in classes]
         
         return metrics
 

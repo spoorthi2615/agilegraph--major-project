@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from typing import List, Dict, Optional, Any
 
@@ -7,8 +7,17 @@ from src.core.storage import default_storage, sanitize_project_id
 from src.risk.mosca import calculate_mosca, MoscaResult, MoscaStatus
 from src.risk.migration_priority import calculate_migration_priority, MigrationPriorityResult
 from src.models.migration_state import RoadmapState, MigrationStateRecord, transition_state
+from src.core.auth import User, get_current_user
+from src.core.auth_storage import default_auth_storage
 
 router = APIRouter(prefix="/product", tags=["product"])
+
+def verify_project_ownership(project_id: str, username: str, write: bool = False):
+    if not default_auth_storage.check_user_owns_project(project_id, username, write=write):
+        raise HTTPException(
+            status_code=403,
+            detail=f"Access denied: you do not have permission to {'modify' if write else 'access'} project '{project_id}'."
+        )
 
 # In-memory store backed by file storage
 roadmap_state_store: Dict[str, Dict[str, MigrationStateRecord]] = {}
@@ -40,7 +49,8 @@ class RoadmapTransitionRequest(BaseModel):
     requested_state: RoadmapState
 
 @router.get("/{project_id}/pqc-readiness")
-def get_pqc_readiness(project_id: str):
+def get_pqc_readiness(project_id: str, current_user: User = Depends(get_current_user)):
+    verify_project_ownership(project_id, current_user.username)
     result = get_project_data(project_id)
     if not result:
         raise HTTPException(status_code=404, detail="Project not found or not scanned.")
@@ -54,8 +64,9 @@ def get_pqc_readiness(project_id: str):
     algorithms = set()
     unknown_algorithms = 0
     for node, data in g.nodes(data=True):
-        if data.get("type") == "CryptoUsageNode":
-            alg = data.get("algorithm")
+        if data.get("category") == "crypto_usage" or data.get("type") == "CryptoUsageNode":
+            props = data.get("properties", data)
+            alg = props.get("algorithm") or data.get("algorithm")
             if alg:
                 algorithms.add(alg)
                 if alg == "unknown":
@@ -64,7 +75,7 @@ def get_pqc_readiness(project_id: str):
     candidates = sum(1 for s in scored_assets if s["score"] >= 0.5)
     
     return {
-        "status": "Preliminary heuristic \u2014 expert validation pending",
+        "status": "Preliminary heuristic \u2014 initial configurable weights",
         "semantic_disclaimer": "This is an inventory/coverage summary, not a scientifically validated PQC readiness score.",
         "asset_count": len(g.nodes),
         "assessed_assets": len(scored_assets),
@@ -84,8 +95,10 @@ def get_migration_priority(
     project_id: str, 
     asset_id: str, 
     mosca_status: str = "SAFE",
-    exposure_posture: Optional[str] = None
+    exposure_posture: Optional[str] = None,
+    current_user: User = Depends(get_current_user)
 ):
+    verify_project_ownership(project_id, current_user.username)
     result = get_project_data(project_id)
     if not result:
         raise HTTPException(status_code=404, detail="Project not found or not scanned.")
@@ -127,7 +140,8 @@ def get_migration_priority(
     )
 
 @router.get("/{project_id}/assets/{asset_id:path}/roadmap", response_model=MigrationStateRecord)
-def get_roadmap_state(project_id: str, asset_id: str):
+def get_roadmap_state(project_id: str, asset_id: str, current_user: User = Depends(get_current_user)):
+    verify_project_ownership(project_id, current_user.username)
     result = get_project_data(project_id)
     if not result:
         raise HTTPException(status_code=404, detail="Project not found or not scanned.")
@@ -144,7 +158,8 @@ def get_roadmap_state(project_id: str, asset_id: str):
     return project_roadmap[asset_id]
 
 @router.post("/{project_id}/assets/{asset_id:path}/roadmap", response_model=MigrationStateRecord)
-def transition_roadmap_state(project_id: str, asset_id: str, req: RoadmapTransitionRequest):
+def transition_roadmap_state(project_id: str, asset_id: str, req: RoadmapTransitionRequest, current_user: User = Depends(get_current_user)):
+    verify_project_ownership(project_id, current_user.username, write=True)
     result = get_project_data(project_id)
     if not result:
         raise HTTPException(status_code=404, detail="Project not found or not scanned.")
@@ -168,7 +183,8 @@ def transition_roadmap_state(project_id: str, asset_id: str, req: RoadmapTransit
         raise HTTPException(status_code=400, detail=str(e))
 
 @router.get("/{project_id}/crypto-inventory")
-def get_crypto_inventory(project_id: str):
+def get_crypto_inventory(project_id: str, current_user: User = Depends(get_current_user)):
+    verify_project_ownership(project_id, current_user.username)
     result = get_project_data(project_id)
     if not result:
         raise HTTPException(status_code=404, detail="Project not found or not scanned.")

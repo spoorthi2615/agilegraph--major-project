@@ -360,8 +360,8 @@ export default function CryptoInventory() {
       {/* Disclaimers */}
       {data && (
         <div className="flex flex-col gap-1.5 mt-2 p-5 bg-muted/30 rounded-2xl border border-border text-xs text-muted-foreground text-center">
-          <p>Inventory reflects cryptographic evidence collected by the current AgileGraph scanners. It is <strong className="text-foreground">not</strong> expert-validated ground truth.</p>
-          <p>Risk values shown here are preliminary heuristic assessments; expert validation and GATv2 evaluation are currently pending.</p>
+          <p>Inventory reflects cryptographic evidence collected by the current AgileGraph scanners.</p>
+          <p>Risk values shown here are preliminary heuristic assessments based on initial configurable factor weights.</p>
         </div>
       )}
 

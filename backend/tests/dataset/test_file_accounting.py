@@ -5,7 +5,9 @@ from src.dataset.models import Language
 from src.pipeline.runner import run_pipeline
 
 
-CORPUS_ROOT = "dataset/corpus"
+BACKEND_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+CORPUS_ROOT = os.path.join(BACKEND_DIR, "dataset", "corpus")
+BENCHMARK_DIR = os.path.join(BACKEND_DIR, "dataset", "benchmark_step3")
 BENCHMARK_REPOS = [
     ("python_itsdangerous", 50),
     ("python_bcrypt", 23),
@@ -68,13 +70,13 @@ def test_canonical_benchmark_accounting_and_criticality_reconciliation():
     benchmark_summary.json, git tracked file counts, and criticality factor counts.
     """
     import json
-    summary_path = os.path.join("dataset", "benchmark_step3", "benchmark_summary.json")
+    summary_path = os.path.join(BENCHMARK_DIR, "benchmark_summary.json")
     assert os.path.exists(summary_path)
 
     with open(summary_path, encoding="utf-8") as f:
         summary = json.load(f)
 
-    manifest_path = os.path.join("dataset", "benchmark_step3", "benchmark_manifest.json")
+    manifest_path = os.path.join(BENCHMARK_DIR, "benchmark_manifest.json")
     with open(manifest_path, encoding="utf-8") as f:
         manifest = json.load(f)
 

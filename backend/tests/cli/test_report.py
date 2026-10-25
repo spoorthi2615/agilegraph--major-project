@@ -10,7 +10,6 @@ def create_mock_json(path):
         "project_id": "test",
         "analysis_type": "HEURISTIC",
         "ml_status": "BLOCKED",
-        "expert_validation_status": "BLOCKED",
         "missing_data_policy": "RENORMALIZE",
         "provenance": {"scanned_files": 1},
         "assets": [{
@@ -53,7 +52,7 @@ def test_cli_report_valid():
             
         assert "HEURISTIC ANALYSIS" in content
         assert "GATv2**: `ARCHITECTURAL_PROTOTYPE`" in content
-        assert "Validation status**: `BLOCKED`" in content
+        assert "Scoring engine**: `HEURISTIC_DETERMINISTIC`" in content
         assert "Empirical evaluation**: `BLOCKED`" in content
         assert "No fabricated empirical metrics" in content
         assert "cve_risk" in content

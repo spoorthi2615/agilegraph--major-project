@@ -4,7 +4,7 @@ from src.risk.criticality import extract_asset_criticality
 from src.risk.exposure import extract_internet_exposure
 from src.risk.algorithm_strength import extract_crypto_weakness
 from src.risk.cve_risk import extract_cve_risk
-from src.risk.centrality import calculate_in_degree_centrality
+from src.risk.centrality import calculate_in_degree_centrality, calculate_library_centrality_for_file
 from src.risk.migration_difficulty import extract_migration_difficulty
 from src.graph.graph import AgileGraph
 
@@ -35,7 +35,7 @@ class FactorExtractor:
             elif cat == "sensitive_data" or rel == "PROTECTS":
                 connected_sensitive_data.append(target_data)
             elif cat == "library" or rel in ("IMPORTS", "DEPENDS_ON"):
-                connected_libraries.append(target_data)
+                connected_libraries.append((target, target_data))
             elif cat == "certificate" or rel in ("CONTAINS", "USES_CERT"):
                 if cat == "certificate":
                     connected_certificates.append(target_data)
@@ -86,10 +86,11 @@ class FactorExtractor:
             from src.scanners.dependencies.cve import enrich_cves
             all_cves = []
             provider_failed = False
-            for lib in connected_libraries:
+            for item in connected_libraries:
+                lib = item[1] if isinstance(item, tuple) else item
                 props = lib.get("properties", lib) if isinstance(lib, dict) else getattr(lib, "properties", {})
                 pkg_name = props.get("library")
-                eco = props.get("ecosystem", metadata.get("language", "python"))
+                eco = props.get("ecosystem", (metadata or {}).get("language", "python"))
                 ver = props.get("version")
                 if pkg_name:
                     res = enrich_cves(pkg_name, eco, ver)
@@ -118,15 +119,33 @@ class FactorExtractor:
                     "infrastructure_change": len(connected_endpoints)
                 }
 
-        file_path = metadata.get("file")
+        # Robust file path extraction from metadata or node attributes
+        meta = dict(metadata) if metadata else {}
+        file_path = meta.get("file")
+        if not file_path and node_id in self.graph.G:
+            file_path = self.graph.G.nodes[node_id].get("file")
+        if not file_path and ":" in node_id:
+            candidate = node_id.split(":", 1)[1]
+            if any(candidate.endswith(ext) for ext in (".py", ".java", ".go", ".txt", ".xml", ".gradle")):
+                file_path = candidate
+        if file_path and "file" not in meta:
+            meta["file"] = file_path
+
         in_deg = self.graph.G.in_degree(node_id) if node_id in self.graph.G else 0
 
+        # If node itself is a library, calculate its direct centrality; otherwise aggregate connected libraries for file
+        node_cat = self.graph.G.nodes.get(node_id, {}).get("category")
+        if node_cat == "library":
+            lib_centrality = calculate_in_degree_centrality(self.graph, node_id)
+        else:
+            lib_centrality = calculate_library_centrality_for_file(self.graph, node_id, connected_libraries)
+
         return RiskFactors(
-            data_sensitivity=extract_data_sensitivity(metadata, connected_sensitive_data),
-            asset_criticality=extract_asset_criticality(metadata, file_path=file_path, in_degree=in_deg),
-            internet_exposure=extract_internet_exposure(metadata, connected_endpoints),
+            data_sensitivity=extract_data_sensitivity(meta, connected_sensitive_data),
+            asset_criticality=extract_asset_criticality(meta, file_path=file_path, in_degree=in_deg),
+            internet_exposure=extract_internet_exposure(meta, connected_endpoints),
             crypto_weakness=best_crypto_weakness,
             cve_risk=extract_cve_risk(active_cve_info),
-            library_centrality=calculate_in_degree_centrality(self.graph, node_id),
+            library_centrality=lib_centrality,
             migration_difficulty=extract_migration_difficulty(active_migration_inputs)
         )

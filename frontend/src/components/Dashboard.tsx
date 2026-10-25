@@ -70,7 +70,7 @@ export default function Dashboard() {
 
   // Derived metrics
   const totalAssets = graphData?.nodes.length || 0;
-  const highRiskAssets = riskData?.assets.filter(a => (a.score || 0) > 0.7).length || 0;
+  const highRiskAssets = riskData?.assets.filter(a => a.score !== null && a.score !== undefined && a.score >= 0.6).length || 0;
   const hasData = !!graphData && !!riskData;
 
   return (
@@ -127,7 +127,7 @@ export default function Dashboard() {
                   value={projectId} 
                   onChange={e => setProjectId(e.target.value)}
                   className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-ring outline-none"
-                  placeholder="e.g. org/repo"
+                  placeholder="e.g. org_repo or my-project"
                   required
                 />
               </div>
@@ -256,7 +256,7 @@ export default function Dashboard() {
             </div>
             {riskData && (
                <div className="px-4 py-2 bg-warning/10 border-t border-warning/20 text-[11px] text-warning/90">
-                 Disclaimer: Empirical ML pipeline and expert labels are currently BLOCKED. Scores shown are initial heuristic estimates only.
+                 Disclaimer: Scores shown are deterministic heuristic estimates based on initial configurable factor weights.
                </div>
             )}
           </div>

@@ -63,7 +63,7 @@ def test_scan_and_fetch(monkeypatch):
         assert risk_res.status_code == 200
         risk_data = risk_res.json()
         assert risk_data["ml_status"] == "ARCHITECTURAL_PROTOTYPE"
-        assert risk_data["expert_validation_status"] == "NOT_APPLICABLE"
+        assert "expert_validation_status" not in risk_data
 
 def test_fetch_missing_project():
     res1 = client.get("/api/v1/projects/missing/graph")

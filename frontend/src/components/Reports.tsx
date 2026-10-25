@@ -137,8 +137,7 @@ export default function Reports() {
         project_id: projectId,
         generated_at: new Date().toISOString(),
         disclaimer: 'All risk scores and migration priorities in this export are produced exclusively by deterministic heuristic algorithms and rules. They are NOT predictions from GATv2 or any trained machine learning model.',
-        ml_status: riskData.ml_status || 'GATv2: ARCHITECTURAL_PROTOTYPE',
-        expert_validation_status: riskData.expert_validation_status || 'NOT_APPLICABLE'
+        ml_status: riskData.ml_status || 'GATv2: ARCHITECTURAL_PROTOTYPE'
       },
       graph_summary: {
         total_nodes: graphData.nodes?.length || 0,
@@ -240,6 +239,28 @@ export default function Reports() {
     }
   };
 
+  const handleDownloadMarkdown = async () => {
+    try {
+      if (!projectId) {
+        setError('No report data available to export.');
+        return;
+      }
+      const mdContent = await apiClient.getReportMarkdown(projectId);
+      const blob = new Blob([mdContent], { type: 'text/markdown;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `agilegraph_report_${projectId.replace(/[^a-zA-Z0-9_-]/g, '_')}.md`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      setDownloadSuccess('Markdown audit report downloaded successfully.');
+    } catch (err: any) {
+      setError(`Download failed: ${err.message || 'Unknown error'}`);
+    }
+  };
+
   const hasData = !!riskData && !!graphData && (riskData.assets?.length > 0 || graphData.nodes?.length > 0);
 
   return (
@@ -267,7 +288,7 @@ export default function Reports() {
             value={projectId} 
             onChange={(e) => setProjectId(e.target.value)}
             className="bg-background border-none rounded-md px-3 py-1.5 text-sm outline-none focus:ring-1 focus:ring-ring w-48 font-mono"
-            placeholder="e.g. org/repo"
+            placeholder="e.g. org_repo or my-project"
             required
             aria-label="Project ID"
           />
@@ -373,6 +394,23 @@ export default function Reports() {
                     </div>
                   </div>
                   <Download className="w-4 h-4 text-muted-foreground group-hover:text-blue-500 transition-colors" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleDownloadMarkdown}
+                  className="flex items-center justify-between p-4 rounded-xl border border-border hover:border-primary/50 bg-background/50 hover:bg-muted/50 transition-all text-left group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="p-2.5 rounded-lg bg-emerald-500/10 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
+                      <FileText className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-semibold text-foreground">Markdown Audit Report</div>
+                      <div className="text-xs text-muted-foreground">Authoritative formatted audit dossier</div>
+                    </div>
+                  </div>
+                  <Download className="w-4 h-4 text-muted-foreground group-hover:text-emerald-500 transition-colors" />
                 </button>
               </div>
             </div>

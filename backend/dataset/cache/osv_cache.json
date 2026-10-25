@@ -1410,5 +1410,384 @@
     "package": "crypto/aes",
     "version": "1.0.0",
     "enrichment_date": "2026-10-24T07:55:43.524962+00:00"
+  },
+  "PyPI:java.security.interfaces.*:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.interfaces.*",
+    "version": null,
+    "enrichment_date": "2026-10-25T08:19:13.284151+00:00"
+  },
+  "PyPI:java.security.spec.MGF1ParameterSpec:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.spec.MGF1ParameterSpec",
+    "version": null,
+    "enrichment_date": "2026-10-25T08:19:19.598235+00:00"
+  },
+  "PyPI:java.security.spec.PSSParameterSpec:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.spec.PSSParameterSpec",
+    "version": null,
+    "enrichment_date": "2026-10-25T08:19:25.571846+00:00"
+  },
+  "PyPI:javax.crypto.Mac:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "javax.crypto.Mac",
+    "version": null,
+    "enrichment_date": "2026-10-25T08:19:31.589045+00:00"
+  },
+  "PyPI:javax.crypto.spec.SecretKeySpec:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "javax.crypto.spec.SecretKeySpec",
+    "version": null,
+    "enrichment_date": "2026-10-25T08:19:38.899332+00:00"
+  },
+  "PyPI:java.security.*:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.*",
+    "version": null,
+    "enrichment_date": "2026-10-25T08:19:44.847413+00:00"
+  },
+  "PyPI:java.security.spec.AlgorithmParameterSpec:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.spec.AlgorithmParameterSpec",
+    "version": null,
+    "enrichment_date": "2026-10-25T08:19:51.187074+00:00"
+  },
+  "PyPI:java.security.InvalidKeyException:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.InvalidKeyException",
+    "version": null,
+    "enrichment_date": "2026-10-25T08:19:57.877575+00:00"
+  },
+  "PyPI:java.security.NoSuchAlgorithmException:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.NoSuchAlgorithmException",
+    "version": null,
+    "enrichment_date": "2026-10-25T08:20:04.361402+00:00"
+  },
+  "PyPI:java.security.SignatureException:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.SignatureException",
+    "version": null,
+    "enrichment_date": "2026-10-25T08:20:10.462118+00:00"
+  },
+  "PyPI:java.security.interfaces.ECPrivateKey:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.interfaces.ECPrivateKey",
+    "version": null,
+    "enrichment_date": "2026-10-25T08:20:16.378693+00:00"
+  },
+  "PyPI:java.security.interfaces.ECPublicKey:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.interfaces.ECPublicKey",
+    "version": null,
+    "enrichment_date": "2026-10-25T08:20:22.434823+00:00"
+  },
+  "PyPI:java.security.interfaces.RSAPrivateKey:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.interfaces.RSAPrivateKey",
+    "version": null,
+    "enrichment_date": "2026-10-25T08:20:28.360066+00:00"
+  },
+  "PyPI:java.security.interfaces.RSAPublicKey:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.interfaces.RSAPublicKey",
+    "version": null,
+    "enrichment_date": "2026-10-25T08:20:34.306303+00:00"
+  },
+  "PyPI:java.security.PrivateKey:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.PrivateKey",
+    "version": null,
+    "enrichment_date": "2026-10-25T08:20:40.347701+00:00"
+  },
+  "PyPI:java.security.PublicKey:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.PublicKey",
+    "version": null,
+    "enrichment_date": "2026-10-25T08:20:46.305499+00:00"
+  },
+  "PyPI:java.security.interfaces.ECKey:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.interfaces.ECKey",
+    "version": null,
+    "enrichment_date": "2026-10-25T08:20:52.261775+00:00"
+  },
+  "PyPI:java.security.interfaces.RSAKey:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.interfaces.RSAKey",
+    "version": null,
+    "enrichment_date": "2026-10-25T08:20:58.148724+00:00"
+  },
+  "PyPI:org.bouncycastle.util.io.pem.PemObject:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "org.bouncycastle.util.io.pem.PemObject",
+    "version": null,
+    "enrichment_date": "2026-10-25T08:21:05.799899+00:00"
+  },
+  "PyPI:org.bouncycastle.util.io.pem.PemReader:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "org.bouncycastle.util.io.pem.PemReader",
+    "version": null,
+    "enrichment_date": "2026-10-25T08:21:11.801768+00:00"
+  },
+  "PyPI:java.security.KeyFactory:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.KeyFactory",
+    "version": null,
+    "enrichment_date": "2026-10-25T08:21:17.784746+00:00"
+  },
+  "PyPI:java.security.spec.EncodedKeySpec:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "java.security.spec.EncodedKeySpec",
+    "version": null,
+    "enrichment_date": "2026-10-25T08:21:25.967992+00:00"
+  },
+  "PyPI:shared:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "shared",
+    "version": null,
+    "enrichment_date": "2026-10-25T08:53:18.969786+00:00"
+  },
+  "PyPI:neo4j:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "neo4j",
+    "version": null,
+    "enrichment_date": "2026-10-25T10:17:07.180412+00:00"
+  },
+  "PyPI:influxdb-client:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "influxdb-client",
+    "version": null,
+    "enrichment_date": "2026-10-25T10:17:09.504261+00:00"
+  },
+  "PyPI:networkx:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "networkx",
+    "version": null,
+    "enrichment_date": "2026-10-25T10:17:11.816891+00:00"
+  },
+  "PyPI:simpy:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "simpy",
+    "version": null,
+    "enrichment_date": "2026-10-25T10:17:13.198654+00:00"
+  },
+  "PyPI:torch:any": {
+    "status": "success",
+    "cves": [
+      "CVE-2025-2953",
+      "CVE-2022-45907",
+      "CVE-2025-32434",
+      "CVE-2024-31580",
+      "CVE-2025-3730",
+      "CVE-2025-2148",
+      "CVE-2025-2998",
+      "CVE-2024-31583",
+      "CVE-2025-3001",
+      "CVE-2025-3000",
+      "CVE-2025-2999",
+      "CVE-2025-2149",
+      "CVE-2024-31584",
+      "CVE-2024-48063",
+      "CVE-2025-3121",
+      "CVE-2025-3136",
+      "CVE-2025-46148",
+      "CVE-2025-46149",
+      "CVE-2025-46150",
+      "CVE-2025-46152",
+      "CVE-2025-46153",
+      "CVE-2025-55551",
+      "CVE-2025-55552",
+      "CVE-2025-55553",
+      "CVE-2025-55554",
+      "CVE-2025-55557",
+      "CVE-2025-55558",
+      "CVE-2025-55560",
+      "CVE-2025-63396",
+      "CVE-2026-4538",
+      "CVE-2026-24747"
+    ],
+    "count": 31,
+    "package": "torch",
+    "version": null,
+    "enrichment_date": "2026-10-25T10:17:14.514508+00:00"
+  },
+  "PyPI:torch_geometric:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "torch_geometric",
+    "version": null,
+    "enrichment_date": "2026-10-25T10:17:16.283970+00:00"
+  },
+  "PyPI:fastapi:any": {
+    "status": "success",
+    "cves": [
+      "CVE-2021-32677",
+      "CVE-2024-24762"
+    ],
+    "count": 2,
+    "package": "fastapi",
+    "version": null,
+    "enrichment_date": "2026-10-25T10:17:17.580060+00:00"
+  },
+  "PyPI:uvicorn:any": {
+    "status": "success",
+    "cves": [
+      "CVE-2020-7694",
+      "CVE-2020-7695"
+    ],
+    "count": 2,
+    "package": "uvicorn",
+    "version": null,
+    "enrichment_date": "2026-10-25T10:17:19.333560+00:00"
+  },
+  "PyPI:opendssdirect:.py": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "opendssdirect",
+    "version": ".py",
+    "enrichment_date": "2026-10-25T10:17:21.268307+00:00"
+  },
+  "PyPI:pandapower:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "pandapower",
+    "version": null,
+    "enrichment_date": "2026-10-25T10:17:22.788460+00:00"
+  },
+  "PyPI:scikit-learn:any": {
+    "status": "success",
+    "cves": [
+      "CVE-2020-13092",
+      "CVE-2024-5206",
+      "CVE-2020-28975"
+    ],
+    "count": 3,
+    "package": "scikit-learn",
+    "version": null,
+    "enrichment_date": "2026-10-25T10:17:24.299494+00:00"
+  },
+  "PyPI:pandas:any": {
+    "status": "success",
+    "cves": [
+      "CVE-2020-13091"
+    ],
+    "count": 1,
+    "package": "pandas",
+    "version": null,
+    "enrichment_date": "2026-10-25T10:17:30.772994+00:00"
+  },
+  "PyPI:pytest:any": {
+    "status": "success",
+    "cves": [
+      "CVE-2025-71176"
+    ],
+    "count": 1,
+    "package": "pytest",
+    "version": null,
+    "enrichment_date": "2026-10-25T10:17:32.639034+00:00"
+  },
+  "PyPI:pydantic:any": {
+    "status": "success",
+    "cves": [
+      "CVE-2021-29510",
+      "CVE-2024-3772"
+    ],
+    "count": 2,
+    "package": "pydantic",
+    "version": null,
+    "enrichment_date": "2026-10-25T10:17:34.602684+00:00"
+  },
+  "PyPI:numpy:any": {
+    "status": "success",
+    "cves": [
+      "CVE-2014-1859",
+      "CVE-2021-41495",
+      "CVE-2021-33430",
+      "CVE-2019-6446",
+      "CVE-2014-1858",
+      "CVE-2021-41496",
+      "CVE-2021-34141",
+      "CVE-2017-12852"
+    ],
+    "count": 8,
+    "package": "numpy",
+    "version": null,
+    "enrichment_date": "2026-10-25T10:17:36.011050+00:00"
+  },
+  "PyPI:requests:any": {
+    "status": "success",
+    "cves": [
+      "CVE-2014-1830",
+      "CVE-2024-47081",
+      "CVE-2024-35195",
+      "CVE-2014-1829",
+      "CVE-2026-25645",
+      "CVE-2023-32681",
+      "CVE-2015-2296",
+      "CVE-2018-18074"
+    ],
+    "count": 8,
+    "package": "requests",
+    "version": null,
+    "enrichment_date": "2026-10-25T10:17:37.618300+00:00"
   }
 }

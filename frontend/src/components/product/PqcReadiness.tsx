@@ -79,7 +79,7 @@ export default function PqcReadiness() {
           <div className="p-4 bg-warning/10 border border-warning/20 rounded-xl flex items-start gap-3">
             <ShieldAlert className="w-5 h-5 text-warning shrink-0 mt-0.5" />
             <div>
-              <h3 className="font-semibold text-warning text-sm">Preliminary heuristic — expert validation pending.</h3>
+              <h3 className="font-semibold text-warning text-sm">Preliminary heuristic — initial configurable weights.</h3>
               <p className="text-sm text-warning/80 mt-1">{data.semantic_disclaimer || "Inventory/coverage summary, not a scientifically validated PQC readiness score."}</p>
             </div>
           </div>
