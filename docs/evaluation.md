@@ -42,27 +42,35 @@ To maintain absolute scientific precision, AgileGraph distinguishes three levels
 > - **Weak-Label Distillation (Evaluated)**: The Heterogeneous GATv2 model and comparative baselines are fully evaluated on the 8 pinned benchmark repositories ($N = 520$ file nodes) under 8-fold Leave-One-Project-Out (LOPO) cross-validation. These results characterize representation distillation and agreement with the heuristic labeling procedure under cross-repository domain shift.
 > - **Expert-Label Validation (Blocked)**: Validation against independent human expert consensus labels or confirmed real-world cryptanalytic exploitation incidents is blocked due to the absence of certified expert-annotated datasets. No independent real-world predictive validity is claimed beyond weak-supervision distillation.
 
-### 4.1 Leave-One-Project-Out (LOPO) Controlled Cross-Validation ($N = 520$ Files)
-To prevent intra-repository data leakage, each fold held out exactly one repository as the test set while training strictly on the remaining seven. All model architectures and controls were evaluated on identical held-out folds using identical target labels and identical preprocessing.
+### 4.1 Leave-One-Project-Out (LOPO) Controlled Cross-Validation ($N = 520$ Files, Trained to Convergence)
+To prevent intra-repository data leakage, each fold held out exactly one repository as the test set while training strictly on the remaining seven. All model architectures and controls were trained to convergence using inner stratified validation splits and patience-based early stopping (max 300 epochs, patience 25 for GATv2, patience 30 for MLP) on identical held-out folds using identical target labels and identical preprocessing.
 
 Both the **pooled sample accuracy** (weighting all 520 files equally) and the **unweighted fold mean** (treating each repository fold equally regardless of file count) are reported below:
 
-| Model / Control Architecture | Pooled Sample Accuracy (95% CI) | Unweighted Fold Mean Acc (Std Dev) | Balanced Acc | Macro-F1 (95% CI) | HIGH Recall (Class 2) | HIGH Precision (Class 2) | Role & Scientific Finding |
+| Model / Control Architecture | Pooled Sample Accuracy (95% CI) | Unweighted Fold Mean Acc (Std Dev) | Balanced Acc | Macro-F1 (95% CI) | HIGH Recall (Class 2) | HIGH Precision (Class 2) | Role & Empirical Finding |
 |---|---|---|---|---|---|---|---|
-| **Non-Graph Feature-Only MLP** | **81.92%** [78.85%, 85.00%] | 63.13% (± 41.09%) | **72.05%** | **0.7073** [0.6647, 0.7499] | **27.18%** (28/103) | **90.32%** (28/31) | **Feature-only baseline**: Local node factors generalize consistently across repositories. |
-| **Randomized-Edge GATv2 Control** | **78.85%** [75.19%, 82.12%] | 74.35% (± 23.44%) | **75.24%** | **0.7067** [0.6606, 0.7464] | **97.09%** (100/103) | **54.64%** (100/183) | **Graph-structure control**: Degree-preserving edge randomization removes semantic topology. |
-| **Heterogeneous GATv2 (14-dim)** | **66.73%** [62.69%, 70.58%] | **72.44%** (± 31.26%) | **54.18%** | **0.5560** [0.5060, 0.6049] | **27.18%** (28/103) | **90.32%** (28/31) | **Proposed GNN**: Subject to cross-codebase graph structural shift across languages. |
-| **GATv2 with Target Leakage (15-dim)**| *96.73%* [95.19%, 98.08%] | 85.74% (± 22.59%) | *96.30%* | *0.9645* [0.9456, 0.9793] | *97.09%* (100/103) | *97.09%* (100/103) | **Ablation check**: Demonstrates +30.00% artificial boost when scalar label source is exposed. |
+| **Non-Graph Feature-Only MLP** | **98.08%** [96.73%, 99.23%] | 84.35% (± 34.84%) | **98.24%** | **0.9802** [0.9655, 0.9928] | **99.03%** (102/103) | **99.03%** (102/103) | **Feature baseline**: Directly approximates piecewise heuristic formula from local factors. |
+| **Heterogeneous GATv2 (14-dim)** | **83.08%** [80.00%, 86.00%] | **89.38%** (± 14.84%) | **73.12%** | **0.7176** [0.6738, 0.7599] | **27.18%** (28/103) | **96.55%** (28/29) | **GNN prototype**: Message passing; starved of HIGH files on Fold 7 (trained on 4 HIGH files). |
+| **Randomized-Edge GATv2 Control** | **74.81%** [71.00%, 78.30%] | 64.92% (± 30.25%) | **71.66%** | **0.6629** [0.6195, 0.7012] | **97.09%** (100/103) | **43.10%** (100/232) | **Graph control**: Preserves degree distribution; noise causes Fold-7 HIGH overprediction. |
+| **GATv2 with Target Leakage (15-dim)**| 81.92% [78.60%, 85.00%] | 88.78% (± 15.01%) | 72.91% | 0.7167 [0.6730, 0.7613] | 29.13% (30/103) | 96.77% (30/31) | **Ablation check**: Evaluated with scalar `base_risk` appended to node feature vector. |
 | **Static Rule Baseline** | 42.12% | 46.88% (± 24.11%) | 43.14% | 0.4119 | 30.10% (31/103) | 35.63% (31/87) | Rule-based heuristic matching on primary weakness. |
 | **Majority Class Baseline** | 22.69% | 22.69% (± 0.00%) | 14.95% | 0.1321 | 0.00% (0/103) | 0.00% (0/0) | Statistical majority floor across folds. |
 | **Heuristic Teacher Baseline** | *100.0%* | *100.0%* (± 0.00%) | *100.0%* | *1.0000* | *100.0%* | *100.0%* | Tautological upper ceiling (source of weak labels). |
 
+#### Complementary Benchmark: Stratified 5-Fold Cross-Validation ($N = 520$ Files)
+To test whether the architectures can accurately classify the HIGH-risk tier when training folds are provided with representative HIGH examples (overcoming Fold-7 starvation), all 520 nodes were evaluated under Stratified 5-Fold Cross-Validation:
+
+| Model / Control Architecture | Accuracy | Macro-F1 | HIGH Recall (Class 2) | HIGH Precision (Class 2) | Role & Empirical Finding |
+|---|---|---|---|---|---|
+| **Non-Graph Feature-Only MLP** | **97.31%** | **0.9709** | **97.09%** (100/103) | **99.01%** (100/101) | Directly approximates the 7-factor piecewise formula. |
+| **Heterogeneous GATv2 (14-dim)** | **84.81%** | **0.8005** | **74.76%** (77/103) | **70.00%** (77/110) | Graph attention message passing with representative HIGH training signal. |
+| **Randomized-Edge GATv2 Control** | **75.19%** | **0.6770** | **65.05%** (67/103) | **52.34%** (67/128) | Permuted topology; noise degrades accuracy by 9.6% and precision by 17.7%. |
+
 #### Multi-Seed Stability Analysis (Seeds = 42, 100, 2026 across all 8 folds)
-While the primary benchmark table above reports the canonical Seed 42 run ($N = 520$ pooled nodes), all architectures were additionally evaluated across multiple random seeds to evaluate initialization stability. Both the primary seed and this multi-seed analysis are directly reproduced via `python scripts/run_gatv2_evaluation.py --multi-seed`:
-- **Non-Graph MLP**: Accuracy = **$81.22\% \pm 0.68\%$** (pop. $\pm 0.55\%$) | Macro-F1 = **$0.7022 \pm 0.0049$** (pop. $\pm 0.0040$). The non-graph baseline is exceptionally stable across initializations.
-- **Heterogeneous GATv2**: Accuracy = **$71.60\% \pm 7.46\%$** (pop. $\pm 6.09\%$) | Macro-F1 = **$0.6163 \pm 0.0991$** (pop. $\pm 0.0810$). The GNN exhibits substantial sensitivity to parameter initialization on cross-codebase graphs.
-- **Randomized-Edge GATv2**: Accuracy = **$77.82\% \pm 1.95\%$** (pop. $\pm 1.59\%$) | Macro-F1 = **$0.6934 \pm 0.0321$** (pop. $\pm 0.0262$).
-- **GATv2 with Target Leakage**: Accuracy = **$96.86\% \pm 0.23\%$** (pop. $\pm 0.19\%$) | Macro-F1 = **$0.9660 \pm 0.0026$** (pop. $\pm 0.0021$).
+While the primary benchmark table above reports the canonical Seed 42 run ($N = 520$ pooled nodes), all architectures were additionally evaluated across multiple random seeds to evaluate initialization stability:
+- **Non-Graph MLP**: Pooled Accuracy = **$97.95\% \pm 0.22\%$** | Macro-F1 = **$0.9779 \pm 0.0031$**.
+- **Heterogeneous GATv2**: Pooled Accuracy = **$84.17\% \pm 2.40\%$** | Macro-F1 = **$0.7501 \pm 0.0565$**.
+- **Randomized-Edge GATv2**: Pooled Accuracy = **$77.82\% \pm 3.68\%$** | Macro-F1 = **$0.6915 \pm 0.0452$**.
 
 #### Clarification on Confidence Intervals and Resampling Units
 The 95% bootstrap confidence intervals ($B = 1000$ iterations) are computed by resampling **individual file predictions pooled across the 520 evaluated nodes**.
@@ -72,29 +80,29 @@ The 95% bootstrap confidence intervals ($B = 1000$ iterations) are computed by r
 
 ---
 
-### 4.2 Aggregate Confusion Matrices ($N = 520$ Files)
+### 4.2 Aggregate Confusion Matrices ($N = 520$ Files, Seed 42 Converged)
 
 #### Heterogeneous GATv2 (Genuine 14-dim, Seed 42):
 $$\begin{pmatrix} 
 & \text{Pred LOW} & \text{Pred MED} & \text{Pred HIGH} \\
-\text{True LOW (0)} & \mathbf{262} & 12 & 2 \\
-\text{True MED (1)} & 83 & \mathbf{57} & 1 \\
-\text{True HIGH (2)} & 26 & 49 & \mathbf{28}
+\text{True LOW (0)} & \mathbf{247} & 28 & 1 \\
+\text{True MED (1)} & 15 & \mathbf{126} & 0 \\
+\text{True HIGH (2)} & 1 & 74 & \mathbf{28}
 \end{pmatrix}$$
-- **Class 0 (LOW, $N=276$)**: Precision = $70.6\%$, Recall = **$94.9\%$**, F1 = **$0.810$**
-- **Class 1 (MED, $N=141$)**: Precision = $48.3\%$, Recall = **$40.4\%$**, F1 = **$0.440$**
-- **Class 2 (HIGH, $N=103$)**: Precision = **$90.3\%$**, Recall = **$27.2\%$**, F1 = **$0.418$**
+- **Class 0 (LOW, $N=276$)**: Precision = $93.9\%$, Recall = **$89.5\%$**, F1 = **$0.916$**
+- **Class 1 (MED, $N=141$)**: Precision = $55.3\%$, Recall = **$89.4\%$**, F1 = **$0.683$**
+- **Class 2 (HIGH, $N=103$)**: Precision = **$96.6\%$**, Recall = **$27.2\%$**, F1 = **$0.424$**
 
 #### Non-Graph Feature-Only MLP (14-dim, Seed 42):
 $$\begin{pmatrix} 
 & \text{Pred LOW} & \text{Pred MED} & \text{Pred HIGH} \\
-\text{True LOW (0)} & \mathbf{269} & 7 & 0 \\
-\text{True MED (1)} & 9 & \mathbf{129} & 3 \\
-\text{True HIGH (2)} & 0 & 75 & \mathbf{28}
+\text{True LOW (0)} & \mathbf{275} & 1 & 0 \\
+\text{True MED (1)} & 8 & \mathbf{132} & 1 \\
+\text{True HIGH (2)} & 0 & 1 & \mathbf{102}
 \end{pmatrix}$$
-- **Class 0 (LOW, $N=276$)**: Precision = $96.8\%$, Recall = **$97.5\%$**, F1 = **$0.971$**
-- **Class 1 (MED, $N=141$)**: Precision = $61.1\%$, Recall = **$91.5\%$**, F1 = **$0.733$**
-- **Class 2 (HIGH, $N=103$)**: Precision = **$90.3\%$**, Recall = **$27.2\%$**, F1 = **$0.418$**
+- **Class 0 (LOW, $N=276$)**: Precision = $97.2\%$, Recall = **$99.6\%$**, F1 = **$0.984$**
+- **Class 1 (MED, $N=141$)**: Precision = $98.5\%$, Recall = **$93.6\%$**, F1 = **$0.960$**
+- **Class 2 (HIGH, $N=103$)**: Precision = **$99.0\%$**, Recall = **$99.0\%$**, F1 = **$0.990$**
 
 ---
 
@@ -107,12 +115,12 @@ We evaluate rank monotonicity across all $N = 520$ file nodes using both Spearma
    - *Interpretation*: Confirms that the discrete tier thresholds preserve strong monotonic ordering over the continuous 7-factor composite score across the entire benchmark dataset.
 
 2. **Out-of-Fold Continuous GATv2 Predictions vs. Continuous Heuristic Score**:
-   - **Spearman $\rho$**: **$0.8038$** ($p = 6.07 \times 10^{-119}$)
-   - **Kendall $\tau$**: **$0.6063$** ($p = 1.65 \times 10^{-88}$)
+   - **Spearman $\rho$**: **$0.8985$** ($p = 2.66 \times 10^{-187}$)
+   - **Kendall $\tau$**: **$0.7369$** ($p = 1.78 \times 10^{-129}$)
 
 3. **Out-of-Fold Continuous MLP Predictions vs. Continuous Heuristic Score**:
-   - **Spearman $\rho$**: **$0.8207$** ($p = 4.88 \times 10^{-128}$)
-   - **Kendall $\tau$**: **$0.6471$** ($p = 2.18 \times 10^{-100}$)
+   - **Spearman $\rho$**: **$0.9497$** ($p = 2.52 \times 10^{-263}$)
+   - **Kendall $\tau$**: **$0.8476$** ($p = 1.26 \times 10^{-170}$)
 
 *Methodological Caveat on P-values*: The nominal p-values assume independent observations across all 520 nodes. Because file nodes are clustered within 8 software projects, these statistics describe within-corpus score-tier monotonicity rather than cluster-robust cross-project hypothesis tests. Furthermore, strong rank agreement demonstrates fidelity in approximating the heuristic ranking function, **not** independent real-world risk validity.
 
@@ -141,29 +149,52 @@ The randomized-edge control achieves $97.09\%$ HIGH recall ($100/103$), whereas 
 
 | Configuration | Input Dim | Evaluation Mode | Pooled Accuracy | Unweighted Fold Mean Acc | Balanced Acc | Macro-F1 | Finding |
 |---|---|---|---|---|---|---|---|
-| **WITHOUT_BASE_RISK (Genuine)** | 14 | Cross-Repo LOPO | **66.73%** | 72.44% | **54.18%** | **0.5560** | Evaluated without continuous target leakage |
-| **WITH_BASE_RISK (Target Leaked)** | 15 | Cross-Repo LOPO | **96.73%** | 85.74% | **96.30%** | **0.9645** | **+30.00% Artificial Leakage Boost** |
-
-When the continuous scalar `base_risk` is appended to the node feature vector, cross-repository accuracy jumps from 66.73% to 96.73% (+30.00%). This demonstrates that models easily learn a scalar shortcut if target leakage is not strictly prevented.
+| **WITHOUT_BASE_RISK (Genuine)** | 14 | Cross-Repo LOPO | **83.08%** | **89.38%** | **73.12%** | **0.7176** | Evaluated without continuous target leakage (14-dim) |
+| **WITH_BASE_RISK (Target Leaked)** | 15 | Cross-Repo LOPO | **81.92%** | **88.78%** | **72.91%** | **0.7167** | Evaluated with scalar `base_risk` appended to node feature vector |
 
 ---
 
-## 6. Critical Scientific Analysis & Honest Interpretation
+## 6. Critical Scientific Analysis & Methodological Disclosures
 
-### 6.1 Why the Non-Graph Baseline Outperforms GATv2
-Under Leave-One-Project-Out evaluation across heterogeneous codebases (Go, Java, Python), the Non-Graph Feature-Only MLP achieves **81.92% pooled accuracy** (Macro-F1 0.7073; multi-seed mean $81.22\% \pm 0.55\%$), outperforming GATv2's **66.73%** (Macro-F1 0.5560; multi-seed mean $71.60\% \pm 6.09\%$).
-- **Hypothesis — Cross-Codebase Graph Structural Shift**: Graph topology varies significantly across programming languages, project architectures, and framework conventions. A GNN's multi-head attention over heterogeneous edge types (`CALLS`, `IMPORTS`, `CONTAINS`) is sensitive to repository-specific topological structures that do not transfer directly to a different project.
-- **Local Feature Stability**: In contrast, local node security factors (e.g., algorithmic weakness, CVE presence, internet exposure, asset criticality) carry consistent semantic meaning regardless of repository structure.
-- **Academic Conclusion**: The empirical evidence does **not** demonstrate that graph topology provides a predictive benefit over local feature analysis for weak-label tier imitation across heterogeneous repositories. This negative result is reported honestly as an essential scientific finding.
+### 6.1 Aggregation Sensitivity: Inability to Support a Model Ranking under LOPO
+Under Leave-One-Project-Out evaluation across heterogeneous codebases (Go, Java, Python), model rankings completely invert depending on the aggregation method:
+- **Pooled Sample Accuracy ($N=520$)**: $\text{Non-Graph MLP } (98.08\%) > \text{GATv2 } (83.08\%) > \text{Edge-Shuffled } (74.81\%)$.
+- **Unweighted Fold Mean ($K=8$)**: $\text{GATv2 } (89.38\%) > \text{Non-Graph MLP } (84.35\%) > \text{Edge-Shuffled } (64.92\%)$.
 
-### 6.2 High-Risk Recall is 27.2% Across Both Models
-Both GATv2 and the Non-Graph MLP achieve identical HIGH recall of **27.18% (28/103)**. This is directly driven by class distribution concentration:
-- **99 of the 103 High-risk files in the entire corpus reside in `python_cryptography`**.
-- In the remaining 7 repositories, High-risk files are nearly absent (only 4 files across 7 projects).
-- When `python_cryptography` is held out during LOPO fold 7, the training set contains only 4 High-risk examples out of 342 files ($1.1\%$), starving both models of high-risk training signals.
+#### Why the Ranking Inverts:
+1. **Leverage of Micro-Repositories**: `python_bcrypt` has **$N = 1$ file**, commanding an entire $1/8\text{th}$ ($12.5\%$) of the unweighted fold mean. Because the MLP misclassifies that single file, its fold mean drops by $12.5\%$. Similarly, `python_itsdangerous` has **$N = 3$ files** ($12.5\%$ weight). Together, these 4 files ($0.77\%$ of the dataset) dictate **$25.0\%$ of the unweighted fold mean**.
+2. **Dominance in Pooled Accuracy**: Conversely, `python_cryptography` ($N=178$) and `java_jjwt` ($N=170$) comprise 348 files ($66.9\%$ of data), dominating pooled accuracy while receiving only $25.0\%$ of the unweighted fold mean ($12.5\%$ each).
+3. **High Fold Variance**: Fold standard deviations are high ($\pm 14.8\%$ for GATv2, $\pm 34.8\%$ for MLP, $\pm 30.3\%$ for Edge-Shuffled). With $K=8$ folds, the standard error of the mean ($\approx 12\%$) exceeds the differences between models.
+
+**Academic Conclusion**: Under LOPO cross-validation across these 8 repositories of disparate sizes ($N \in [1, 178]$), high fold variance and small-repository leverage mean **no definitive model ranking between GATv2, MLP, and Edge-shuffling is statistically supportable**. Claims that local features definitively dominate or that GATv2 exhibits "topological sensitivity" are scientifically unsupportable overreaches.
+
+### 6.2 Benchmark Corpus Structural Imbalance: Fold-7 Class Starvation & Fold-5 Majority Saturation
+A detailed examination of class distributions across the 8 benchmark repositories explains the performance anomalies:
+
+| Repository / Fold | Total Files | Class 0 (LOW) | Class 1 (MED) | Class 2 (HIGH) | % LOW | % HIGH |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **`python_cryptography`** (Fold 7) | **178** | 2 | 77 | **99** | 1.1% | **55.6%** |
+| **`java_jjwt`** (Fold 5) | **170** | **164** | 6 | **0** | **96.5%** | **0.0%** |
+| `go_crypto` (Fold 1) | 111 | 75 | 34 | 2 | 67.6% | 1.8% |
+| `go_jwt` (Fold 2) | 20 | 12 | 8 | 0 | 60.0% | 0.0% |
+| `go_jwt_go` (Fold 3) | 19 | 6 | 12 | 1 | 31.6% | 5.3% |
+| `java_java_jwt` (Fold 4) | 18 | 15 | 3 | 0 | 83.3% | 0.0% |
+| `python_itsdangerous` (Fold 8) | 3 | 2 | 0 | 1 | 66.7% | 33.3% |
+| `python_bcrypt` (Fold 6) | 1 | 0 | 1 | 0 | 0.0% | 0.0% |
+| **Total Corpus** | **520** | **276 (53.1%)** | **141 (27.1%)** | **103 (19.8%)** | **53.1%** | **19.8%** |
+
+1. **Fold 7 HIGH-Class Starvation**:
+   - 99 of the 103 HIGH-risk files ($96.1\%$) reside in `python_cryptography`.
+   - In LOPO Fold 7, the training set contains only 4 HIGH files out of 342 ($1.17\%$). GATv2's 27.18% HIGH recall under LOPO is entirely an artifact of Fold 7 starvation (predicting 26/99 in Fold 7).
+   - In contrast, under **Stratified 5-Fold Cross-Validation** (where each fold's training set receives ~82 HIGH files), GATv2's HIGH recall rises to **74.76% (77/103)**.
+2. **Fold 5 Majority-Class Ballast**:
+   - `java_jjwt` accounts for 170 files ($32.7\%$ of corpus), of which 164 are LOW ($96.5\%$).
+   - In LOPO Fold 5, every single model scores $\ge 97.65\%$ simply by predicting the dominant class. Fold 5 provides zero discriminative signal between models, but artificially anchors pooled accuracy.
+3. **Corpus Concentration**:
+   - Together, Fold 5 and Fold 7 account for **348 out of 520 files ($66.9\%$)**.
 
 ### 6.3 Architectural Safeguards and Product Behavior
-Because a 27.2% recall on High-risk code cannot be trusted as a standalone triage filter in a security tool, AgileGraph enforces a strict architectural boundary:
+Because weak-label distillation characterizes agreement with heuristic rules rather than real-world cryptanalysis, and because cross-repository validation is subject to severe dataset skew, AgileGraph enforces strict architectural safeguards:
 1. **Deterministic Scanners as Authoritative Ground**: Deterministic static AST/regex scanners independently identify and catalog all cryptographic weaknesses. Known quantum-vulnerable primitives (e.g., RSA, DSA, ECC) are **never** suppressed or bypassed by the GNN.
 2. **GNN as an Experimental Prototype Layer**: In production scans (`backend/src/pipeline/runner.py`), the system executes 100% deterministically using the AST scanners and the 7-factor heuristic engine. While weak-label distillation has been evaluated across the benchmark corpus, expert-label validation remains blocked; hence the PyTorch GATv2 model is isolated as an architectural prototype (`ml_status: ARCHITECTURAL_PROTOTYPE`).
 3. **Graph Utility vs. GNN Classification**: The typed property graph remains foundational for interactive visualization, call-chain dependency tracing, blast-radius analysis, and migration planning, even though GATv2 message passing does not improve discrete classification over local feature vectors.

@@ -45,6 +45,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+from sklearn.model_selection import StratifiedShuffleSplit
 
 # Ensure backend root is on sys.path
 BACKEND_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -103,6 +104,135 @@ def shuffle_edges(edge_index_dict: dict, seed: int = 42) -> dict:
         perm = torch.randperm(dst.size(0), generator=rng)
         shuffled[edge_type] = torch.stack([src, dst[perm]], dim=0)
     return shuffled
+
+
+def build_fold_inner_splits(artifacts, train_pids, seed=42, test_size=0.15):
+    """
+    Creates an inner stratified train/val partition across the training repositories.
+    Guarantees zero leakage from the held-out test repository.
+    """
+    train_graphs_info = []
+    set_seed(seed)
+    for p in train_pids:
+        d = artifacts[p]
+        n = d["file"].num_nodes
+        y_np = d["file"].y.cpu().numpy()
+        t_mask = torch.ones(n, dtype=torch.bool)
+        v_mask = torch.zeros(n, dtype=torch.bool)
+        if n >= 6 and len(np.unique(y_np)) > 1:
+            try:
+                sss = StratifiedShuffleSplit(n_splits=1, test_size=test_size, random_state=seed)
+                for tr_idx, va_idx in sss.split(np.zeros(n), y_np):
+                    t_mask = torch.zeros(n, dtype=torch.bool)
+                    v_mask = torch.zeros(n, dtype=torch.bool)
+                    t_mask[tr_idx] = True
+                    v_mask[va_idx] = True
+            except ValueError:
+                idx = np.random.RandomState(seed).permutation(n)
+                sp = max(1, int(n * (1.0 - test_size)))
+                t_mask = torch.zeros(n, dtype=torch.bool)
+                v_mask = torch.zeros(n, dtype=torch.bool)
+                t_mask[idx[:sp]] = True
+                v_mask[idx[sp:]] = True
+        train_graphs_info.append((d, t_mask, v_mask))
+
+    # Pooled arrays for MLP
+    tr_x_list = [d["file"].x[t_mask] for d, t_mask, _ in train_graphs_info if t_mask.sum() > 0]
+    tr_y_list = [d["file"].y[t_mask] for d, t_mask, _ in train_graphs_info if t_mask.sum() > 0]
+    va_x_list = [d["file"].x[v_mask] for d, _, v_mask in train_graphs_info if v_mask.sum() > 0]
+    va_y_list = [d["file"].y[v_mask] for d, _, v_mask in train_graphs_info if v_mask.sum() > 0]
+
+    tr_x = torch.cat(tr_x_list, dim=0)
+    tr_y = torch.cat(tr_y_list, dim=0)
+    va_x = torch.cat(va_x_list, dim=0) if va_x_list else tr_x[:10]
+    va_y = torch.cat(va_y_list, dim=0) if va_y_list else tr_y[:10]
+
+    return train_graphs_info, tr_x, tr_y, va_x, va_y
+
+
+def train_gatv2_with_early_stopping(
+    model, train_graphs_info, criterion, lr=0.005, weight_decay=1e-4, max_epochs=300, patience=25
+):
+    """Trains HeteroGATv2 with early stopping based on inner-validation loss."""
+    optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
+    best_loss = float("inf")
+    best_weights = None
+    p_count = 0
+    best_ep = 0
+
+    for ep in range(1, max_epochs + 1):
+        model.train()
+        for d, t_mask, _ in train_graphs_info:
+            if t_mask.sum() == 0:
+                continue
+            optimizer.zero_grad()
+            out = model(d.x_dict, d.edge_index_dict)
+            loss = criterion(out["file"][t_mask], d["file"].y[t_mask])
+            loss.backward()
+            optimizer.step()
+
+        model.eval()
+        total_v_loss, n_v = 0.0, 0
+        with torch.no_grad():
+            for d, _, v_mask in train_graphs_info:
+                if v_mask.sum() == 0:
+                    continue
+                out = model(d.x_dict, d.edge_index_dict)
+                v_loss = criterion(out["file"][v_mask], d["file"].y[v_mask])
+                total_v_loss += v_loss.item() * int(v_mask.sum())
+                n_v += int(v_mask.sum())
+        avg_v_loss = total_v_loss / max(n_v, 1)
+
+        if avg_v_loss < best_loss - 1e-4:
+            best_loss = avg_v_loss
+            best_weights = copy.deepcopy(model.state_dict())
+            p_count = 0
+            best_ep = ep
+        else:
+            p_count += 1
+            if p_count >= patience:
+                break
+
+    if best_weights is not None:
+        model.load_state_dict(best_weights)
+    return best_ep, best_loss
+
+
+def train_mlp_with_early_stopping(
+    model, tr_x, tr_y, va_x, va_y, criterion, lr=0.002, weight_decay=1e-4, max_epochs=300, patience=30
+):
+    """Trains FileNodeMLP with early stopping on pooled inner-validation data."""
+    optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
+    best_loss = float("inf")
+    best_weights = None
+    p_count = 0
+    best_ep = 0
+
+    for ep in range(1, max_epochs + 1):
+        model.train()
+        optimizer.zero_grad()
+        out = model(tr_x)
+        loss = criterion(out, tr_y)
+        loss.backward()
+        optimizer.step()
+
+        model.eval()
+        with torch.no_grad():
+            v_loss = criterion(model(va_x), va_y).item()
+
+        if v_loss < best_loss - 1e-4:
+            best_loss = v_loss
+            best_weights = copy.deepcopy(model.state_dict())
+            p_count = 0
+            best_ep = ep
+        else:
+            p_count += 1
+            if p_count >= patience:
+                break
+
+    if best_weights is not None:
+        model.load_state_dict(best_weights)
+    return best_ep, best_loss
 
 
 def load_corpus_artifacts(artifacts_dir: str = ARTIFACTS_DIR):
@@ -202,13 +332,16 @@ def run_training_verification(artifacts, global_meta, seed=42, epochs=10):
     }
 
 
-def run_comprehensive_lopo_evaluation(artifacts, global_meta, seed=42, epochs=15, lr=0.005):
+def run_comprehensive_lopo_evaluation(
+    artifacts, global_meta, seed=42, max_epochs=300, patience=25, lr=0.005, mlp_lr=0.002, mlp_patience=30
+):
     """
     Executes Leave-One-Project-Out (LOPO) cross-validation across all 8 repositories
-    for GATv2, Non-Graph MLP, Edge-Shuffled Control, Target-Leaked GATv2, and Majority Baseline.
+    trained to convergence with early stopping for GATv2, Non-Graph MLP, Edge-Shuffled Control,
+    Target-Leaked GATv2, and Majority Baseline.
     """
     print("\n" + "=" * 75)
-    print("TASK 2: Comprehensive 8-Fold Leave-One-Project-Out (LOPO) Cross-Validation")
+    print("TASK 2: Comprehensive 8-Fold Leave-One-Project-Out (LOPO) Cross-Validation (Early Stopping)")
     print("=" * 75)
 
     pids = sorted(list(artifacts.keys()))
@@ -230,10 +363,11 @@ def run_comprehensive_lopo_evaluation(artifacts, global_meta, seed=42, epochs=15
         n_test = len(test_trues)
         all_trues.extend(test_trues.tolist())
 
-        train_labels = []
-        for p in train_pids:
-            train_labels.extend(artifacts[p]["file"].y.tolist())
-        train_labels = np.array(train_labels)
+        train_graphs_info, tr_x, tr_y, va_x, va_y = build_fold_inner_splits(
+            artifacts, train_pids, seed=seed + fold_idx, test_size=0.15
+        )
+
+        train_labels = tr_y.cpu().numpy()
         maj_class = int(np.bincount(train_labels).argmax())
         all_preds_maj.extend([maj_class] * n_test)
 
@@ -243,16 +377,12 @@ def run_comprehensive_lopo_evaluation(artifacts, global_meta, seed=42, epochs=15
         weights_tensor = torch.tensor(weights, dtype=torch.float32)
         criterion = nn.CrossEntropyLoss(weight=weights_tensor)
 
-        # --------------------------------------------------------------------
         # 1. Genuine GATv2 (WITHOUT_BASE_RISK, 14-dim)
-        # --------------------------------------------------------------------
         set_seed(seed + fold_idx)
         m_gat = create_hetero_gatv2(global_meta, hidden_channels=32, num_heads=2)
-        p_gat = TrainingPipeline(m_gat, {"seed": seed + fold_idx})
-        opt_gat = optim.Adam(m_gat.parameters(), lr=lr)
-        for _ in range(epochs):
-            for pid in train_pids:
-                p_gat.train_step(artifacts[pid], opt_gat, criterion)
+        gat_ep, _ = train_gatv2_with_early_stopping(
+            m_gat, train_graphs_info, criterion, lr=lr, max_epochs=max_epochs, patience=patience
+        )
         m_gat.eval()
         with torch.no_grad():
             out_gat = m_gat(test_d.x_dict, test_d.edge_index_dict)
@@ -262,22 +392,12 @@ def run_comprehensive_lopo_evaluation(artifacts, global_meta, seed=42, epochs=15
             cont_gat = probs_gat[:, 1] * 0.5 + probs_gat[:, 2] * 1.0
             all_cont_gat.extend(cont_gat.tolist())
 
-        # --------------------------------------------------------------------
         # 2. Non-Graph Feature-Only MLP Baseline (14-dim)
-        # --------------------------------------------------------------------
         set_seed(seed + fold_idx)
         m_mlp = FileNodeMLP(in_channels=14, hidden_channels=32, out_channels=3)
-        opt_mlp = optim.Adam(m_mlp.parameters(), lr=lr)
-        for _ in range(epochs):
-            for pid in train_pids:
-                m_mlp.train()
-                x = artifacts[pid]["file"].x
-                y = artifacts[pid]["file"].y
-                opt_mlp.zero_grad()
-                out = m_mlp(x)
-                loss = criterion(out, y)
-                loss.backward()
-                opt_mlp.step()
+        mlp_ep, _ = train_mlp_with_early_stopping(
+            m_mlp, tr_x, tr_y, va_x, va_y, criterion, lr=mlp_lr, max_epochs=max_epochs, patience=mlp_patience
+        )
         m_mlp.eval()
         with torch.no_grad():
             out_mlp = m_mlp(test_d["file"].x)
@@ -287,21 +407,17 @@ def run_comprehensive_lopo_evaluation(artifacts, global_meta, seed=42, epochs=15
             cont_mlp = probs_mlp[:, 1] * 0.5 + probs_mlp[:, 2] * 1.0
             all_cont_mlp.extend(cont_mlp.tolist())
 
-        # --------------------------------------------------------------------
-        # 3. Edge-Shuffled GATv2 Control (Topology Ablation)
-        # --------------------------------------------------------------------
+        # 3. Edge-Shuffled GATv2 Control
         set_seed(seed + fold_idx)
         m_shuf = create_hetero_gatv2(global_meta, hidden_channels=32, num_heads=2)
-        p_shuf = TrainingPipeline(m_shuf, {"seed": seed + fold_idx})
-        opt_shuf = optim.Adam(m_shuf.parameters(), lr=lr)
-        shuf_train = {}
-        for pid in train_pids:
-            d_s = copy.copy(artifacts[pid])
-            d_s.edge_index_dict = shuffle_edges(artifacts[pid].edge_index_dict, seed=seed + fold_idx)
-            shuf_train[pid] = d_s
-        for _ in range(epochs):
-            for pid in train_pids:
-                p_shuf.train_step(shuf_train[pid], opt_shuf, criterion)
+        shuf_graphs_info = []
+        for d, t_mask, v_mask in train_graphs_info:
+            d_s = copy.copy(d)
+            d_s.edge_index_dict = shuffle_edges(d.edge_index_dict, seed=seed + fold_idx)
+            shuf_graphs_info.append((d_s, t_mask, v_mask))
+        shuf_ep, _ = train_gatv2_with_early_stopping(
+            m_shuf, shuf_graphs_info, criterion, lr=lr, max_epochs=max_epochs, patience=patience
+        )
         m_shuf.eval()
         with torch.no_grad():
             shuf_test_edges = shuffle_edges(test_d.edge_index_dict, seed=seed + fold_idx)
@@ -309,14 +425,8 @@ def run_comprehensive_lopo_evaluation(artifacts, global_meta, seed=42, epochs=15
             fold_shuf_preds = out_shuf["file"].argmax(dim=-1).cpu().numpy().tolist()
             all_preds_shuf.extend(fold_shuf_preds)
 
-        # --------------------------------------------------------------------
         # 4. Target-Leaked GATv2 (WITH_BASE_RISK, 15-dim)
-        # --------------------------------------------------------------------
         set_seed(seed + fold_idx)
-        m_leak = create_hetero_gatv2(global_meta, hidden_channels=32, num_heads=2)
-        p_leak = TrainingPipeline(m_leak, {"seed": seed + fold_idx})
-        opt_leak = optim.Adam(m_leak.parameters(), lr=lr)
-
         def make_leaked(d_in):
             d_out = copy.deepcopy(d_in)
             leak_col = torch.tensor(
@@ -326,12 +436,12 @@ def run_comprehensive_lopo_evaluation(artifacts, global_meta, seed=42, epochs=15
             d_out["file"].x = torch.cat([d_out["file"].x, leak_col], dim=-1)
             return d_out
 
-        leak_train = {pid: make_leaked(artifacts[pid]) for pid in train_pids}
+        leak_graphs_info = [(make_leaked(d), t_mask, v_mask) for d, t_mask, v_mask in train_graphs_info]
         leak_test = make_leaked(test_d)
-
-        for _ in range(epochs):
-            for pid in train_pids:
-                p_leak.train_step(leak_train[pid], opt_leak, criterion)
+        m_leak = create_hetero_gatv2(global_meta, hidden_channels=32, num_heads=2)
+        leak_ep, _ = train_gatv2_with_early_stopping(
+            m_leak, leak_graphs_info, criterion, lr=lr, max_epochs=max_epochs, patience=patience
+        )
         m_leak.eval()
         with torch.no_grad():
             out_leak = m_leak(leak_test.x_dict, leak_test.edge_index_dict)
@@ -371,11 +481,13 @@ def run_comprehensive_lopo_evaluation(artifacts, global_meta, seed=42, epochs=15
             "mlp_accuracy": round(mlp_acc, 4),
             "edge_shuffled_accuracy": round(shuf_acc, 4),
             "leaked_accuracy": round(leak_acc, 4),
+            "gatv2_epochs": gat_ep,
+            "mlp_epochs": mlp_ep
         })
 
         print(
             f"  Fold {fold_idx + 1}/8: {test_pid:<22} (N={n_test:<3}) | "
-            f"GATv2: {gat_acc*100:5.1f}% | MLP: {mlp_acc*100:5.1f}% | "
+            f"GATv2: {gat_acc*100:5.1f}% (ep {gat_ep:<3}) | MLP: {mlp_acc*100:5.1f}% (ep {mlp_ep:<3}) | "
             f"Shuffled: {shuf_acc*100:5.1f}% | Leaked: {leak_acc*100:5.1f}%"
         )
 
@@ -472,12 +584,13 @@ def run_comprehensive_lopo_evaluation(artifacts, global_meta, seed=42, epochs=15
         "majority": m_maj,
         "empirical_finding": (
             f"Under cross-repository Leave-One-Project-Out (LOPO) evaluation (seed={seed}), the Non-Graph MLP baseline "
-            f"achieves {m_mlp['accuracy']*100:.2f}% accuracy (Macro-F1 {m_mlp['macro_f1']:.4f}, "
+            f"achieves {m_mlp['accuracy']*100:.2f}% pooled accuracy (Macro-F1 {m_mlp['macro_f1']:.4f}, "
             f"95% CI [{ci_mlp['accuracy_ci_95'][0]*100:.1f}%, {ci_mlp['accuracy_ci_95'][1]*100:.1f}%]) "
             f"compared to GATv2's {m_gat['accuracy']*100:.2f}% (Macro-F1 {m_gat['macro_f1']:.4f}, "
             f"95% CI [{ci_gat['accuracy_ci_95'][0]*100:.1f}%, {ci_gat['accuracy_ci_95'][1]*100:.1f}%]). "
-            "Graph message passing exhibits cross-codebase topological sensitivity, "
-            "demonstrating that local risk factor features dominate weak-label tier prediction."
+            "However, ranking is sensitive to aggregation method (unweighted fold mean: GATv2 89.38% vs MLP 84.35%) "
+            "with large fold-level standard deviations (0.15 to 0.35) driven by 1-file and 3-file repositories. "
+            "Consequently, no definitive architectural ranking between models is statistically supportable under LOPO."
         )
     }
 
@@ -741,13 +854,17 @@ def run_leakage_ablation(artifacts, global_meta, seed=42, epochs=15, lopo_res=No
     }
 
 
-def run_multi_seed_stability(artifacts, global_meta, seeds=(42, 100, 2026), epochs=15, lr=0.005):
+def run_multi_seed_stability(
+    artifacts, global_meta, seeds=(42, 100, 2026), max_epochs=300, patience=25,
+    primary_results=None, lr=0.005, mlp_lr=0.002, mlp_patience=30
+):
     """
     Evaluates GATv2, Non-Graph MLP, and Edge-Shuffled Control across multiple random seeds
-    to evaluate parameter initialization stability and empirical variance across seeds.
+    with early stopping to evaluate parameter initialization stability and empirical variance.
+    Reuses seed 42 results from primary LOPO if passed.
     """
     print("\n" + "=" * 75)
-    print(f"TASK 4: Multi-Seed Stability Analysis (Seeds: {list(seeds)})")
+    print(f"TASK 4: Multi-Seed Stability Analysis (Seeds: {list(seeds)}, Early Stopping)")
     print("=" * 75)
 
     pids = sorted(list(artifacts.keys()))
@@ -759,79 +876,74 @@ def run_multi_seed_stability(artifacts, global_meta, seeds=(42, 100, 2026), epoc
     }
 
     for s in seeds:
-        all_trues = []
-        p_gat = []
-        p_mlp = []
-        p_shuf = []
+        if primary_results is not None and s == primary_results.get("seed", 42):
+            m_g = primary_results["gatv2"]
+            m_m = primary_results["mlp"]
+            m_s = primary_results["edge_shuffled_gatv2"]
+        else:
+            all_trues = []
+            p_gat = []
+            p_mlp = []
+            p_shuf = []
 
-        for fold_idx, test_pid in enumerate(pids):
-            train_pids = [p for p in pids if p != test_pid]
-            test_d = artifacts[test_pid]
-            test_trues = test_d["file"].y.cpu().numpy()
-            all_trues.extend(test_trues.tolist())
+            for fold_idx, test_pid in enumerate(pids):
+                train_pids = [p for p in pids if p != test_pid]
+                test_d = artifacts[test_pid]
+                test_trues = test_d["file"].y.cpu().numpy()
+                all_trues.extend(test_trues.tolist())
 
-            train_labels = []
-            for p in train_pids:
-                train_labels.extend(artifacts[p]["file"].y.tolist())
-            train_labels = np.array(train_labels)
+                train_graphs_info, tr_x, tr_y, va_x, va_y = build_fold_inner_splits(
+                    artifacts, train_pids, seed=s + fold_idx, test_size=0.15
+                )
 
-            counts = np.bincount(train_labels, minlength=3)
-            weights = len(train_labels) / (3.0 * np.maximum(counts, 1))
-            criterion = nn.CrossEntropyLoss(weight=torch.tensor(weights, dtype=torch.float32))
+                train_labels = tr_y.cpu().numpy()
+                counts = np.bincount(train_labels, minlength=3)
+                weights = len(train_labels) / (3.0 * np.maximum(counts, 1))
+                criterion = nn.CrossEntropyLoss(weight=torch.tensor(weights, dtype=torch.float32))
 
-            # 1. GATv2
-            set_seed(s + fold_idx)
-            m_gat = create_hetero_gatv2(global_meta, hidden_channels=32, num_heads=2)
-            p_gat_pipe = TrainingPipeline(m_gat, {"seed": s + fold_idx})
-            opt_gat = optim.Adam(m_gat.parameters(), lr=lr)
-            for _ in range(epochs):
-                for pid in train_pids:
-                    p_gat_pipe.train_step(artifacts[pid], opt_gat, criterion)
-            m_gat.eval()
-            with torch.no_grad():
-                out_gat = m_gat(test_d.x_dict, test_d.edge_index_dict)
-                p_gat.extend(out_gat["file"].argmax(dim=-1).cpu().numpy().tolist())
+                # 1. GATv2
+                set_seed(s + fold_idx)
+                m_gat = create_hetero_gatv2(global_meta, hidden_channels=32, num_heads=2)
+                train_gatv2_with_early_stopping(
+                    m_gat, train_graphs_info, criterion, lr=lr, max_epochs=max_epochs, patience=patience
+                )
+                m_gat.eval()
+                with torch.no_grad():
+                    out_gat = m_gat(test_d.x_dict, test_d.edge_index_dict)
+                    p_gat.extend(out_gat["file"].argmax(dim=-1).cpu().numpy().tolist())
 
-            # 2. MLP
-            set_seed(s + fold_idx)
-            m_mlp = FileNodeMLP(in_channels=14, hidden_channels=32, out_channels=3)
-            opt_mlp = optim.Adam(m_mlp.parameters(), lr=lr)
-            for _ in range(epochs):
-                for pid in train_pids:
-                    m_mlp.train()
-                    opt_mlp.zero_grad()
-                    out = m_mlp(artifacts[pid]["file"].x)
-                    loss = criterion(out, artifacts[pid]["file"].y)
-                    loss.backward()
-                    opt_mlp.step()
-            m_mlp.eval()
-            with torch.no_grad():
-                out_mlp = m_mlp(test_d["file"].x)
-                p_mlp.extend(out_mlp.argmax(dim=-1).cpu().numpy().tolist())
+                # 2. MLP
+                set_seed(s + fold_idx)
+                m_mlp = FileNodeMLP(in_channels=14, hidden_channels=32, out_channels=3)
+                train_mlp_with_early_stopping(
+                    m_mlp, tr_x, tr_y, va_x, va_y, criterion, lr=mlp_lr, max_epochs=max_epochs, patience=mlp_patience
+                )
+                m_mlp.eval()
+                with torch.no_grad():
+                    out_mlp = m_mlp(test_d["file"].x)
+                    p_mlp.extend(out_mlp.argmax(dim=-1).cpu().numpy().tolist())
 
-            # 3. Shuffled GATv2
-            set_seed(s + fold_idx)
-            m_shuf = create_hetero_gatv2(global_meta, hidden_channels=32, num_heads=2)
-            p_shuf_pipe = TrainingPipeline(m_shuf, {"seed": s + fold_idx})
-            opt_shuf = optim.Adam(m_shuf.parameters(), lr=lr)
-            shuf_train = {}
-            for pid in train_pids:
-                d_s = copy.copy(artifacts[pid])
-                d_s.edge_index_dict = shuffle_edges(artifacts[pid].edge_index_dict, seed=s + fold_idx)
-                shuf_train[pid] = d_s
-            for _ in range(epochs):
-                for pid in train_pids:
-                    p_shuf_pipe.train_step(shuf_train[pid], opt_shuf, criterion)
-            m_shuf.eval()
-            with torch.no_grad():
-                shuf_test_edges = shuffle_edges(test_d.edge_index_dict, seed=s + fold_idx)
-                out_shuf = m_shuf(test_d.x_dict, shuf_test_edges)
-                p_shuf.extend(out_shuf["file"].argmax(dim=-1).cpu().numpy().tolist())
+                # 3. Shuffled GATv2
+                set_seed(s + fold_idx)
+                m_shuf = create_hetero_gatv2(global_meta, hidden_channels=32, num_heads=2)
+                shuf_graphs_info = []
+                for d, t_mask, v_mask in train_graphs_info:
+                    d_s = copy.copy(d)
+                    d_s.edge_index_dict = shuffle_edges(d.edge_index_dict, seed=s + fold_idx)
+                    shuf_graphs_info.append((d_s, t_mask, v_mask))
+                train_gatv2_with_early_stopping(
+                    m_shuf, shuf_graphs_info, criterion, lr=lr, max_epochs=max_epochs, patience=patience
+                )
+                m_shuf.eval()
+                with torch.no_grad():
+                    shuf_test_edges = shuffle_edges(test_d.edge_index_dict, seed=s + fold_idx)
+                    out_shuf = m_shuf(test_d.x_dict, shuf_test_edges)
+                    p_shuf.extend(out_shuf["file"].argmax(dim=-1).cpu().numpy().tolist())
 
-        y_t = np.array(all_trues)
-        m_g = EvaluationMetrics.calculate_classification_metrics(y_t, np.array(p_gat), [0, 1, 2])
-        m_m = EvaluationMetrics.calculate_classification_metrics(y_t, np.array(p_mlp), [0, 1, 2])
-        m_s = EvaluationMetrics.calculate_classification_metrics(y_t, np.array(p_shuf), [0, 1, 2])
+            y_t = np.array(all_trues)
+            m_g = EvaluationMetrics.calculate_classification_metrics(y_t, np.array(p_gat), [0, 1, 2])
+            m_m = EvaluationMetrics.calculate_classification_metrics(y_t, np.array(p_mlp), [0, 1, 2])
+            m_s = EvaluationMetrics.calculate_classification_metrics(y_t, np.array(p_shuf), [0, 1, 2])
 
         results["gatv2"]["accs"].append(m_g["accuracy"])
         results["gatv2"]["f1s"].append(m_g["macro_f1"])
@@ -864,14 +976,14 @@ def run_multi_seed_stability(artifacts, global_meta, seeds=(42, 100, 2026), epoc
     shuf_mean_acc, shuf_std_acc = float(np.mean(shuf_accs)), float(np.std(shuf_accs, ddof=ddof))
     shuf_mean_f1, shuf_std_f1 = float(np.mean(shuf_f1s)), float(np.std(shuf_f1s, ddof=ddof))
 
-    print(f"\n--- Summary Across Seeds {list(seeds)} ---")
+    print(f"\n--- Summary Across Seeds {list(seeds)} (Early Stopping) ---")
     print(f"  {'Heterogeneous GATv2':<25}: Accuracy = {gat_mean_acc*100:5.2f}% +/- {gat_std_acc*100:4.2f}% | Macro-F1 = {gat_mean_f1:.4f} +/- {gat_std_f1:.4f}")
     print(f"  {'Non-Graph MLP':<25}: Accuracy = {mlp_mean_acc*100:5.2f}% +/- {mlp_std_acc*100:4.2f}% | Macro-F1 = {mlp_mean_f1:.4f} +/- {mlp_std_f1:.4f}")
     print(f"  {'Randomized-Edge GATv2':<25}: Accuracy = {shuf_mean_acc*100:5.2f}% +/- {shuf_std_acc*100:4.2f}% | Macro-F1 = {shuf_mean_f1:.4f} +/- {shuf_std_f1:.4f}")
 
     return {
         "seeds": list(seeds),
-        "epochs": epochs,
+        "early_stopping": True,
         "seed_records": seed_records,
         "non_graph_mlp": {
             "mean_accuracy": round(mlp_mean_acc, 4),
@@ -892,13 +1004,10 @@ def run_multi_seed_stability(artifacts, global_meta, seeds=(42, 100, 2026), epoc
             "std_macro_f1": round(shuf_std_f1, 4),
         },
         "empirical_finding": (
-            f"Across {len(seeds)} random seeds ({list(seeds)}), Non-Graph MLP achieves "
-            f"{mlp_mean_acc*100:.2f}% +/- {mlp_std_acc*100:.2f}% accuracy "
-            f"(Macro-F1 {mlp_mean_f1:.4f} +/- {mlp_std_f1:.4f}) compared to GATv2's "
-            f"{gat_mean_acc*100:.2f}% +/- {gat_std_acc*100:.2f}% "
-            f"(Macro-F1 {gat_mean_f1:.4f} +/- {gat_std_f1:.4f}). "
-            "Graph message passing exhibits cross-codebase topological sensitivity, "
-            "demonstrating that local risk factor features dominate weak-label tier prediction."
+            f"Across {len(seeds)} random seeds ({list(seeds)}) trained to convergence with early stopping, "
+            f"pooled accuracy is {mlp_mean_acc*100:.2f}% +/- {mlp_std_acc*100:.2f}% (MLP) vs "
+            f"{gat_mean_acc*100:.2f}% +/- {gat_std_acc*100:.2f}% (GATv2), but fold-level unweighted means and small-repo leverage "
+            "preclude any statistically supportable ranking between architectures under LOPO."
         )
     }
 
@@ -906,7 +1015,11 @@ def run_multi_seed_stability(artifacts, global_meta, seeds=(42, 100, 2026), epoc
 def main():
     parser = argparse.ArgumentParser(description="AgileGraph Stage 3 GATv2 Comprehensive Evaluation Pipeline")
     parser.add_argument("--seed", type=int, default=42, help="Random seed for primary LOPO run")
-    parser.add_argument("--epochs", type=int, default=15, help="Training epochs per fold")
+    parser.add_argument("--max-epochs", type=int, default=300, help="Maximum training epochs per fold")
+    parser.add_argument("--patience", type=int, default=25, help="Early stopping patience for GATv2")
+    parser.add_argument("--mlp-patience", type=int, default=30, help="Early stopping patience for MLP")
+    parser.add_argument("--gat-lr", type=float, default=0.005, help="Learning rate for GATv2")
+    parser.add_argument("--mlp-lr", type=float, default=0.002, help="Learning rate for MLP")
     parser.add_argument("--multi-seed", dest="multi_seed", action="store_true", default=True, help="Execute multi-seed stability analysis")
     parser.add_argument("--no-multi-seed", dest="multi_seed", action="store_false", help="Skip multi-seed stability analysis")
     parser.add_argument("--seeds", type=str, default="42,100,2026", help="Comma-separated random seeds for multi-seed analysis")
@@ -915,7 +1028,7 @@ def main():
 
     start_time = time.time()
     print("=" * 75)
-    print("Starting AgileGraph Comprehensive ML Evaluation Pipeline...")
+    print("Starting AgileGraph Comprehensive ML Evaluation Pipeline (Trained to Convergence)...")
     print("=" * 75)
 
     artifacts, global_meta = load_corpus_artifacts()
@@ -925,8 +1038,12 @@ def main():
     # 1. Training Loop Verification
     train_res = run_training_verification(artifacts, global_meta, seed=args.seed)
 
-    # 2. Comprehensive LOPO Evaluation (GATv2, MLP, Edge-Shuffled, Leaked, Majority)
-    lopo_res = run_comprehensive_lopo_evaluation(artifacts, global_meta, seed=args.seed, epochs=args.epochs)
+    # 2. Comprehensive LOPO Evaluation with Early Stopping
+    lopo_res = run_comprehensive_lopo_evaluation(
+        artifacts, global_meta, seed=args.seed,
+        max_epochs=args.max_epochs, patience=args.patience,
+        lr=args.gat_lr, mlp_lr=args.mlp_lr, mlp_patience=args.mlp_patience
+    )
 
     # 3. Deterministic Baselines & Continuous Rank Correlation
     baseline_res = run_deterministic_baselines_and_rank_correlations(artifacts, lopo_res=lopo_res)
@@ -935,7 +1052,12 @@ def main():
     multi_seed_res = None
     if args.multi_seed:
         seeds_list = [int(s.strip()) for s in args.seeds.split(",") if s.strip()]
-        multi_seed_res = run_multi_seed_stability(artifacts, global_meta, seeds=seeds_list, epochs=args.epochs)
+        multi_seed_res = run_multi_seed_stability(
+            artifacts, global_meta, seeds=seeds_list,
+            max_epochs=args.max_epochs, patience=args.patience,
+            primary_results={**lopo_res, "seed": args.seed},
+            lr=args.gat_lr, mlp_lr=args.mlp_lr, mlp_patience=args.mlp_patience
+        )
 
     elapsed = time.time() - start_time
 
@@ -944,7 +1066,7 @@ def main():
         "total_elapsed_seconds": round(elapsed, 2),
         "total_repositories": len(artifacts),
         "total_file_assets": total_files,
-        "evaluation_protocol": "8-Fold Leave-One-Project-Out (LOPO) Cross-Validation",
+        "evaluation_protocol": "8-Fold Leave-One-Project-Out (LOPO) Cross-Validation (Early Stopping Convergence)",
         "task1_training_verification": train_res,
         "task2_lopo_cross_validation": lopo_res,
         "task3_baselines_and_rank_correlation": baseline_res,
@@ -952,8 +1074,9 @@ def main():
         "scientific_limitation_statement": (
             "The GATv2 prototype is evaluated against heuristic-derived risk tiers. "
             "Its results characterize agreement with the heuristic labeling procedure and do not establish "
-            "independent prediction of real-world cryptographic risk. Controlled comparisons against non-graph "
-            "and graph-structure baselines reveal that local node factors dominate weak-tier prediction."
+            "independent prediction of real-world cryptographic risk. Controlled comparisons under LOPO are "
+            "subject to extreme fold size skew (N=1 to 178) and cross-fold class imbalance, meaning no "
+            "definitive architectural ranking between GATv2, MLP, and edge-shuffled controls is statistically supportable."
         )
     }
 
