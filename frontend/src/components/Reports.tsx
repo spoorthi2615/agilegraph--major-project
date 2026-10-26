@@ -321,7 +321,7 @@ export default function Reports() {
       <div className="flex items-start gap-3 p-4 rounded-xl bg-card border border-border text-muted-foreground text-xs leading-relaxed">
         <Info className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
         <div>
-          <strong className="text-foreground">Methodology Integrity Note:</strong> All exported risk values and priorities represent operational estimates derived from deterministic 7-factor heuristic scoring with missing-data handling. GATv2 is an architectural prototype; no predictive machine learning inferences or statistical claims are included in these exports.
+          <strong className="text-foreground">Methodology Integrity Note:</strong> All exported risk values and priorities represent operational estimates derived from deterministic 7-factor heuristic scoring with missing-data handling. For machine learning, weak-label distillation is evaluated; expert-label validation remains blocked. GATv2 is isolated as an architectural prototype and does not alter production findings.
         </div>
       </div>
 

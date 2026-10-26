@@ -91,7 +91,7 @@ Source Repositories (Python, Java, Go, Manifests, Certificates)
 - **Deterministic 7-Factor Risk Analysis**: Combines algorithmic weakness, asset criticality, data sensitivity, internet exposure, migration difficulty, CVE presence, and library centrality.
 - **Post-Quantum Urgency Modeling**: Implements Mosca's theorem ($U = \frac{x+y}{z}$) to calculate migration deadlines against quantum threat timelines.
 - **6-State Remediation Tracking**: Manages cryptographic asset retirement through a state machine with append-only SQLite audit trails.
-- **Evaluated GATv2 Architecture**: Employs Heterogeneous Graph Attention Networks evaluated via 8-fold Leave-One-Project-Out (LOPO) cross-validation under weak supervision.
+- **Evaluated GATv2 Architecture**: Employs Heterogeneous Graph Attention Networks evaluated for weak-label distillation via 8-fold Leave-One-Project-Out (LOPO) cross-validation across 520 repository assets (expert-label validation blocked).
 - **Multi-Tenant User Isolation**: Guards user repositories and analysis results behind authenticated sessions with zero cross-tenant leakage.
 - **Reproducible Audit Reporting**: Exports cryptographic inventories and risk assessments in structured JSON and Markdown formats with SHA-256 integrity digests.
 
@@ -224,8 +224,9 @@ AgileGraph evaluates multi-language coverage across 8 pinned open-source reposit
 AgileGraph implements a Heterogeneous Graph Attention Network (GATv2) using PyTorch Geometric (`torch_geometric`) evaluated across all 8 canonical benchmark repositories ($N = 520$ file nodes) under 8-fold Leave-One-Project-Out (LOPO) cross-validation.
 
 > [!IMPORTANT]
-> **Scientific Framing & Evaluation Disclaimer**
-> “The GATv2 prototype is evaluated against heuristic-derived risk tiers. Its results characterize agreement with the heuristic labeling procedure and do not establish independent prediction of real-world cryptographic risk. The contribution of graph topology requires controlled comparisons against appropriate non-graph and graph-structure baselines.”
+> **Scientific Framing: Weak-Label Distillation Evaluated | Expert-Label Validation Blocked**
+> - **Weak-Label Distillation (Evaluated)**: The Heterogeneous GATv2 model and comparative baselines are fully evaluated on the 8 pinned benchmark repositories ($N = 520$ file nodes) under 8-fold Leave-One-Project-Out (LOPO) cross-validation. These results characterize representation distillation and agreement with the heuristic labeling procedure under cross-repository domain shift.
+> - **Expert-Label Validation (Blocked)**: Validation against independent human expert consensus labels or confirmed real-world cryptanalytic exploitation incidents is blocked due to the absence of certified expert-annotated datasets. No independent real-world predictive validity is claimed beyond weak-supervision distillation.
 
 ### Controlled LOPO Benchmark Results ($N = 520$ Files)
 
@@ -253,7 +254,7 @@ All models and baselines are evaluated using identical 8-fold LOPO cross-validat
 3. **Randomized-Edge Control & High Recall Degeneracy**: The randomized-edge control preserves 1D degree sequences per relation triplet while destroying semantic paths. Its 97.09% HIGH recall is an artifact of class-weight sensitivity under noise in Fold 7 (where training has only 4 HIGH files, inverse frequency weight = 28.5), causing the randomized model to predict HIGH for 175 of 178 files in fold 7. This drops HIGH precision to 54.64% (100/183) compared to 90.32% for genuine GATv2 and MLP.
 4. **Target Leakage Framing**: Excluding the continuous scalar `base_risk` prevents trivial scalar thresholding (+30.00% artificial boost). However, the 14-dimensional feature vector contains the 7 constituent factors that calculate `base_risk`; the model is an empirical formula approximator over component factors, not an independent real-world predictor.
 5. **High-Risk Class Imbalance**: HIGH recall is 27.18% (28/103) across both GATv2 and the Non-Graph MLP because 99 of the 103 high-risk files reside in `python_cryptography`. When that project is held out in LOPO fold 7, the training set contains only 4 high-risk files ($1.1\%$), starving the models of high-risk signals.
-6. **Architectural Safeguards**: In production scans, cryptographic findings are cataloged 100% deterministically by AST/regex scanners and scored by the 7-factor engine. The PyTorch GATv2 model is isolated as an architectural prototype (`ml_status: ARCHITECTURAL_PROTOTYPE`) and cannot suppress or alter scanner findings.
+6. **Architectural Safeguards**: In production scans, cryptographic findings are cataloged 100% deterministically by AST/regex scanners and scored by the 7-factor engine. While weak-label distillation has been rigorously evaluated, expert-label validation remains blocked; thus, the PyTorch GATv2 model is isolated as an architectural prototype (`ml_status: ARCHITECTURAL_PROTOTYPE`) and cannot suppress or alter scanner findings.
 
 ---
 
@@ -503,7 +504,7 @@ npm run build
 ## 16. Research Integrity & Disclaimers
 
 - **Operational Security Guarantee**: The static scanners, property graph builder, deterministic 7-factor heuristic risk scoring engine, and Mosca migration triage are fully operational and deterministic.
-- **ML Research Scope**: The Heterogeneous GATv2 model functions as an experimental structural prioritization layer trained under weak supervision. Heuristic risk scores and static scanner outputs remain fully visible and operational even if ML components are offline.
+- **ML Research Scope (Weak-Label Distillation Evaluated, Expert Validation Blocked)**: The Heterogeneous GATv2 model is evaluated for weak-label representation distillation under 8-fold cross-repository domain shift against heuristic risk priors. Validation against independent human expert consensus labels is blocked; the model does not claim independent prediction of real-world cryptanalytic outcomes. Heuristic risk scores and static scanner outputs remain the authoritative ground truth for production operations.
 - **Academic Rigor**: All benchmarks and LOPO cross-validation metrics reflect actual code execution on the 8 pinned benchmark repositories. No synthetic expert panels or fabricated correlation statistics are included.
 - **Non-Certification Notice**: AgileGraph risk scores are heuristic engineering prioritization metrics and do not constitute formal cryptographic proofs or certified security guarantees.
 

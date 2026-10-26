@@ -2,7 +2,7 @@
 
 This document describes how to build and run the AgileGraph heuristic scanner deterministically using the containerized CLI.
 
-**IMPORTANT:** This represents *reproducibility infrastructure*. The deterministic heuristic pipeline and graph construction are fully verifiable; empirical GNN training and evaluation are future research work.
+**IMPORTANT:** The deterministic heuristic pipeline and graph construction are fully verifiable. For machine learning, **weak-label distillation is evaluated** across all 8 pinned benchmark repositories via `python backend/scripts/run_gatv2_evaluation.py` (with 8-fold LOPO cross-validation, baseline comparisons, and multi-seed stability); **expert-label validation is blocked** pending independent external human expert datasets.
 
 ## 1. Prerequisites
 

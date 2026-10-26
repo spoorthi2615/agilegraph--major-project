@@ -1500,6 +1500,7 @@
       }
     }
   },
+  "scientific_framing": "Weak-label distillation evaluated, expert-label validation blocked.",
   "scientific_limitation_statement": "The GATv2 prototype is evaluated against heuristic-derived risk tiers. Its results characterize agreement with the heuristic labeling procedure and do not establish independent prediction of real-world cryptographic risk. Controlled comparisons against non-graph and graph-structure baselines reveal that local node factors dominate weak-tier prediction.",
   "task4_multi_seed_stability": {
     "seeds": [

@@ -948,6 +948,7 @@ def main():
         "task1_training_verification": train_res,
         "task2_lopo_cross_validation": lopo_res,
         "task3_baselines_and_rank_correlation": baseline_res,
+        "scientific_framing": "Weak-label distillation evaluated, expert-label validation blocked.",
         "scientific_limitation_statement": (
             "The GATv2 prototype is evaluated against heuristic-derived risk tiers. "
             "Its results characterize agreement with the heuristic labeling procedure and do not establish "

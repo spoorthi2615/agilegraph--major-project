@@ -64,7 +64,7 @@ def generate_markdown_report(json_path: str, output_path: str):
         out.write(f"- **GATv2**: `ARCHITECTURAL_PROTOTYPE`\n")
         out.write(f"- **Scoring engine**: `HEURISTIC_DETERMINISTIC`\n")
         out.write(f"- **Empirical evaluation**: `{data['ml_status']}`\n\n")
-        out.write(f"> **Important**: No fabricated empirical metrics, F1/accuracy results, or p-values are claimed in this report.\n\n")
+        out.write(f"> **Scientific Framing**: Weak-label distillation evaluated; expert-label validation blocked. No fabricated empirical metrics, F1/accuracy results, or p-values are claimed in this report.\n\n")
         
         # SCANNER SCOPE DECLARATIONS
         out.write(f"## Declared Scanner Scope\n\n")

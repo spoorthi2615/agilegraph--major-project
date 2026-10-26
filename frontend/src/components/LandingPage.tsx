@@ -123,7 +123,7 @@ export default function LandingPage() {
               <div className="mt-8 p-3.5 bg-slate-900/80 border border-slate-800 rounded-xl text-xs text-slate-400 flex items-start gap-2.5 max-w-xl">
                 <Scale className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
                 <span>
-                  <strong>Academic Research Notice:</strong> GATv2 is an exploratory research prototype evaluated under weak supervision. Runtime discoveries and composite risk scores are computed deterministically with zero suppression.
+                  <strong>Academic Research Notice:</strong> Weak-label distillation evaluated; expert-label validation blocked. GATv2 is an exploratory research prototype; runtime discoveries and composite risk scores are computed deterministically with zero suppression.
                 </span>
               </div>
             </div>
@@ -393,7 +393,7 @@ export default function LandingPage() {
 
               {/* Explicit Research Disclosure */}
               <div className="mt-6 p-4 bg-amber-950/40 border border-amber-600/40 rounded-xl text-xs text-amber-200/90 leading-relaxed">
-                <strong>Explicit Research Limitations:</strong> The GATv2 neural model operates under weak supervision from discretized heuristic labels rather than confirmed real-world cryptographic exploitation incidents. AgileGraph guarantees that AST discoveries and heuristic risk vectors are never suppressed or discarded by machine learning predictions.
+                <strong>Explicit Research Limitations:</strong> Weak-label distillation evaluated; expert-label validation blocked. The GATv2 neural model operates under weak supervision from discretized heuristic labels rather than confirmed real-world cryptographic exploitation incidents. AgileGraph guarantees that AST discoveries and heuristic risk vectors are never suppressed or discarded by machine learning predictions.
               </div>
             </div>
 

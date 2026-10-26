@@ -1,6 +1,7 @@
 # GATv2 Architecture and Empirical Evaluation
 
 ## 1. Status and Provenance
+- **Scientific Framing**: Weak-label distillation evaluated; expert-label validation blocked.
 - **Model Infrastructure**: Implemented via `HeteroGATv2` with dynamic projection and residual connections (`backend/src/ml/gatv2.py`).
 - **Corpus Evaluation**: Evaluated across all 8 pinned canonical benchmark repositories ($N = 520$ file nodes).
 - **Cross-Validation Scheme**: 8-Fold Leave-One-Project-Out (LOPO) cross-validation across heterogeneous codebases (Go, Java, Python).
@@ -37,8 +38,9 @@ To maintain absolute scientific precision, AgileGraph distinguishes three levels
 ## 4. Empirical Evaluation Results
 
 > [!IMPORTANT]
-> **Scientific Framing & Evaluation Disclaimer**
-> “The GATv2 prototype is evaluated against heuristic-derived risk tiers. Its results characterize agreement with the heuristic labeling procedure and do not establish independent prediction of real-world cryptographic risk. The contribution of graph topology requires controlled comparisons against appropriate non-graph and graph-structure baselines.”
+> **Scientific Framing: Weak-Label Distillation Evaluated | Expert-Label Validation Blocked**
+> - **Weak-Label Distillation (Evaluated)**: The Heterogeneous GATv2 model and comparative baselines are fully evaluated on the 8 pinned benchmark repositories ($N = 520$ file nodes) under 8-fold Leave-One-Project-Out (LOPO) cross-validation. These results characterize representation distillation and agreement with the heuristic labeling procedure under cross-repository domain shift.
+> - **Expert-Label Validation (Blocked)**: Validation against independent human expert consensus labels or confirmed real-world cryptanalytic exploitation incidents is blocked due to the absence of certified expert-annotated datasets. No independent real-world predictive validity is claimed beyond weak-supervision distillation.
 
 ### 4.1 Leave-One-Project-Out (LOPO) Controlled Cross-Validation ($N = 520$ Files)
 To prevent intra-repository data leakage, each fold held out exactly one repository as the test set while training strictly on the remaining seven. All model architectures and controls were evaluated on identical held-out folds using identical target labels and identical preprocessing.
@@ -163,5 +165,5 @@ Both GATv2 and the Non-Graph MLP achieve identical HIGH recall of **27.18% (28/1
 ### 6.3 Architectural Safeguards and Product Behavior
 Because a 27.2% recall on High-risk code cannot be trusted as a standalone triage filter in a security tool, AgileGraph enforces a strict architectural boundary:
 1. **Deterministic Scanners as Authoritative Ground**: Deterministic static AST/regex scanners independently identify and catalog all cryptographic weaknesses. Known quantum-vulnerable primitives (e.g., RSA, DSA, ECC) are **never** suppressed or bypassed by the GNN.
-2. **GNN as an Experimental Prototype Layer**: In production scans (`backend/src/pipeline/runner.py`), the system executes 100% deterministically using the AST scanners and the 7-factor heuristic engine. The PyTorch GATv2 model is isolated as an architectural research prototype (`ml_status: ARCHITECTURAL_PROTOTYPE`).
+2. **GNN as an Experimental Prototype Layer**: In production scans (`backend/src/pipeline/runner.py`), the system executes 100% deterministically using the AST scanners and the 7-factor heuristic engine. While weak-label distillation has been evaluated across the benchmark corpus, expert-label validation remains blocked; hence the PyTorch GATv2 model is isolated as an architectural prototype (`ml_status: ARCHITECTURAL_PROTOTYPE`).
 3. **Graph Utility vs. GNN Classification**: The typed property graph remains foundational for interactive visualization, call-chain dependency tracing, blast-radius analysis, and migration planning, even though GATv2 message passing does not improve discrete classification over local feature vectors.
