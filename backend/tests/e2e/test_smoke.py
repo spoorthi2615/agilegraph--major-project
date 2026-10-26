@@ -6,24 +6,43 @@ from src.models.migration_state import MigrationLifecycleState
 
 client = TestClient(app)
 
+import tempfile
+
 CORPUS_TARGET = os.path.realpath(
     os.path.join(os.path.dirname(__file__), "..", "..", "dataset", "corpus", "python_cryptography")
 )
 
 
-@pytest.mark.skipif(not os.path.exists(CORPUS_TARGET), reason="Benchmark corpus target not found on disk")
 def test_e2e_pipeline_smoke():
     """
     End-to-end smoke test validating pipeline execution across scanning,
     graph retrieval, risk evaluation, crypto-inventory, Mosca, and roadmap lifecycle endpoints.
+    Uses real benchmark repository if present on disk; otherwise constructs a temporary
+    crypto repository fixture to guarantee full execution without skipping in CI.
     """
     proj_id = "e2e-smoke-test-project"
+    temp_dir_ctx = None
+
+    if os.path.exists(CORPUS_TARGET):
+        target_repo = CORPUS_TARGET
+    else:
+        temp_dir_ctx = tempfile.TemporaryDirectory()
+        target_repo = temp_dir_ctx.name
+        with open(os.path.join(target_repo, "crypto_module.py"), "w", encoding="utf-8") as f:
+            f.write(
+                "import hashlib\n"
+                "from cryptography.hazmat.primitives.asymmetric import rsa\n"
+                "key = rsa.generate_private_key(65537, 2048)\n"
+                "m = hashlib.sha256()\n"
+            )
+        with open(os.path.join(target_repo, "requirements.txt"), "w", encoding="utf-8") as f:
+            f.write("cryptography>=41.0.0\n")
 
     try:
         # 1. Trigger scan
         scan_res = client.post(
             "/api/v1/scan",
-            json={"repository_path": CORPUS_TARGET, "project_id": proj_id}
+            json={"repository_path": target_repo, "project_id": proj_id}
         )
         assert scan_res.status_code == 200, f"Scan failed: {scan_res.text}"
         scan_data = scan_res.json()
@@ -85,5 +104,7 @@ def test_e2e_pipeline_smoke():
         assert trans_res2.status_code == 200
         assert trans_res2.json().get("current_state") == "IN_PLANNING"
     finally:
+        if temp_dir_ctx is not None:
+            temp_dir_ctx.cleanup()
         from src.core.storage import default_storage
         default_storage.delete_project(proj_id)

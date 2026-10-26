@@ -33,6 +33,13 @@ To maintain absolute scientific precision, AgileGraph distinguishes three levels
 2. **Learning from Component Variables Used to Calculate the Target (Formula Approximation)**: The 14-dimensional feature vector excludes `base_risk`, but contains the 7 constituent factors and 7 missingness masks that deterministically generate `base_risk`. Consequently, the 14-dimensional model is **not** an independent predictor of real-world cryptographic risk; it is an empirical function approximator learning to emulate the deterministic heuristic weighting formula from its component inputs.
 3. **Genuine Prediction Against Independently Obtained Outcomes**: True predictive validity would require testing against external, independently verified outcomes (e.g., real-world post-quantum breach incidents or expert consensus migration logs). In the absence of an independent ground truth, all ML evaluation metrics describe fidelity in approximating the weak-supervision heuristic rules.
 
+### 3.3 Mandatory Scientific Caveat: Distillation Agreement vs. Empirical Validation
+To prevent academic overclaiming:
+1. **Fidelity to Heuristic Priors, Not Real Risk Prediction**:
+   All reported classification and rank metrics (Accuracy, Macro-F1, Balanced Accuracy, Spearman $\rho$, Kendall $\tau$) measure strictly the **statistical agreement between the neural representations and the deterministic heuristic engine**. They demonstrate *representation distillation fidelity* (whether graph message-passing or multi-layer perceptrons approximate the piecewise-linear heuristic mapping across unseen codebases). They do **NOT** constitute empirical validation of real-world post-quantum risk, cryptanalytic exploitability, or ground-truth vulnerability correctness. If the heuristic engine contains systematic biases, an accurate model simply reproduces those biases.
+2. **Elimination of Baseline Input Leakage**:
+   Early evaluation scripts introduced baseline circularity by allowing the static rule baseline to threshold `crypto_weakness` and `library_centrality` (which are direct inputs to the heuristic target label). This circularity was completely excised: the rule baseline in `src/ml/baselines.py` operates strictly as an independent AST regex matcher on raw scanner findings against three PQC categories (Classically Broken, Quantum Vulnerable, Quantum Resistant), without access to any heuristic factor values or labels.
+
 ---
 
 ## 4. Empirical Evaluation Results
