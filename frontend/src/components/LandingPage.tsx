@@ -386,7 +386,7 @@ export default function LandingPage() {
                     <Sparkles className="w-4 h-4 text-purple-400" /> Experimental GATv2 Architecture
                   </h4>
                   <p className="mt-1.5 text-xs text-slate-400 leading-relaxed">
-                    The HeteroGATv2 model (2 layers, 4 attention heads) was evaluated across 8 benchmark repositories (520 file assets) using Leave-One-Repository-Out (LOPO) cross-validation, achieving 66.73% accuracy and 0.5560 macro-F1 over static rule baselines (42.12%).
+                    The HeteroGATv2 model (2 layers, 4 attention heads) was evaluated across 8 benchmark repositories (520 file assets) using Leave-One-Repository-Out (LOPO) cross-validation, achieving 83.08% accuracy and 0.7176 macro-F1 over independent static rule baselines (52.12%).
                   </p>
                 </div>
               </div>
@@ -416,17 +416,17 @@ export default function LandingPage() {
                       <tr>
                         <td className="py-2.5">Majority Baseline</td>
                         <td className="py-2.5 text-right text-slate-400">22.69%</td>
-                        <td className="py-2.5 text-right text-slate-400">0.1233</td>
+                        <td className="py-2.5 text-right text-slate-400">0.1321</td>
                       </tr>
                       <tr>
                         <td className="py-2.5">Static Rule Baseline</td>
-                        <td className="py-2.5 text-right text-slate-400">42.12%</td>
-                        <td className="py-2.5 text-right text-slate-400">0.4119</td>
+                        <td className="py-2.5 text-right text-slate-400">52.12%</td>
+                        <td className="py-2.5 text-right text-slate-400">0.3567</td>
                       </tr>
                       <tr className="text-blue-400 font-bold bg-blue-950/30">
-                        <td className="py-2.5 pl-2 rounded-l">HeteroGATv2 (Proposed)</td>
-                        <td className="py-2.5 text-right">66.73%</td>
-                        <td className="py-2.5 text-right pr-2 rounded-r">0.5560</td>
+                        <td className="py-2.5 pl-2 rounded-l">HeteroGATv2 (14-dim)</td>
+                        <td className="py-2.5 text-right">83.08%</td>
+                        <td className="py-2.5 text-right pr-2 rounded-r">0.7176</td>
                       </tr>
                     </tbody>
                   </table>

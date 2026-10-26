@@ -1406,36 +1406,38 @@
   },
   "task3_baselines_and_rank_correlation": {
     "rule_baseline": {
-      "class_0_precision": 0.9514563106796117,
-      "class_0_recall": 0.35507246376811596,
-      "class_0_f1": 0.5171503957783642,
-      "class_1_precision": 0.2647058823529412,
-      "class_1_recall": 0.6382978723404256,
-      "class_1_f1": 0.37422037422037424,
-      "class_2_precision": 0.4025974025974026,
-      "class_2_recall": 0.30097087378640774,
-      "class_2_f1": 0.34444444444444444,
+      "class_0_precision": 0.5901234567901235,
+      "class_0_recall": 0.8659420289855072,
+      "class_0_f1": 0.7019089574155654,
+      "class_1_precision": 0.14583333333333334,
+      "class_1_recall": 0.04964539007092199,
+      "class_1_f1": 0.07407407407407408,
+      "class_2_precision": 0.373134328358209,
+      "class_2_recall": 0.24271844660194175,
+      "class_2_f1": 0.29411764705882354,
       "status": "COMPUTED",
-      "macro_precision": 0.5395865318766518,
-      "macro_recall": 0.43144706996498305,
-      "macro_f1": 0.4119384048143943,
-      "balanced_accuracy": 0.43144706996498305,
-      "accuracy": 0.42115384615384616,
+      "macro_precision": 0.3696970394938886,
+      "macro_recall": 0.38610195521945695,
+      "macro_f1": 0.356700226182821,
+      "balanced_accuracy": 0.38610195521945695,
+      "accuracy": 0.5211538461538462,
+      "unweighted_fold_mean_accuracy": 0.4914,
+      "unweighted_fold_std_accuracy": 0.3512,
       "confusion_matrix": [
         [
-          98,
-          178,
+          239,
+          37,
           0
         ],
         [
-          5,
-          90,
-          46
+          92,
+          7,
+          42
         ],
         [
-          0,
-          72,
-          31
+          74,
+          4,
+          25
         ]
       ],
       "classes": [
@@ -1514,7 +1516,8 @@
         "sample_size": 520,
         "description": "Out-of-fold MLP expected continuous score vs continuous heuristic composite score"
       }
-    }
+    },
+    "rule_baseline_description": "Independent AST regex keyword baseline: matches raw AST scanner findings directly against PQC migration categories (Classically Broken, Quantum Vulnerable, Quantum Resistant) without using internal heuristic feature inputs (crypto_weakness or library_centrality)."
   },
   "scientific_framing": "Weak-label distillation evaluated, expert-label validation blocked.",
   "scientific_limitation_statement": "The GATv2 prototype is evaluated against heuristic-derived risk tiers. Its results characterize agreement with the heuristic labeling procedure and do not establish independent prediction of real-world cryptographic risk. Controlled comparisons under LOPO are subject to extreme fold size skew (N=1 to 178) and cross-fold class imbalance, meaning no definitive architectural ranking between GATv2, MLP, and edge-shuffled controls is statistically supportable.",

@@ -53,7 +53,7 @@ Both the **pooled sample accuracy** (weighting all 520 files equally) and the **
 | **Heterogeneous GATv2 (14-dim)** | **83.08%** [80.00%, 86.00%] | **89.38%** (± 14.84%) | **73.12%** | **0.7176** [0.6738, 0.7599] | **27.18%** (28/103) | **96.55%** (28/29) | **GNN prototype**: Message passing; starved of HIGH files on Fold 7 (trained on 4 HIGH files). |
 | **Randomized-Edge GATv2 Control** | **74.81%** [71.00%, 78.30%] | 64.92% (± 30.25%) | **71.66%** | **0.6629** [0.6195, 0.7012] | **97.09%** (100/103) | **43.10%** (100/232) | **Graph control**: Preserves degree distribution; noise causes Fold-7 HIGH overprediction. |
 | **GATv2 with Target Leakage (15-dim)**| 81.92% [78.60%, 85.00%] | 88.78% (± 15.01%) | 72.91% | 0.7167 [0.6730, 0.7613] | 29.13% (30/103) | 96.77% (30/31) | **Ablation check**: Evaluated with scalar `base_risk` appended to node feature vector. |
-| **Static Rule Baseline** | 42.12% | 46.88% (± 24.11%) | 43.14% | 0.4119 | 30.10% (31/103) | 35.63% (31/87) | Rule-based heuristic matching on primary weakness. |
+| **Static Rule Baseline** | 52.12% | 49.14% (± 35.12%) | 38.61% | 0.3567 | 24.27% (25/103) | 37.31% (25/67) | Independent AST regex baseline: matches raw scanner findings against PQC categories without heuristic factor inputs. |
 | **Majority Class Baseline** | 22.69% | 22.69% (± 0.00%) | 14.95% | 0.1321 | 0.00% (0/103) | 0.00% (0/0) | Statistical majority floor across folds. |
 | **Heuristic Teacher Baseline** | *100.0%* | *100.0%* (± 0.00%) | *100.0%* | *1.0000* | *100.0%* | *100.0%* | Tautological upper ceiling (source of weak labels). |
 
@@ -198,3 +198,18 @@ Because weak-label distillation characterizes agreement with heuristic rules rat
 1. **Deterministic Scanners as Authoritative Ground**: Deterministic static AST/regex scanners independently identify and catalog all cryptographic weaknesses. Known quantum-vulnerable primitives (e.g., RSA, DSA, ECC) are **never** suppressed or bypassed by the GNN.
 2. **GNN as an Experimental Prototype Layer**: In production scans (`backend/src/pipeline/runner.py`), the system executes 100% deterministically using the AST scanners and the 7-factor heuristic engine. While weak-label distillation has been evaluated across the benchmark corpus, expert-label validation remains blocked; hence the PyTorch GATv2 model is isolated as an architectural prototype (`ml_status: ARCHITECTURAL_PROTOTYPE`).
 3. **Graph Utility vs. GNN Classification**: The typed property graph remains foundational for interactive visualization, call-chain dependency tracing, blast-radius analysis, and migration planning, even though GATv2 message passing does not improve discrete classification over local feature vectors.
+
+### 6.4 Independent AST Rule Baseline & Three-Tier PQC Taxonomy Verification
+To ensure baseline independence and prevent data leakage from continuous heuristic labels:
+1. **Decoupling from Heuristic Inputs**:
+   - Earlier prototype baselines thresholded continuous features (`crypto_weakness` and `library_centrality`), which were derived directly from the heuristic engine.
+   - The evaluated `Static Rule Baseline` directly inspects raw AST pattern matching findings from the code scanner (`crypto_usage` nodes) via word-bounded token analysis, completely independent of the 7-factor continuous inputs.
+2. **Three-Tier PQC Migration Taxonomy**:
+   - Cryptographic primitives are rigorously separated into three distinct migration tiers rather than conflated:
+     - **Classically Broken**: MD5, SHA-1, DES, 3DES, RC4, Blowfish (classical cryptanalytic vulnerabilities; immediate remediation priority).
+     - **Quantum-Vulnerable**: RSA, ECC, ECDSA, ECDH, DSA, Ed25519, X25519, DH (asymmetric schemes broken by Shor's polynomial-time algorithm on a CRQC; Mosca urgency / Harvest Now, Decrypt Later threats).
+     - **Quantum-Resistant**: AES-128/192/256, ChaCha20, SHA-256/384/512, SHA-3, HMAC, and NIST standardized post-quantum schemes (ML-KEM, ML-DSA, SLH-DSA).
+3. **Elimination of Substring False Positives**:
+   - Substring matching on abbreviations like `"ec"` and `"des"` previously caused false positive hits on ordinary code identifiers (`"select"`, `"codec"`, `"description"`, `"destination"`).
+   - The updated baseline enforces strict token-level regex word boundaries (`\b(ec|ecc)\b`, `\bdes\b`), completely eliminating non-crypto collisions.
+

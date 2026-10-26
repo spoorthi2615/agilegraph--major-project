@@ -55,6 +55,7 @@ if BACKEND_DIR not in sys.path:
 from src.ml.gatv2 import create_hetero_gatv2
 from src.ml.pipeline import TrainingPipeline, set_seed
 from src.ml.evaluation import EvaluationMetrics
+from src.ml.baselines import match_algo_pqc_category
 
 ARTIFACTS_DIR = os.path.join(BACKEND_DIR, "dataset", "artifacts")
 
@@ -622,12 +623,23 @@ def run_deterministic_baselines_and_rank_correlations(artifacts, lopo_res=None):
     heuristic_preds = []
     rule_preds = []
     true_continuous_scores = []
+    fold_rule_accs = []
 
     for pid in sorted(artifacts.keys()):
         d = artifacts[pid]
         trues = d["file"].y.cpu().numpy()
         x = d["file"].x.cpu().numpy()
+        n_files = d["file"].num_nodes
 
+        # Map file nodes to their raw connected crypto_usage AST findings
+        file_cu_findings = {i: [] for i in range(n_files)}
+        if ("file", "CONTAINS", "crypto_usage") in d.edge_types:
+            e_idx = d[("file", "CONTAINS", "crypto_usage")].edge_index.cpu().numpy()
+            cu_ids = d["crypto_usage"].node_ids
+            for f_i, cu_i in zip(e_idx[0], e_idx[1]):
+                file_cu_findings[f_i].append(cu_ids[cu_i])
+
+        p_preds = []
         for idx, t in enumerate(trues):
             all_trues.append(int(t))
             heuristic_preds.append(int(t))
@@ -642,21 +654,38 @@ def run_deterministic_baselines_and_rank_correlations(artifacts, lopo_res=None):
                 score = 0.0
             true_continuous_scores.append(float(score))
 
-            cw = float(x[idx, 3])
-            lc = float(x[idx, 5])
-            if cw >= 0.70:
-                rule_class = 2
-            elif cw >= 0.30 or lc > 0.1:
-                rule_class = 1
+            # Genuine Independent AST Regex Rule Baseline:
+            # Matches raw scanner findings against distinct PQC migration categories:
+            # - Classically Broken (MD5, SHA1, DES, RC4) or Quantum Vulnerable (RSA, ECC, DSA, DH) -> HIGH (2)
+            # - Quantum Resistant (AES, SHA-256) or other detected primitives -> MED (1)
+            # - No cryptographic usage findings -> LOW (0)
+            cu_list = file_cu_findings[idx]
+            categories = []
+            for cu_str in cu_list:
+                match = match_algo_pqc_category(cu_str)
+                if match:
+                    categories.append(match[0])
+                else:
+                    categories.append("OTHER")
+
+            if "QUANTUM_VULNERABLE" in categories or "CLASSICALLY_BROKEN" in categories:
+                rule_class = 2  # HIGH
+            elif "QUANTUM_RESISTANT" in categories or "OTHER" in categories:
+                rule_class = 1  # MED
             else:
-                rule_class = 0
+                rule_class = 0  # LOW
             rule_preds.append(rule_class)
+            p_preds.append(rule_class)
+
+        fold_rule_accs.append(float(np.mean(np.array(p_preds) == trues)))
 
     all_trues = np.array(all_trues)
     rule_preds = np.array(rule_preds)
     true_continuous_scores = np.array(true_continuous_scores)
 
     m_rule = EvaluationMetrics.calculate_classification_metrics(all_trues, rule_preds, target_classes=[0, 1, 2])
+    m_rule["unweighted_fold_mean_accuracy"] = round(float(np.mean(fold_rule_accs)), 4)
+    m_rule["unweighted_fold_std_accuracy"] = round(float(np.std(fold_rule_accs)), 4)
     m_teacher = EvaluationMetrics.calculate_classification_metrics(all_trues, np.array(heuristic_preds), target_classes=[0, 1, 2])
 
     # Rank correlation: continuous heuristic score vs discrete tiers

@@ -238,7 +238,7 @@ All models and baselines are trained to convergence using inner stratified valid
 | **Heterogeneous GATv2 (14-dim)** | **83.08%** [80.0%, 86.0%] | **89.38%** (± 14.84%) | **73.12%** | **0.7176** [0.674, 0.760] | **27.18%** (28/103) | **96.55%** (28/29) | **GNN prototype**: Message passing; starved of HIGH files on Fold 7 (trained on 4 HIGH files). |
 | **Randomized-Edge GATv2 Control** | **74.81%** [71.0%, 78.3%] | 64.92% (± 30.25%) | **71.66%** | **0.6629** [0.620, 0.701] | **97.09%** (100/103) | **43.10%** (100/232) | **Graph control**: Preserves degree distribution; noise causes Fold-7 HIGH overprediction. |
 | **GATv2 with Target Leakage (15-dim)**| 81.92% [78.6%, 85.0%] | 88.78% (± 15.01%) | 72.91% | 0.7167 [0.673, 0.761] | 29.13% (30/103) | 96.77% (30/31) | **Ablation check**: Evaluated with scalar `base_risk` appended to node feature vector. |
-| **Static Rule Baseline** | 42.12% | 46.88% (± 24.11%) | 43.14% | 0.4119 | 30.10% (31/103) | 35.63% (31/87) | Rule-based heuristic matching on primary weakness keyword. |
+| **Static Rule Baseline** | 52.12% | 49.14% (± 35.12%) | 38.61% | 0.3567 | 24.27% (25/103) | 37.31% (25/67) | Independent AST baseline: matches raw scanner findings against PQC categories without heuristic factor inputs. |
 | **Majority Class Baseline** | 22.69% | 22.69% (± 0.00%) | 14.95% | 0.1321 | 0.00% (0/103) | 0.00% (0/0) | Statistical majority floor across folds. |
 | **Heuristic Teacher Baseline** | *100.0%* | *100.0%* (± 0.00%) | *100.0%* | *1.0000* | *100.0%* | *100.0%* | Tautological ceiling (source of weak supervision labels). |
 
@@ -275,7 +275,14 @@ To evaluate model capacity when training folds are not starved of high-risk sign
      - **Non-Graph MLP**: Pooled Accuracy = **$97.95\% \pm 0.22\%$** | Macro-F1 = **$0.9779 \pm 0.0031$**.
      - **Heterogeneous GATv2**: Pooled Accuracy = **$84.17\% \pm 2.40\%$** | Macro-F1 = **$0.7501 \pm 0.0565$**.
      - **Randomized-Edge GATv2**: Pooled Accuracy = **$77.82\% \pm 3.68\%$** | Macro-F1 = **$0.6915 \pm 0.0452$**.
-6. **Architectural Safeguards**:
+6. **Independent AST Baseline & Three-Tier PQC Migration Taxonomy**:
+   - **Independence from Heuristic Label Inputs**: Prior evaluations artificially coupled the rule baseline to continuous heuristic inputs (`crypto_weakness` and `library_centrality`). The rule baseline has been decoupled and operates directly on raw AST pattern matching findings from the code scanner.
+   - **Three PQC Migration Categories**: In place of conflating classical weaknesses with quantum risk, cryptographic primitives are partitioned into three distinct operational categories:
+     1. *Classically Broken*: MD5, SHA-1, DES, 3DES, RC4, Blowfish (immediate algorithmic obsolescence).
+     2. *Quantum-Vulnerable*: RSA, ECC, ECDSA, ECDH, DSA, Ed25519, X25519, DH (Shor's algorithm / Mosca Harvest Now, Decrypt Later threats).
+     3. *Quantum-Resistant*: AES-128/192/256, ChaCha20, SHA-256/384/512, SHA-3, HMAC, and NIST standardized PQC algorithms (ML-KEM, ML-DSA, SLH-DSA).
+   - **False-Positive Elimination**: Substring matching (`"ec"`, `"des"`) has been replaced with token-aware regex word boundaries (`\b(ec|ecc)\b`, `\bdes\b`), preventing false positive matches on common code tokens (`"select"`, `"codec"`, `"description"`, `"destination"`).
+7. **Architectural Safeguards**:
    - In production scans, cryptographic findings are cataloged 100% deterministically by AST/regex scanners and scored by the 7-factor engine. While weak-label distillation has been rigorously evaluated, expert-label validation remains blocked; thus, the PyTorch GATv2 model is isolated as an architectural prototype (`ml_status: ARCHITECTURAL_PROTOTYPE`) and cannot suppress or alter scanner findings.
 
 ---
