@@ -65,6 +65,7 @@ The platform includes a modern public landing page, defensive user authenticatio
 | **Project Guide** | **Ms. Madhushree**, Assistant Professor, Department of Computer Science (Cyber Security) |
 | **Student Investigators** | **1. Spoorthi** (`NNM23CB058`)<br>**2. Sindhoora R** (`NNM23CB057`)<br>**3. Nivedita V Shetty** (`NNM23CB033`)<br>**4. Sujan S** (`NNM23CB062`) |
 | **Formal Synopsis** | [PDF Document](docs/AGILEGRAPH_PROJECT_SYNOPSIS.pdf) \| [Word Document (.docx)](docs/AGILEGRAPH_PROJECT_SYNOPSIS.docx) |
+| **Phase 2 Presentation** | [PowerPoint Presentation (.pptx)](docs/major%20project%20phase-2.pptx) \| [Presentation Copy](docs/AGILEGRAPH_PROJECT_PHASE_2_PRESENTATION.pptx) |
 
 ---
 
