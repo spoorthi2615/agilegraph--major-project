@@ -225,8 +225,10 @@ AgileGraph implements a Heterogeneous Graph Attention Network (GATv2) using PyTo
 
 > [!IMPORTANT]
 > **Scientific Framing: Weak-Label Distillation Evaluated | Expert-Label Validation Blocked**
-> - **Weak-Label Distillation (Evaluated)**: The Heterogeneous GATv2 model and comparative baselines are fully evaluated on the 8 pinned benchmark repositories ($N = 520$ file nodes) under 8-fold Leave-One-Project-Out (LOPO) cross-validation. These results characterize representation distillation and agreement with the heuristic labeling procedure under cross-repository domain shift.
-> - **Expert-Label Validation (Blocked)**: Validation against independent human expert consensus labels or confirmed real-world cryptanalytic exploitation incidents is blocked due to the absence of certified expert-annotated datasets. No independent real-world predictive validity is claimed beyond weak-supervision distillation.
+> - **Evolution from Early Scaffolding**: In early architectural scaffolding, model training was deferred. In the finalized implementation (runs #29–#32), the Heterogeneous GATv2 model and all baselines **ARE fully trained to convergence with early stopping** across all 8 benchmark repositories ($N = 520$ file nodes) under 8-fold Leave-One-Project-Out (LOPO) cross-validation.
+> - **Weak-Label Distillation (Evaluated)**: Target labels are derived from the deterministic 7-factor heuristic risk engine. These empirical results characterize *representation distillation* (whether GNNs or MLPs can learn to distill the multi-factor risk topology from code property graphs under cross-repository domain shift).
+> - **Expert-Label Validation (Blocked)**: Validation against *independent external human cryptographer consensus panels* or *confirmed real-world cryptanalytic exploitation incidents* remains strictly **blocked** due to the absence of certified expert-annotated datasets in the open literature. No independent real-world predictive validity is claimed beyond weak-supervision distillation.
+> - **Production Runtime Separation**: In live production scans, GATv2 is isolated as an architectural prototype (`ml_status: ARCHITECTURAL_PROTOTYPE`) so it cannot alter or suppress deterministic AST scanner findings.
 
 ### Controlled LOPO Benchmark Results ($N = 520$ Files, Trained to Convergence)
 
