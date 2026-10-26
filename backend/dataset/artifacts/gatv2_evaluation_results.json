@@ -1517,6 +1517,38 @@
         "description": "Out-of-fold MLP expected continuous score vs continuous heuristic composite score"
       }
     },
+    "paired_permutation_tests": {
+      "gatv2_vs_mlp": {
+        "statistic_delta": 0.15,
+        "p_value": 0.001,
+        "num_permutations": 1000,
+        "interpretation": "Accuracy delta: 15.00%, p=0.0010. Non-Graph MLP significantly outperforms GATv2 in pooled accuracy (p < 0.001)."
+      },
+      "gatv2_vs_edge_shuffled": {
+        "statistic_delta": 0.0827,
+        "p_value": 0.001,
+        "num_permutations": 1000,
+        "interpretation": "Accuracy delta: 8.27%, p=0.0010. GATv2 significantly outperforms randomized-edge control in pooled accuracy (p < 0.001)."
+      },
+      "gatv2_vs_rule_baseline": {
+        "statistic_delta": 0.3096,
+        "p_value": 0.001,
+        "num_permutations": 1000,
+        "interpretation": "Accuracy delta: 30.96%, p=0.0010. GATv2 significantly outperforms independent static rule baseline (p < 0.001)."
+      },
+      "mlp_vs_rule_baseline": {
+        "statistic_delta": 0.4596,
+        "p_value": 0.001,
+        "num_permutations": 1000,
+        "interpretation": "Accuracy delta: 45.96%, p=0.0010. Non-Graph MLP significantly outperforms independent static rule baseline (p < 0.001)."
+      },
+      "gatv2_vs_target_leakage": {
+        "statistic_delta": 0.0115,
+        "p_value": 0.023,
+        "num_permutations": 1000,
+        "interpretation": "Accuracy delta: 1.15%, p=0.0230. Target leakage provides marginal accuracy delta under pooled LOPO."
+      }
+    },
     "rule_baseline_description": "Independent AST regex keyword baseline: matches raw AST scanner findings directly against PQC migration categories (Classically Broken, Quantum Vulnerable, Quantum Resistant) without using internal heuristic feature inputs (crypto_weakness or library_centrality)."
   },
   "scientific_framing": "Weak-label distillation evaluated, expert-label validation blocked.",

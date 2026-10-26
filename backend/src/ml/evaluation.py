@@ -43,7 +43,20 @@ class EvaluationMetrics:
         metrics["macro_precision"] = float(macro_p / n_classes)
         metrics["macro_recall"] = float(macro_r / n_classes)
         metrics["macro_f1"] = float(macro_f1 / n_classes)
-        metrics["balanced_accuracy"] = float(macro_r / n_classes)
+        
+        # Standard balanced accuracy averages recall strictly across classes present in ground truth
+        # to prevent artificial deflation when a class has zero support in a fold.
+        from sklearn.metrics import balanced_accuracy_score
+        try:
+            metrics["balanced_accuracy"] = float(balanced_accuracy_score(y_true, y_pred))
+        except Exception:
+            present_classes = [c for c in classes if np.sum(y_true == c) > 0]
+            if present_classes:
+                metrics["balanced_accuracy"] = float(np.mean([metrics[f"class_{c}_recall"] for c in present_classes]))
+            else:
+                metrics["balanced_accuracy"] = 0.0
+
+        metrics["support_per_class"] = {int(c): int(np.sum(y_true == c)) for c in classes}
         metrics["accuracy"] = float(np.sum(y_true == y_pred) / len(y_true)) if len(y_true) > 0 else 0.0
         
         cm = []

@@ -17,6 +17,7 @@ BACKEND_DIR = os.path.dirname(SCRIPT_DIR)
 sys.path.insert(0, BACKEND_DIR)
 
 from src.dataset.models import CorpusManifest
+from src.ml.converter import safe_load_pyg_data
 
 ARTIFACTS_DIR = os.path.join(BACKEND_DIR, "dataset", "artifacts")
 
@@ -50,7 +51,7 @@ def run_analysis():
         artifact_path = os.path.join(ARTIFACTS_DIR, f"{p.project_id}.pt")
         if not os.path.exists(artifact_path):
             continue
-        pyg_data = torch.load(artifact_path, weights_only=False)
+        pyg_data = safe_load_pyg_data(artifact_path)
         
         if "file" not in pyg_data.node_types:
             continue

@@ -11,6 +11,7 @@ from .experiment import ExperimentManifest, LabelRegime, ModelType
 from .gatv2 import create_hetero_gatv2
 from .pipeline import TrainingPipeline, set_seed
 from .evaluation import EvaluationMetrics
+from .converter import safe_load_pyg_data
 
 
 def _build_synthetic_project_graph(num_files: int = 12, include_base_risk: bool = False, seed: int = 42) -> HeteroData:
@@ -53,7 +54,7 @@ class ModelTrainer:
                     if fname.endswith(".pt") and not fname.startswith("dev_sim_"):
                         pid = fname[:-3]
                         try:
-                            self.artifacts[pid] = torch.load(os.path.join(artifacts_dir, fname), weights_only=False)
+                            self.artifacts[pid] = safe_load_pyg_data(os.path.join(artifacts_dir, fname))
                         except Exception:
                             pass
 
@@ -123,7 +124,7 @@ class ModelTrainer:
         # Model initialization
         set_seed(self.manifest.seed)
         global_meta = (train_graphs[0].node_types, train_graphs[0].edge_types)
-        model = create_hetero_gatv2(global_meta, hidden_channels=32, out_channels=3, num_heads=2)
+        model = create_hetero_gatv2(global_meta, hidden_channels=32, out_channels=3, num_heads=2, sample_data=train_graphs[0])
         pipeline = TrainingPipeline(model, {"seed": self.manifest.seed})
         
         lr = self.manifest.learning_rate if self.manifest.learning_rate is not None else 0.005

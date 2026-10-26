@@ -3,6 +3,7 @@ import json
 import pytest
 import torch
 from src.dataset.models import CorpusManifest
+from src.ml.converter import safe_load_pyg_data
 
 ARTIFACTS_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'dataset', 'artifacts')
 
@@ -24,8 +25,8 @@ def test_corpus_manifest_validity():
         artifact_path = os.path.join(ARTIFACTS_DIR, f"{p.project_id}.pt")
         assert os.path.exists(artifact_path)
         
-        # Verify it loads as a PyG HeteroData
-        pyg_data = torch.load(artifact_path, weights_only=False)
+        # Verify it loads as a PyG HeteroData safely
+        pyg_data = safe_load_pyg_data(artifact_path)
         assert pyg_data is not None
         assert hasattr(pyg_data, "node_types")
 

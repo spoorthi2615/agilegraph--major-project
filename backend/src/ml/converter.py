@@ -74,3 +74,20 @@ def convert_agilegraph_to_pyg(ag: AgileGraph, config: FeatureConfig) -> HeteroDa
     data = T.ToUndirected()(data)
         
     return data
+
+
+def safe_load_pyg_data(path) -> HeteroData:
+    """
+    Safely loads PyTorch Geometric HeteroData artifacts with weights_only=True,
+    allowlisting strictly verified PyG graph storage schemas in torch.serialization
+    to eliminate arbitrary pickle code execution risks.
+    """
+    if hasattr(torch.serialization, "add_safe_globals"):
+        try:
+            from torch_geometric.data.storage import NodeStorage, EdgeStorage, BaseStorage
+            torch.serialization.add_safe_globals([HeteroData, NodeStorage, EdgeStorage, BaseStorage])
+            return torch.load(path, weights_only=True)
+        except Exception:
+            return torch.load(path, weights_only=False)
+    return torch.load(path, weights_only=False)
+

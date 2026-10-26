@@ -86,7 +86,7 @@ def test_paired_leakage_ablation(corpus_data):
     d = artifacts["python_cryptography"]
     assert d["file"].x.shape[1] == 14, "Target leakage detected: input dimension != 14"
 
-    res = run_leakage_ablation(artifacts, global_meta, seed=42, epochs=5)
+    res = run_leakage_ablation(artifacts, global_meta, seed=42, epochs=10)
     assert "intra_repo_resubstitution" in res
     assert "cross_repo_lopo_leakage_impact" in res
     assert res["intra_repo_resubstitution"]["without_base_risk"]["accuracy"] > 0.80

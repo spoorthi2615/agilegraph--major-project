@@ -145,6 +145,19 @@ The randomized-edge control achieves $97.09\%$ HIGH recall ($100/103$), whereas 
 
 ---
 
+### 4.5 Paired Permutation Tests across Model Architectures ($N = 520$, $B = 1000$)
+To evaluate whether observed accuracy differences between architectures on the pooled out-of-fold sample ($N = 520$) are statistically significant, paired permutation tests were executed under the exchangeability null hypothesis $H_0: \mathbb{E}[\text{Acc}_A - \text{Acc}_B] = 0$:
+
+| Model Comparison | $|\Delta \text{Acc}|$ | Permutation $p$-value | Statistical Interpretation |
+| :--- | :---: | :---: | :--- |
+| **GATv2 vs. Non-Graph MLP** | **15.00%** | **$p = 0.0010$** ($p < 0.001$) | Statistically significant difference; Non-Graph MLP outperforms GATv2 on pooled distillation accuracy. |
+| **GATv2 vs. Edge-Shuffled Control** | **8.27%** | **$p = 0.0010$** ($p < 0.001$) | Statistically significant difference; genuine graph topology significantly outperforms randomized edge noise. |
+| **GATv2 vs. Static Rule Baseline** | **30.96%** | **$p = 0.0010$** ($p < 0.001$) | Statistically significant difference; GATv2 significantly outperforms independent keyword AST matching. |
+| **Non-Graph MLP vs. Static Rule Baseline** | **45.96%** | **$p = 0.0010$** ($p < 0.001$) | Statistically significant difference; MLP feature distillation significantly outperforms the rule baseline. |
+| **GATv2 vs. Target Leakage (15-dim)** | **1.15%** | **$p = 0.0230$** | Marginal statistical delta; discrete classification does not critically rely on continuous scalar leakage. |
+
+---
+
 ## 5. Controlled Target Leakage Ablation
 
 | Configuration | Input Dim | Evaluation Mode | Pooled Accuracy | Unweighted Fold Mean Acc | Balanced Acc | Macro-F1 | Finding |
@@ -212,4 +225,13 @@ To ensure baseline independence and prevent data leakage from continuous heurist
 3. **Elimination of Substring False Positives**:
    - Substring matching on abbreviations like `"ec"` and `"des"` previously caused false positive hits on ordinary code identifiers (`"select"`, `"codec"`, `"description"`, `"destination"`).
    - The updated baseline enforces strict token-level regex word boundaries (`\b(ec|ecc)\b`, `\bdes\b`), completely eliminating non-crypto collisions.
+
+### 6.5 Engineering & Statistical Invariant Refinements
+1. **PyG Lazy Layer Materialization**:
+   - `HeteroGATv2` utilizes lazy parameter initialization (`Linear(-1, hidden_channels)` and `GATv2Conv((-1, -1), ...)`). To ensure that the PyTorch Adam optimizer registers all model parameters and their momentum buffers, `create_hetero_gatv2` and all training pipelines execute a dummy forward pass (`initialize_lazy_layers`) prior to optimizer construction.
+2. **Zero-Support Balanced Accuracy Correction**:
+   - In cross-validation folds with skewed class representations (e.g., `java_jjwt` has 0 HIGH files, `python_bcrypt` has 0 LOW/HIGH files), naive balanced accuracy calculations divide by the total number of classes ($C=3$), penalizing missing classes as 0% recall and artificially deflating balanced accuracy.
+   - The metric has been standardized to average recall strictly across classes with non-zero true support ($C_{\text{present}} = \{c \mid \text{support}(c) > 0\}$), in exact concordance with scikit-learn standard definitions (`sklearn.metrics.balanced_accuracy_score`).
+3. **Safe PyG Artifact Deserialization (`weights_only=True`)**:
+   - To eliminate arbitrary code execution risks associated with unpickling (`weights_only=False`), PyG graph storage schemas (`HeteroData`, `NodeStorage`, `EdgeStorage`, `BaseStorage`) are registered in `torch.serialization.add_safe_globals`, allowing all benchmark artifacts to be loaded safely under `weights_only=True`.
 

@@ -50,3 +50,16 @@ def test_permutation_test_computed():
     min_pval = 1.0 / (100 + 1)
     assert pval["p_value"] >= min_pval
     assert pval["p_value"] < 0.05
+
+
+def test_balanced_accuracy_not_deflated_on_zero_support():
+    """Verifies that balanced_accuracy is not deflated when a fold has zero support for a class."""
+    # Only classes 0 and 1 exist in ground truth; class 2 has 0 instances
+    y_true = np.array([0, 0, 0, 1, 1])
+    y_pred = np.array([0, 0, 0, 1, 1])  # 100% accurate on present classes
+
+    # Even when target_classes=[0, 1, 2], balanced accuracy should evaluate to 1.0, not (1+1+0)/3 = 0.6667
+    metrics = EvaluationMetrics.calculate_classification_metrics(y_true, y_pred, target_classes=[0, 1, 2])
+    assert metrics["balanced_accuracy"] == 1.0
+    assert metrics["support_per_class"] == {0: 3, 1: 2, 2: 0}
+

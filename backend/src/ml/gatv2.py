@@ -46,9 +46,36 @@ class HeteroGATv2(nn.Module):
         out_dict = {key: self.lin[key](h) for key, h in h_dict.items()}
         return out_dict
 
-def create_hetero_gatv2(metadata, hidden_channels: int = 64, out_channels: int = 3, num_heads: int = 4) -> nn.Module:
+    def initialize_lazy_layers(self, sample_data) -> None:
+        """
+        Executes a dummy forward pass to materialize PyTorch Geometric lazy parameters
+        (e.g., Linear(-1, ...), GATv2Conv((-1, -1), ...)) before optimizer creation.
+        Ensures the optimizer registers all materialized weights.
+        """
+        was_training = self.training
+        self.eval()
+        with torch.no_grad():
+            if hasattr(sample_data, "x_dict") and hasattr(sample_data, "edge_index_dict"):
+                self(sample_data.x_dict, sample_data.edge_index_dict)
+            elif isinstance(sample_data, tuple) and len(sample_data) == 2:
+                self(sample_data[0], sample_data[1])
+        if was_training:
+            self.train()
+
+def create_hetero_gatv2(
+    metadata,
+    hidden_channels: int = 64,
+    out_channels: int = 3,
+    num_heads: int = 4,
+    sample_data=None
+) -> HeteroGATv2:
     """
     Creates a GATv2 model tailored for the heterogeneous AgileGraph metadata.
     Operates over the specific node categories and varying edge relationships.
+    If sample_data is provided, materializes all PyG lazy layers before return.
     """
-    return HeteroGATv2(metadata, hidden_channels, out_channels, num_heads)
+    model = HeteroGATv2(metadata, hidden_channels, out_channels, num_heads)
+    if sample_data is not None:
+        model.initialize_lazy_layers(sample_data)
+    return model
+

@@ -56,6 +56,7 @@ from src.ml.gatv2 import create_hetero_gatv2
 from src.ml.pipeline import TrainingPipeline, set_seed
 from src.ml.evaluation import EvaluationMetrics
 from src.ml.baselines import match_algo_pqc_category
+from src.ml.converter import safe_load_pyg_data
 
 ARTIFACTS_DIR = os.path.join(BACKEND_DIR, "dataset", "artifacts")
 
@@ -155,6 +156,9 @@ def train_gatv2_with_early_stopping(
     model, train_graphs_info, criterion, lr=0.005, weight_decay=1e-4, max_epochs=300, patience=25
 ):
     """Trains HeteroGATv2 with early stopping based on inner-validation loss."""
+    # Run dummy forward pass on sample graph to materialize PyG lazy layers before creating optimizer
+    if len(train_graphs_info) > 0 and hasattr(model, "initialize_lazy_layers"):
+        model.initialize_lazy_layers(train_graphs_info[0][0])
     optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
     best_loss = float("inf")
     best_weights = None
@@ -249,7 +253,7 @@ def load_corpus_artifacts(artifacts_dir: str = ARTIFACTS_DIR):
         if fname.endswith(".pt"):
             proj_id = fname[:-3]
             fpath = os.path.join(artifacts_dir, fname)
-            d = torch.load(fpath, weights_only=False)
+            d = safe_load_pyg_data(fpath)
             artifacts[proj_id] = d
             all_node_types.update(d.node_types)
             all_edge_types.update(d.edge_types)
@@ -295,12 +299,12 @@ def run_training_verification(artifacts, global_meta, seed=42, epochs=10):
     print("=" * 75)
 
     set_seed(seed)
-    model = create_hetero_gatv2(global_meta, hidden_channels=32, num_heads=2)
+    d = artifacts["python_cryptography"]
+    model = create_hetero_gatv2(global_meta, hidden_channels=32, num_heads=2, sample_data=d)
     pipeline = TrainingPipeline(model, {"seed": seed})
     optimizer = optim.Adam(model.parameters(), lr=0.005)
     criterion = nn.CrossEntropyLoss()
 
-    d = artifacts["python_cryptography"]
     initial_loss = pipeline.train_step(d, optimizer, criterion)
     first_param = next(p for p in model.parameters() if not isinstance(p, torch.nn.parameter.UninitializedParameter))
     param_before = first_param.clone().detach()
@@ -572,6 +576,11 @@ def run_comprehensive_lopo_evaluation(
     return {
         "fold_records": fold_records,
         "fold_level_summary": fold_level_summary,
+        "all_preds_gat": p_gat.tolist(),
+        "all_preds_mlp": p_mlp.tolist(),
+        "all_preds_shuf": p_shuf.tolist(),
+        "all_preds_leak": p_leak.tolist(),
+        "all_trues": y_true.tolist(),
         "all_cont_gat": all_cont_gat,
         "all_cont_mlp": all_cont_mlp,
         "gatv2": {**m_gat, **ci_gat},
@@ -750,11 +759,62 @@ def run_deterministic_baselines_and_rank_correlations(artifacts, lopo_res=None):
         print(f"    Spearman Rank Correlation (rho): {sp_mlp:.4f} (p = {sp_mlp_p:.2e})")
         print(f"    Kendall's Rank Correlation (tau):  {kd_mlp:.4f} (p = {kd_mlp_p:.2e})")
 
-    return {
+    paired_perm_tests = {}
+    if lopo_res and "all_preds_gat" in lopo_res and "all_preds_mlp" in lopo_res:
+        p_gat_arr = np.array(lopo_res["all_preds_gat"])
+        p_mlp_arr = np.array(lopo_res["all_preds_mlp"])
+        p_shuf_arr = np.array(lopo_res["all_preds_shuf"]) if "all_preds_shuf" in lopo_res else None
+        p_leak_arr = np.array(lopo_res["all_preds_leak"]) if "all_preds_leak" in lopo_res else None
+
+        perm_gat_mlp = EvaluationMetrics.paired_permutation_test(all_trues, p_gat_arr, p_mlp_arr, n_permutations=1000)
+        paired_perm_tests["gatv2_vs_mlp"] = {
+            "statistic_delta": round(float(perm_gat_mlp["statistic"]), 4),
+            "p_value": round(float(perm_gat_mlp["p_value"]), 4),
+            "interpretation": f"Accuracy delta: {perm_gat_mlp['statistic']*100:.2f}%, p={perm_gat_mlp['p_value']:.4f}."
+        }
+
+        if p_shuf_arr is not None:
+            perm_gat_shuf = EvaluationMetrics.paired_permutation_test(all_trues, p_gat_arr, p_shuf_arr, n_permutations=1000)
+            paired_perm_tests["gatv2_vs_edge_shuffled"] = {
+                "statistic_delta": round(float(perm_gat_shuf["statistic"]), 4),
+                "p_value": round(float(perm_gat_shuf["p_value"]), 4),
+                "interpretation": f"Accuracy delta: {perm_gat_shuf['statistic']*100:.2f}%, p={perm_gat_shuf['p_value']:.4f}."
+            }
+
+        perm_gat_rule = EvaluationMetrics.paired_permutation_test(all_trues, p_gat_arr, rule_preds, n_permutations=1000)
+        paired_perm_tests["gatv2_vs_rule_baseline"] = {
+            "statistic_delta": round(float(perm_gat_rule["statistic"]), 4),
+            "p_value": round(float(perm_gat_rule["p_value"]), 4),
+            "interpretation": f"Accuracy delta: {perm_gat_rule['statistic']*100:.2f}%, p={perm_gat_rule['p_value']:.4f}."
+        }
+
+        perm_mlp_rule = EvaluationMetrics.paired_permutation_test(all_trues, p_mlp_arr, rule_preds, n_permutations=1000)
+        paired_perm_tests["mlp_vs_rule_baseline"] = {
+            "statistic_delta": round(float(perm_mlp_rule["statistic"]), 4),
+            "p_value": round(float(perm_mlp_rule["p_value"]), 4),
+            "interpretation": f"Accuracy delta: {perm_mlp_rule['statistic']*100:.2f}%, p={perm_mlp_rule['p_value']:.4f}."
+        }
+
+        if p_leak_arr is not None and len(p_leak_arr) == len(all_trues):
+            perm_gat_leak = EvaluationMetrics.paired_permutation_test(all_trues, p_gat_arr, p_leak_arr, n_permutations=1000)
+            paired_perm_tests["gatv2_vs_target_leakage"] = {
+                "statistic_delta": round(float(perm_gat_leak["statistic"]), 4),
+                "p_value": round(float(perm_gat_leak["p_value"]), 4),
+                "interpretation": f"Accuracy delta: {perm_gat_leak['statistic']*100:.2f}%, p={perm_gat_leak['p_value']:.4f}."
+            }
+
+        print("\n  Paired Permutation Tests across Model Architectures (1,000 permutations):")
+        for pair_name, pt in paired_perm_tests.items():
+            print(f"    {pair_name:<25}: |Delta Acc| = {pt['statistic_delta']*100:5.2f}% | p-value = {pt['p_value']:.4f}")
+
+    res_dict = {
         "rule_baseline": m_rule,
         "teacher_baseline": m_teacher,
         "rank_correlations": rank_corr_dict
     }
+    if paired_perm_tests:
+        res_dict["paired_permutation_tests"] = paired_perm_tests
+    return res_dict
 
 
 def run_baseline_comparisons(artifacts):
@@ -772,7 +832,7 @@ def run_leakage_ablation(artifacts, global_meta, seed=42, epochs=15, lopo_res=No
     trues = d_clean["file"].y.cpu().numpy()
 
     set_seed(seed)
-    m_clean = create_hetero_gatv2(global_meta, hidden_channels=32, num_heads=2)
+    m_clean = create_hetero_gatv2(global_meta, hidden_channels=32, num_heads=2, sample_data=d_clean)
     p_clean = TrainingPipeline(m_clean, {"seed": seed})
     opt_clean = optim.Adam(m_clean.parameters(), lr=0.01)
     crit = nn.CrossEntropyLoss()
@@ -790,7 +850,7 @@ def run_leakage_ablation(artifacts, global_meta, seed=42, epochs=15, lopo_res=No
     d_leak["file"].x = torch.cat([d_leak["file"].x, leak_col], dim=-1)
 
     set_seed(seed)
-    m_leak = create_hetero_gatv2(global_meta, hidden_channels=32, num_heads=2)
+    m_leak = create_hetero_gatv2(global_meta, hidden_channels=32, num_heads=2, sample_data=d_leak)
     p_leak = TrainingPipeline(m_leak, {"seed": seed})
     opt_leak = optim.Adam(m_leak.parameters(), lr=0.01)
 
@@ -823,7 +883,7 @@ def run_leakage_ablation(artifacts, global_meta, seed=42, epochs=15, lopo_res=No
 
         # 1. Clean GATv2 out-of-fold
         set_seed(seed)
-        m_oof_clean = create_hetero_gatv2(global_meta, hidden_channels=32, num_heads=2)
+        m_oof_clean = create_hetero_gatv2(global_meta, hidden_channels=32, num_heads=2, sample_data=artifacts[train_pids[0]])
         p_oof_clean = TrainingPipeline(m_oof_clean, {"seed": seed})
         opt_oof_clean = optim.Adam(m_oof_clean.parameters(), lr=0.005)
         for _ in range(epochs):
@@ -850,7 +910,7 @@ def run_leakage_ablation(artifacts, global_meta, seed=42, epochs=15, lopo_res=No
         leak_test = make_leaked(test_d)
 
         set_seed(seed)
-        m_oof_leak = create_hetero_gatv2(global_meta, hidden_channels=32, num_heads=2)
+        m_oof_leak = create_hetero_gatv2(global_meta, hidden_channels=32, num_heads=2, sample_data=leak_train[train_pids[0]])
         p_oof_leak = TrainingPipeline(m_oof_leak, {"seed": seed})
         opt_oof_leak = optim.Adam(m_oof_leak.parameters(), lr=0.005)
         for _ in range(epochs):
