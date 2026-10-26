@@ -1,11 +1,28 @@
 # AgileGraph: Graph-Learned Crypto-Agility Risk Scoring for Post-Quantum Migration
 
-[![Backend Tests](https://img.shields.io/badge/Backend%20Tests-410%20Passed%20(4%20skipped)-success?style=flat-square&logo=pytest)](docs/evaluation.md)
+[![Backend Tests](https://img.shields.io/badge/Backend%20Tests-413%20Passed%20(4%20skipped)-success?style=flat-square&logo=pytest)](docs/evaluation.md)
 [![Frontend Tests](https://img.shields.io/badge/Frontend%20Tests-38%20Passed-success?style=flat-square&logo=vitest)](frontend/)
 [![Python Version](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue?style=flat-square&logo=python)](backend/)
 [![React Version](https://img.shields.io/badge/Frontend-React%2019%20%7C%20TypeScript%20%7C%20Vite-61dafb?style=flat-square&logo=react)](frontend/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
-[![Academic Project](https://img.shields.io/badge/B.Tech%20Cyber%20Security-Final%20Year%20Project%20(2026)-darkblue?style=flat-square)](docs/architecture.md)
+[![Academic Project](https://img.shields.io/badge/B.Tech%20Cyber%20Security-Major%20Project%20(2023--2027)-darkblue?style=flat-square)](docs/AGILEGRAPH_PROJECT_SYNOPSIS.pdf)
+
+> **Major Project (B.Tech Cyber Security, 2023–2027)**  
+> **Department of Computer Science (Cyber Security)**  
+> **NMAM Institute of Technology (NMAMIT), Nitte (Deemed to be University), Karnataka**  
+>
+> **Project Team:**  
+> • **Spoorthi** (`NNM23CB058`)  
+> • **Sindhoora R** (`NNM23CB057`)  
+> • **Nivedita V Shetty** (`NNM23CB033`)  
+> • **Sujan S** (`NNM23CB062`)  
+>
+> **Project Guide:**  
+> • **Ms. Madhushree**, Assistant Professor, Dept. of CSE (Cyber Security), NMAMIT  
+>
+> **Official Project Proposal & Synopsis Downloads:**  
+> • 📄 [**Download Project Synopsis (PDF)**](docs/AGILEGRAPH_PROJECT_SYNOPSIS.pdf)  
+> • 📝 [**Download Project Synopsis (Word DOCX)**](docs/AGILEGRAPH_PROJECT_SYNOPSIS.docx)
 
 AgileGraph is an automated cryptographic discovery, typed property-graph modeling, and crypto-agility risk scoring system engineered for post-quantum cryptographic (PQC) migration. It inventories cryptographic primitives across multi-language codebases (Python, Java, Go, and package manifests), constructs formal 6-node property graphs, computes deterministic 7-factor heuristic risk scores enriched with contextual factor analysis, evaluates quantum migration urgency via Mosca's theorem, tracks migration across a 6-state remediation lifecycle, and provides an architectural Heterogeneous Graph Attention Network (GATv2) model for structural risk propagation.
 
@@ -15,6 +32,7 @@ The platform includes a modern public landing page, defensive user authenticatio
 
 ## Table of Contents
 
+- [Academic Project & Team Details](#academic-project--team-details)
 - [1. System Architecture](#1-system-architecture)
 - [2. Key Capabilities](#2-key-capabilities)
 - [3. Graph Schema & Edge Semantics](#3-graph-schema--edge-semantics)
@@ -32,6 +50,21 @@ The platform includes a modern public landing page, defensive user authenticatio
 - [15. Verification & Test Suite Status](#15-verification--test-suite-status)
 - [16. Research Integrity & Disclaimers](#16-research-integrity--disclaimers)
 - [17. License & Citation](#17-license--citation)
+
+---
+
+## Academic Project & Team Details
+
+| Item | Details |
+| :--- | :--- |
+| **Project Title** | **AGILEGRAPH: Graph-Learned Crypto-Agility Risk Scoring for Post-Quantum Migration** |
+| **Subtitle / Focus** | *Heterogeneous GNN Risk Propagation and Explainable Migration Prioritization* |
+| **Program** | Bachelor of Technology (B.Tech) in Computer Science (Cyber Security) |
+| **Academic Year** | 2023 – 2027 (Final Year Major Project) |
+| **Institution** | NMAM Institute of Technology (NMAMIT), Nitte (Deemed to be University), Karnataka |
+| **Project Guide** | **Ms. Madhushree**, Assistant Professor, Department of Computer Science (Cyber Security) |
+| **Student Investigators** | **1. Spoorthi** (`NNM23CB058`)<br>**2. Sindhoora R** (`NNM23CB057`)<br>**3. Nivedita V Shetty** (`NNM23CB033`)<br>**4. Sujan S** (`NNM23CB062`) |
+| **Formal Synopsis** | [PDF Document](docs/AGILEGRAPH_PROJECT_SYNOPSIS.pdf) \| [Word Document (.docx)](docs/AGILEGRAPH_PROJECT_SYNOPSIS.docx) |
 
 ---
 
@@ -491,8 +524,10 @@ agilegraph--major-project/
 │   │   ├── scanners/              # Python AST, Java, Go, manifest scanners
 │   │   ├── cli.py                 # Command-line interface
 │   │   └── main.py                # FastAPI app entrypoint
-│   └── tests/                     # 410 passing pytest tests
-├── docs/                          # Architectural specs and evaluation benchmarks
+│   └── tests/                     # 413 passing pytest tests
+├── docs/                          # Architectural specs, proposal synopsis, and benchmarks
+│   ├── AGILEGRAPH_PROJECT_SYNOPSIS.pdf   # Academic proposal synopsis (PDF)
+│   ├── AGILEGRAPH_PROJECT_SYNOPSIS.docx  # Academic proposal synopsis (Word)
 │   ├── architecture.md
 │   ├── graph_schema.md
 │   ├── risk_formula.md
@@ -524,7 +559,7 @@ Every component of AgileGraph is covered by automated unit, integration, and sec
 
 | Test Suite | Framework | Total Tests | Passed | Skipped | Status |
 | :--- | :--- | :---: | :---: | :---: | :---: |
-| **Backend Suite** | `pytest` | 414 | **410** | 4* | **100% Pass** |
+| **Backend Suite** | `pytest` | 417 | **413** | 4* | **100% Pass** |
 | **Frontend Suite** | `vitest` | 38 | **38** | 0 | **100% Pass** |
 | **Frontend Production Build** | `tsc -b && vite build` | — | **Exit 0** | 0 | **Clean** |
 
@@ -566,10 +601,10 @@ If you reference or build upon AgileGraph in academic work, please cite:
 
 ```bibtex
 @misc{agilegraph2026,
-  author = {AgileGraph Team},
+  author = {Spoorthi and Sindhoora R and Nivedita V Shetty and Sujan S},
   title = {AgileGraph: Graph-Learned Crypto-Agility Risk Scoring for Post-Quantum Migration},
   year = {2026},
   howpublished = {\url{https://github.com/spoorthi2615/agilegraph--major-project}},
-  note = {Final-Year B.Tech Cyber Security Project, NMAMIT}
+  note = {Major B.Tech Cyber Security Project, Guided by Ms. Madhushree, Department of Computer Science (Cyber Security), NMAMIT, Nitte (Deemed to be University)}
 }
 ```
