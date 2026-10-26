@@ -24,3 +24,9 @@ backend/dataset/cache/demo*
 backend/dataset/cache/cli_demo*
 scratch/
 backend/dataset/sensitivity/sensitivity_summary.json
+
+# Temporary & OS files
+~$*
+.DS_Store
+Thumbs.db
+
