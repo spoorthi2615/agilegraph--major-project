@@ -112,7 +112,7 @@ Source Repositories (Python, Java, Go, Manifests, Certificates)
    ├─ Public Landing Page (/) with Platform Capabilities, Workflow, and Methodology previews
    ├─ Protected React / TypeScript Web Dashboard (/app) with Force-Directed Graph Viewer
    ├─ FastAPI REST Backend + SQLite State Persistence (agilegraph_migrations.db)
-   └─ Audit Exporters (Markdown & JSON) with SHA-256 Provenance Manifests
+   └─ Audit Exporters (Markdown & JSON) with Git Commit SHA & Config Verification Hashes
 ```
 
 ---
@@ -126,7 +126,7 @@ Source Repositories (Python, Java, Go, Manifests, Certificates)
 - **6-State Remediation Tracking**: Manages cryptographic asset retirement through a state machine with append-only SQLite audit trails.
 - **Evaluated GATv2 Architecture**: Employs Heterogeneous Graph Attention Networks evaluated for weak-label distillation via 8-fold Leave-One-Project-Out (LOPO) cross-validation across 520 repository assets (expert-label validation blocked).
 - **Multi-Tenant User Isolation**: Guards user repositories and analysis results behind authenticated sessions with zero cross-tenant leakage.
-- **Reproducible Audit Reporting**: Exports cryptographic inventories and risk assessments in structured JSON and Markdown formats with SHA-256 integrity digests.
+- **Reproducible Audit Reporting**: Exports cryptographic inventories and risk assessments in structured JSON and Markdown formats with Git commit SHA and configuration verification hashes.
 
 ---
 
@@ -383,8 +383,8 @@ AgileGraph features a dual-tier web presentation built with React 19, TypeScript
 - **Interactive Graph (`/app/graph`)**: 2D force-directed graph visualization rendering typed nodes and edge relationships with inspectable metadata.
 - **Risk Analysis (`/app/risk`)**: 7-factor breakdown per asset with interactive weight sliders and missing-data policy toggle.
 - **PQC Readiness (`/app/pqc`)**: Mosca theorem timeline calculator and quantum-readiness candidate list.
-- **Migration Roadmap (`/app/roadmap`)**: Interactive 6-state Kanban lifecycle board with status transition controls.
-- **Audit Reports (`/app/reports`)**: Configurable Markdown and JSON compliance reports with SHA-256 provenance hashes.
+- **Migration Roadmap (`/app/roadmap`)**: Interactive 6-state migration lifecycle roadmap with status transition controls.
+- **Audit Reports (`/app/reports`)**: Configurable Markdown and JSON compliance reports with verification metadata (Git commit SHA & config verification hash).
 
 ---
 
