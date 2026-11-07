@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useMemo } from 'react';
 import ForceGraph2D from 'react-force-graph-2d';
 import type { GraphResponse } from '../api/client';
 
@@ -34,11 +34,11 @@ export default function GraphView({ data, selectedAssetId, onNodeClick }: GraphV
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Format data for react-force-graph
-  const graphData = {
-    nodes: data.nodes.map(n => ({ id: n.id, name: n.id, val: 1.5, category: n.category || 'file' })),
-    links: data.edges.map(e => ({ source: e.source, target: e.target }))
-  };
+  // Format data for react-force-graph memoized to prevent physics re-simulation on every render
+  const graphData = useMemo(() => ({
+    nodes: (data?.nodes || []).map(n => ({ id: n.id, name: n.id, val: 1.5, category: n.category || 'file' })),
+    links: (data?.edges || []).map(e => ({ source: e.source, target: e.target }))
+  }), [data]);
 
   const getNodeColor = (node: any) => {
     if (selectedAssetId && node.id !== selectedAssetId) {
@@ -55,12 +55,12 @@ export default function GraphView({ data, selectedAssetId, onNodeClick }: GraphV
   useEffect(() => {
     if (selectedAssetId && fgRef.current) {
       const node = graphData.nodes.find((n: any) => n.id === selectedAssetId) as any;
-      if (node) {
-        fgRef.current.centerAt(node.x, node.y, 1000);
-        fgRef.current.zoom(4, 1000);
+      if (node && node.x !== undefined && node.y !== undefined) {
+        fgRef.current.centerAt(node.x, node.y, 800);
+        fgRef.current.zoom(3, 800);
       }
     }
-  }, [selectedAssetId, graphData.nodes]);
+  }, [selectedAssetId, graphData]);
 
   return (
     <div ref={containerRef} className="w-full h-full absolute inset-0 overflow-hidden">

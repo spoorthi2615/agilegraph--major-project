@@ -9,7 +9,24 @@ interface ProjectContextType {
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 
 export function ProjectProvider({ children }: { children: ReactNode }) {
-  const [projectId, setProjectId] = useState<string>('');
+  const [projectId, setProjectIdState] = useState<string>(() => {
+    try {
+      return localStorage.getItem('agilegraph_project_id') || '';
+    } catch {
+      return '';
+    }
+  });
+
+  const setProjectId = (id: string) => {
+    setProjectIdState(id);
+    try {
+      if (id) {
+        localStorage.setItem('agilegraph_project_id', id);
+      } else {
+        localStorage.removeItem('agilegraph_project_id');
+      }
+    } catch {}
+  };
 
   return (
     <ProjectContext.Provider value={{ projectId, setProjectId }}>

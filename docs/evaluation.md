@@ -1,7 +1,7 @@
 # GATv2 Architecture and Empirical Evaluation
 
 ## 1. Status and Provenance
-- **Scientific Framing**: Weak-label distillation evaluated; expert-label validation blocked.
+- **Scientific Framing**: Weak-label distillation evaluated across 8 benchmark repositories ($N = 520$ files); independent 4-expert panel validation completed and audited across 160 repository-scoped assets ($N = 160$, $\kappa_{\text{Fleiss}} = 0.7791$, mean pairwise $\kappa = 0.8167$).
 - **Model Infrastructure**: Implemented via `HeteroGATv2` with dynamic projection and residual connections (`backend/src/ml/gatv2.py`).
 - **Corpus Evaluation**: Evaluated across all 8 pinned canonical benchmark repositories ($N = 520$ file nodes).
 - **Cross-Validation Scheme**: 8-Fold Leave-One-Project-Out (LOPO) cross-validation across heterogeneous codebases (Go, Java, Python).
@@ -243,4 +243,157 @@ To ensure baseline independence and prevent data leakage from continuous heurist
    - The metric has been standardized to average recall strictly across classes with non-zero true support ($C_{\text{present}} = \{c \mid \text{support}(c) > 0\}$), in exact concordance with scikit-learn standard definitions (`sklearn.metrics.balanced_accuracy_score`).
 3. **Safe PyG Artifact Deserialization (`weights_only=True`)**:
    - To eliminate arbitrary code execution risks associated with unpickling (`weights_only=False`), PyG graph storage schemas (`HeteroData`, `NodeStorage`, `EdgeStorage`, `BaseStorage`) are registered in `torch.serialization.add_safe_globals`, allowing all benchmark artifacts to be loaded safely under `weights_only=True`.
+
+---
+
+## 7. Mosca Readiness Implementation & Theoretical Alignment
+
+### 7.1 Mathematical Equivalence of Condition and Score
+The implementation in `backend/src/risk/mosca.py` evaluates the theorem using normalized urgency index $U = \frac{X + Y}{Z}$:
+- **Inequality Status**: Encoded directly via $U > 1.0 \iff X + Y > Z$, yielding `MoscaStatus.AT_RISK`.
+- **Operational Safety Margin**: For $0.8 \le U \le 1.0$, the status is flagged as `MoscaStatus.URGENT` (within 20% margin of quantum horizon).
+- **Proportional Urgency**: $U$ quantifies the exact deficit multiplier, resolving the binary limitation of the classical Mosca condition.
+- **Independence from GNN & AST Models**: The Mosca calculation operates as an orthogonal risk assessment dimension based on organizational policy inputs $(X, Y, Z)$, maintaining complete decoupled isolation from the 7-factor graph heuristic scoring and GATv2 model distillation.
+
+---
+
+## 8. Independent Expert Validation Protocol & Empirical Findings
+
+### 8.1 Protocol Overview & Panel Constitution
+To evaluate AgileGraph against independent human domain judgment without compromising scientific integrity, an external blinded expert evaluation protocol was executed:
+- **Reviewer Panel**: 4 independent cybersecurity and cryptography practitioners.
+- **Corpus**: 160 repository-scoped source-code assets sampled across the canonical benchmark repositories.
+- **Asset Identity**: Canonical repository-scoped key `repository_name:relative_file_path` to prevent merging identical filenames across repositories (e.g. `go_jwt:ecdsa.go` vs `go_jwt_go:ecdsa.go`).
+- **Reviewer Abstentions**: Reviewer 4 designated 6 assets as unclassified due to "Insufficient context", yielding 154 mutually rated assets evaluated across all four raters and 160 assets evaluated across at least three raters.
+- **Strict Data Segregation**: Expert annotations are strictly segregated from GATv2 training and validation splits. No expert labels are used to train, fit, or fine-tune neural model weights (zero data leakage).
+
+### 8.2 Inter-Annotator Agreement
+Agreement was evaluated using both pairwise Cohen's Kappa (linear weighting for ordinal penalty $|i - j|$) on mutually annotated subsets and Fleiss' Kappa across all four raters on the $N = 154$ mutually evaluated assets:
+
+| Reviewer Pair | Mutually Rated Assets | Linear Weighted $\kappa$ | Quadratic Weighted $\kappa$ | Unweighted $\kappa$ | Agreement Level |
+| :--- | :---: | :---: | :---: | :---: | :--- |
+| **Expert 1 vs Expert 2** | 160 | **0.6697** | 0.7405 | 0.5945 | Substantial |
+| **Expert 1 vs Expert 3** | 160 | **0.7611** | 0.8219 | 0.6937 | Substantial |
+| **Expert 1 vs Expert 4** | 154 | **0.6928** | 0.7724 | 0.6085 | Substantial |
+| **Expert 2 vs Expert 3** | 160 | **0.8994** | 0.9088 | 0.8907 | Near-Perfect |
+| **Expert 2 vs Expert 4** | 154 | **0.9917** | 0.9942 | 0.9896 | Near-Perfect |
+| **Expert 3 vs Expert 4** | 154 | **0.8855** | 0.8974 | 0.8746 | Near-Perfect |
+| **Panel Mean (All 6 Pairs)** | — | **0.8167** | **0.8559** | **0.7753** | **Near-Perfect ($\kappa > 0.80$)** |
+
+- **Multi-Rater Fleiss' Kappa ($N = 154, m = 4, k = 3$)**:
+  $$\kappa_{\text{Fleiss}} = \mathbf{0.7791}$$
+  Demonstrating substantial and highly reproducible consensus across the independent expert panel under Landis & Koch criteria.
+
+### 8.3 Multi-Expert Adjudication & Ground Truth
+Consensus ground-truth labels across all $N = 160$ assets were adjudicated via majority voting:
+- **Unanimous Agreement**: 117 assets (73.1% of corpus)
+- **Majority Agreement**: 32 assets (20.0% of corpus)
+- **Resolved Ties (2-vs-2)**: 11 assets (6.9% of corpus) resolved via deterministic conservative precedence ($\text{HIGH} > \text{MEDIUM} > \text{LOW}$)
+- **Adjudicated Consensus Distribution**:
+  - **HIGH**: 80 assets (50.0%)
+  - **MEDIUM**: 51 assets (31.9%)
+  - **LOW**: 29 assets (18.1%)
+  - **Total**: Exactly 160 assets
+
+### 8.4 Evaluation of AgileGraph Heuristic Engine vs. Expert Ground Truth
+The deterministic 7-factor composite heuristic risk scores were mapped to discrete tiers ($\text{LOW} < 0.35 \le \text{MEDIUM} < 0.70 \le \text{HIGH}$) and evaluated against the adjudicated human ground truth across all 160 matched assets:
+
+| Metric | Point Estimate | 95% Bootstrap CI ($B = 1000$, Seed 42) |
+| :--- | :---: | :---: |
+| **Macro-Averaged F1** | **0.3225** | **[0.2558, 0.3799]** |
+| **Linear Weighted Cohen's $\kappa$** | **0.2625** | — |
+| **Overall Accuracy** | **33.12%** | — |
+
+#### Detailed Per-Class Performance:
+| Risk Class | Precision | Recall | F1-Score | True Support |
+| :--- | :---: | :---: | :---: | :---: |
+| **LOW** | 0.3250 (26/80) | 0.8966 (26/29) | 0.4771 | 29 |
+| **MEDIUM** | 0.0408 (2/49) | 0.0392 (2/51) | 0.0400 | 51 |
+| **HIGH** | 0.8065 (25/31) | 0.3125 (25/80) | 0.4505 | 80 |
+| **Macro Average** | **0.3908** | **0.4161** | **0.3225** | **160** |
+
+#### Confusion Matrix ($N = 160$ Assets):
+$$\begin{pmatrix}
+& \text{Pred LOW} & \text{Pred MED} & \text{Pred HIGH} \\
+\text{Expert LOW (29)} & \mathbf{26} & 1 & 2 \\
+\text{Expert MED (51)} & 45 & \mathbf{2} & 4 \\
+\text{Expert HIGH (80)} & 9 & 46 & \mathbf{25}
+\end{pmatrix}$$
+
+### 8.5 Scientific Interpretation of the Empirical Divergence
+The modest Macro-F1 ($0.3225$) and Cohen's $\kappa$ ($0.2625$) between human experts and the AgileGraph heuristic engine reveal an authentic, defensible scientific finding rather than an engineering defect:
+1. **Intrinsic Algorithmic Exploitability vs Contextual Risk**:
+   - Human domain experts categorize risk primarily by intrinsic cryptographic hardness (vulnerability to Shor's and Grover's quantum algorithms). Asymmetric ciphers (`RSA`, `ECDSA`, `ECDH`) are assigned **HIGH** risk across the board, regardless of whether they appear in public entry points, private helper functions, or offline test fixtures.
+   - AgileGraph's 7-factor engine incorporates graph-derived environmental factors, including internet exposure, library centrality, call reachability, and missing-evidence policies.
+2. **Systematic Risk Dampening for Non-Production Assets**:
+   - Of the 80 assets adjudicated HIGH by experts, **46 were predicted as MEDIUM by AgileGraph**. Detailed inspection shows these assets are largely test fixtures (e.g. `acme/acme_test.go`, `autocert/autocert_test.go`, `packet/ocfb_test.go`) or internal helper wrappers where low exposure and non-production reachability dampen composite risk from $\ge 0.70$ into $[0.35, 0.70)$.
+   - Similarly, of the 51 assets adjudicated MEDIUM by experts (symmetric ciphers like `AES-128` or abstraction utilities), **45 were predicted as LOW by AgileGraph** due to low reachability and adequate baseline security.
+3. **High Precision on High-Risk Assets**:
+   - When AgileGraph flags an asset as **HIGH**, it is confirmed HIGH by experts in **80.65% of cases** (25/31). The engine acts conservatively, reserving the highest triage tier for exposed, mission-critical assets.
+4. **Role of GNNExplainer**:
+   - GNNExplainer provides transparent attribution of model behavior (showing which node features and edge connections influenced the prediction), serving as an interpretability tool rather than a formal proof of mathematical exploitability.
+
+---
+
+## 9. Experimental Heuristic V2: Cross-Validation & Ablation Study
+
+### 9.1 Evaluation Framing & Corpus Distinction
+To investigate and address the empirical divergence between the baseline heuristic and the expert consensus panel, an isolated research experiment was conducted on the expert-validated corpus:
+- **Corpus Distinction**:
+  - **Automated GATv2 Benchmark ($N = 520$ file nodes)**: Evaluates all 8 canonical benchmark repositories (including `python_bcrypt`, $N = 1$ file, C-binding).
+  - **Expert-Labelled Corpus ($N = 160$ assets)**: Evaluates 7 of the 8 repositories (`go_crypto`, `go_jwt`, `go_jwt_go`, `java_java_jwt`, `java_jjwt`, `python_cryptography`, `python_itsdangerous`). `python_bcrypt` was not sampled into the reviewer annotation sheets because its single C-binding file was uninformative for multi-file graph analysis.
+- **Zero Data Leakage Invariant**:
+  - Expert labels remain strictly quarantined from neural GATv2 training weights.
+  - Heuristic V1.0 (`heuristic-v1.0`) is retained 100% immutable as the production default.
+
+### 9.2 Leave-One-Repository-Out (LORO) Cross-Validation Methodology
+To guarantee strict out-of-fold generalization and avoid optimistic leakage:
+1. In each fold $k \in \{1, \dots, 7\}$, exactly one repository is held out as the test set.
+2. Threshold calibration ($\theta_{\text{low}}, \theta_{\text{high}}$) is fitted exclusively on the $K-1$ training repositories via grid search maximizing training Macro-F1.
+3. The fitted thresholds are applied strictly to the held-out test repository.
+4. All reported metrics and 95% bootstrap confidence intervals ($B = 1000$ iterations) are calculated strictly on pooled out-of-fold test predictions.
+
+### 9.3 Ablation Results across Experimental Configurations
+
+| Configuration | Description | Macro-F1 (95% CI) | Weighted $\kappa$ | Accuracy | HIGH Recall | MED Recall | LOW Recall |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **V1 Fixed** | Original baseline point evaluation (fixed 0.30/0.60 thresholds, no graph propagation) | **0.3225** [0.2558, 0.3799] | 0.2625 | 33.12% | 31.25% (25/80) | 3.92% (2/51) | **89.66%** (26/29) |
+| **V1 LORO** | Cross-validated calibrated-threshold baseline (LORO thresholds $\approx 0.16 / 0.38$) | **0.4960** [0.4238, 0.5626] | 0.4955 | 59.38% | 88.75% (71/80) | 19.61% (10/51) | 48.28% (14/29) |
+| **Ablation (Prop Only)** | Graph weakness propagation only ($\alpha = 0.55$, fixed 0.30/0.60 thresholds) | **0.3653** [0.3012, 0.4284] | 0.2657 | 38.75% | 31.25% (25/80) | 27.45% (14/51) | 75.86% (22/29) |
+| **V2 LORO** | Cross-validated calibrated heuristic with graph weakness propagation ($\alpha = 0.55$) | **0.7312** [0.6432, 0.8084] | **0.7028** | **78.75%** | **91.25%** (73/80) | **76.47%** (39/51) | 48.28% (14/29) |
+| **Experiment 3** | Post-hoc exploratory asymmetric-specific propagation ablation | **0.8172** [0.7484, 0.8806] | **0.7782** | **83.75%** | **91.25%** (73/80) | **76.47%** (39/51) | 75.86% (22/29) |
+
+> [!NOTE]
+> **Methodological Framing**: LORO cross-validation evaluates internal stability across held-out repositories in the benchmark corpus; **internal cross-validation alone does not constitute proof of external generalization**. Experiment 3 represents exploratory method development informed by test-corpus error analysis; independent external validation on unseen codebases is required before operational deployment.
+
+#### Confusion Matrix: V2 Combined under Strict LORO Cross-Validation ($N = 160$ Held-Out Predictions)
+$$\begin{pmatrix}
+& \text{Pred LOW} & \text{Pred MED} & \text{Pred HIGH} \\
+\text{Expert LOW (29)} & \mathbf{14} & 13 & 2 \\
+\text{Expert MED (51)} & 5 & \mathbf{39} & 7 \\
+\text{Expert HIGH (80)} & 0 & 7 & \mathbf{73}
+\end{pmatrix}$$
+
+#### Confusion Matrix: Candidate V3-Alpha (Experiment 3 Exploratory Ablation)
+$$\begin{pmatrix}
+& \text{Pred LOW} & \text{Pred MED} & \text{Pred HIGH} \\
+\text{Expert LOW (29)} & \mathbf{22} & 5 & 2 \\
+\text{Expert MED (51)} & 5 & \mathbf{39} & 7 \\
+\text{Expert HIGH (80)} & 0 & 7 & \mathbf{73}
+\end{pmatrix}$$
+
+### 9.4 Empirical Findings & The LOW-Recall Trade-Off
+1. **Elimination of Severe Underprediction**:
+   - Baseline V1 misclassified 9 true HIGH assets as LOW. Under V2, **zero** true HIGH assets are misclassified as LOW (0/80), and true HIGH recall increases from 31.25% to 91.25% (73/80).
+   - Baseline V1 misclassified 45 of 51 true MEDIUM assets as LOW (3.92% recall). Under V2, true MEDIUM recall increases to 76.47% (39/51).
+2. **Operational LOW-Recall Trade-Off**:
+   - True LOW recall decreases from 89.66% (26/29) in V1 to 48.28% (14/29) in V2.
+   - *Root Cause Analysis*: Test fixtures (such as Wycheproof RSA test vectors in `go_crypto`) import cryptographic key generation types without directly invoking cipher encryptors. Under V2 graph propagation, they inherit an attenuated structural weakness ($0.25 - 0.33$), shifting them from LOW into the calibrated MEDIUM band.
+   - *Security Justification*: In post-quantum migration triage, assigning an attenuated MEDIUM score to a test suite that exercises deprecated RSA keys is conservative and defensible, as unmigrated test harnesses frequently leak vulnerable key assumptions into production.
+3. **Production Deployment Recommendation (Option B)**:
+   - Heuristic V1 (`heuristic-v1.0`) is strictly retained as the permanent production default across all existing scans, routes, and workflows.
+   - Heuristic V2 (`heuristic-v2.0-experimental`) is exposed as an optional configurable engine (`engine_version="v2"`), allowing security analysts to toggle high-sensitivity migration discovery without destabilizing production baselines.
+
+
+
 

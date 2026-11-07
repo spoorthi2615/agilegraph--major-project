@@ -1,0 +1,748 @@
+{
+  "benchmark_summary": {
+    "total_artifacts_evaluated": 8,
+    "total_nodes_explained": 34,
+    "mask_validity": "NON_TRIVIAL_CONTINUOUS_MASKS_VERIFIED",
+    "caveat": "GNNExplainer attributions reflect the model's approximation of weak-supervision heuristic rules, explaining model sensitivity rather than certifying ground-truth post-quantum cryptographic exploitability.",
+    "global_feature_ranking": [
+      {
+        "feature_name": "mask_sensitivity",
+        "mean_importance": 0.53034,
+        "sample_count": 34
+      },
+      {
+        "feature_name": "mask_exposure",
+        "mean_importance": 0.5071,
+        "sample_count": 34
+      },
+      {
+        "feature_name": "library_centrality",
+        "mean_importance": 0.49896,
+        "sample_count": 34
+      },
+      {
+        "feature_name": "migration_difficulty",
+        "mean_importance": 0.48204,
+        "sample_count": 34
+      },
+      {
+        "feature_name": "mask_crypto_weakness",
+        "mean_importance": 0.353,
+        "sample_count": 34
+      },
+      {
+        "feature_name": "asset_criticality",
+        "mean_importance": 0.25799,
+        "sample_count": 34
+      },
+      {
+        "feature_name": "mask_criticality",
+        "mean_importance": 0.24958,
+        "sample_count": 34
+      },
+      {
+        "feature_name": "crypto_weakness",
+        "mean_importance": 0.12582,
+        "sample_count": 34
+      },
+      {
+        "feature_name": "cve_risk",
+        "mean_importance": 0.11207,
+        "sample_count": 34
+      },
+      {
+        "feature_name": "data_sensitivity",
+        "mean_importance": 0.0,
+        "sample_count": 34
+      },
+      {
+        "feature_name": "internet_exposure",
+        "mean_importance": 0.0,
+        "sample_count": 34
+      },
+      {
+        "feature_name": "mask_cve_risk",
+        "mean_importance": 0.0,
+        "sample_count": 34
+      },
+      {
+        "feature_name": "mask_library_centrality",
+        "mean_importance": 0.0,
+        "sample_count": 34
+      },
+      {
+        "feature_name": "mask_migration_difficulty",
+        "mean_importance": 0.0,
+        "sample_count": 34
+      }
+    ],
+    "most_influential_relations": [
+      {
+        "relation": "file->IMPORTS->library",
+        "frequency": 88
+      },
+      {
+        "relation": "library->rev_IMPORTS->file",
+        "frequency": 43
+      },
+      {
+        "relation": "crypto_usage->rev_CONTAINS->file",
+        "frequency": 21
+      },
+      {
+        "relation": "file->CONTAINS->crypto_usage",
+        "frequency": 13
+      },
+      {
+        "relation": "file->DEPENDS_ON->library",
+        "frequency": 1
+      },
+      {
+        "relation": "library->rev_DEPENDS_ON->file",
+        "frequency": 1
+      }
+    ]
+  },
+  "sample_explanations": [
+    {
+      "repository": "go_crypto",
+      "asset_id": "go_crypto:acme/acme.go",
+      "target_node_idx": 0,
+      "top_features": [
+        {
+          "feature_name": "mask_sensitivity",
+          "importance": 0.5816291570663452,
+          "normalized_importance": 0.2151
+        },
+        {
+          "feature_name": "crypto_weakness",
+          "importance": 0.443901926279068,
+          "normalized_importance": 0.1642
+        },
+        {
+          "feature_name": "library_centrality",
+          "importance": 0.43088066577911377,
+          "normalized_importance": 0.1594
+        },
+        {
+          "feature_name": "mask_exposure",
+          "importance": 0.42829012870788574,
+          "normalized_importance": 0.1584
+        },
+        {
+          "feature_name": "migration_difficulty",
+          "importance": 0.42091065645217896,
+          "normalized_importance": 0.1557
+        }
+      ],
+      "top_edges": [
+        {
+          "edge_type": "file->CONTAINS->crypto_usage",
+          "source_type": "file",
+          "source_idx": 0,
+          "relation": "CONTAINS",
+          "target_type": "crypto_usage",
+          "target_idx": 0,
+          "importance": 0.6088,
+          "direct_incident": true
+        },
+        {
+          "edge_type": "file->CONTAINS->crypto_usage",
+          "source_type": "file",
+          "source_idx": 0,
+          "relation": "CONTAINS",
+          "target_type": "crypto_usage",
+          "target_idx": 2,
+          "importance": 0.5857,
+          "direct_incident": true
+        },
+        {
+          "edge_type": "crypto_usage->rev_CONTAINS->file",
+          "source_type": "crypto_usage",
+          "source_idx": 1,
+          "relation": "rev_CONTAINS",
+          "target_type": "file",
+          "target_idx": 0,
+          "importance": 0.5812,
+          "direct_incident": true
+        }
+      ]
+    },
+    {
+      "repository": "go_crypto",
+      "asset_id": "go_crypto:acme/acme_test.go",
+      "target_node_idx": 1,
+      "top_features": [
+        {
+          "feature_name": "asset_criticality",
+          "importance": 0.5309669971466064,
+          "normalized_importance": 0.1899
+        },
+        {
+          "feature_name": "mask_sensitivity",
+          "importance": 0.513140857219696,
+          "normalized_importance": 0.1835
+        },
+        {
+          "feature_name": "crypto_weakness",
+          "importance": 0.45370107889175415,
+          "normalized_importance": 0.1622
+        },
+        {
+          "feature_name": "migration_difficulty",
+          "importance": 0.45010989904403687,
+          "normalized_importance": 0.1609
+        },
+        {
+          "feature_name": "library_centrality",
+          "importance": 0.435021311044693,
+          "normalized_importance": 0.1556
+        }
+      ],
+      "top_edges": [
+        {
+          "edge_type": "file->CONTAINS->crypto_usage",
+          "source_type": "file",
+          "source_idx": 1,
+          "relation": "CONTAINS",
+          "target_type": "crypto_usage",
+          "target_idx": 3,
+          "importance": 0.5666,
+          "direct_incident": true
+        },
+        {
+          "edge_type": "crypto_usage->rev_CONTAINS->file",
+          "source_type": "crypto_usage",
+          "source_idx": 3,
+          "relation": "rev_CONTAINS",
+          "target_type": "file",
+          "target_idx": 1,
+          "importance": 0.5659,
+          "direct_incident": true
+        },
+        {
+          "edge_type": "library->rev_IMPORTS->file",
+          "source_type": "library",
+          "source_idx": 2,
+          "relation": "rev_IMPORTS",
+          "target_type": "file",
+          "target_idx": 1,
+          "importance": 0.4314,
+          "direct_incident": true
+        }
+      ]
+    },
+    {
+      "repository": "go_crypto",
+      "asset_id": "go_crypto:acme/http.go",
+      "target_node_idx": 2,
+      "top_features": [
+        {
+          "feature_name": "mask_criticality",
+          "importance": 0.619124710559845,
+          "normalized_importance": 0.1959
+        },
+        {
+          "feature_name": "mask_exposure",
+          "importance": 0.5828163027763367,
+          "normalized_importance": 0.1844
+        },
+        {
+          "feature_name": "mask_crypto_weakness",
+          "importance": 0.5611284971237183,
+          "normalized_importance": 0.1775
+        },
+        {
+          "feature_name": "migration_difficulty",
+          "importance": 0.5398385524749756,
+          "normalized_importance": 0.1708
+        },
+        {
+          "feature_name": "mask_sensitivity",
+          "importance": 0.4361349940299988,
+          "normalized_importance": 0.138
+        }
+      ],
+      "top_edges": [
+        {
+          "edge_type": "library->rev_IMPORTS->file",
+          "source_type": "library",
+          "source_idx": 2,
+          "relation": "rev_IMPORTS",
+          "target_type": "file",
+          "target_idx": 2,
+          "importance": 0.5488,
+          "direct_incident": true
+        },
+        {
+          "edge_type": "file->IMPORTS->library",
+          "source_type": "file",
+          "source_idx": 2,
+          "relation": "IMPORTS",
+          "target_type": "library",
+          "target_idx": 2,
+          "importance": 0.3912,
+          "direct_incident": true
+        },
+        {
+          "edge_type": "file->IMPORTS->library",
+          "source_type": "file",
+          "source_idx": 0,
+          "relation": "IMPORTS",
+          "target_type": "library",
+          "target_idx": 2,
+          "importance": 0.4404,
+          "direct_incident": false
+        }
+      ]
+    },
+    {
+      "repository": "go_crypto",
+      "asset_id": "go_crypto:acme/jws.go",
+      "target_node_idx": 3,
+      "top_features": [
+        {
+          "feature_name": "mask_sensitivity",
+          "importance": 0.5524721145629883,
+          "normalized_importance": 0.2064
+        },
+        {
+          "feature_name": "library_centrality",
+          "importance": 0.4532039761543274,
+          "normalized_importance": 0.1693
+        },
+        {
+          "feature_name": "migration_difficulty",
+          "importance": 0.4399357736110687,
+          "normalized_importance": 0.1644
+        },
+        {
+          "feature_name": "mask_exposure",
+          "importance": 0.4354262948036194,
+          "normalized_importance": 0.1627
+        },
+        {
+          "feature_name": "crypto_weakness",
+          "importance": 0.40246111154556274,
+          "normalized_importance": 0.1504
+        }
+      ],
+      "top_edges": [
+        {
+          "edge_type": "crypto_usage->rev_CONTAINS->file",
+          "source_type": "crypto_usage",
+          "source_idx": 5,
+          "relation": "rev_CONTAINS",
+          "target_type": "file",
+          "target_idx": 3,
+          "importance": 0.5974,
+          "direct_incident": true
+        },
+        {
+          "edge_type": "file->CONTAINS->crypto_usage",
+          "source_type": "file",
+          "source_idx": 3,
+          "relation": "CONTAINS",
+          "target_type": "crypto_usage",
+          "target_idx": 4,
+          "importance": 0.5877,
+          "direct_incident": true
+        },
+        {
+          "edge_type": "file->CONTAINS->crypto_usage",
+          "source_type": "file",
+          "source_idx": 3,
+          "relation": "CONTAINS",
+          "target_type": "crypto_usage",
+          "target_idx": 5,
+          "importance": 0.5826,
+          "direct_incident": true
+        }
+      ]
+    },
+    {
+      "repository": "go_crypto",
+      "asset_id": "go_crypto:acme/jws_test.go",
+      "target_node_idx": 4,
+      "top_features": [
+        {
+          "feature_name": "mask_sensitivity",
+          "importance": 0.5730500817298889,
+          "normalized_importance": 0.2025
+        },
+        {
+          "feature_name": "asset_criticality",
+          "importance": 0.565282940864563,
+          "normalized_importance": 0.1997
+        },
+        {
+          "feature_name": "library_centrality",
+          "importance": 0.43474912643432617,
+          "normalized_importance": 0.1536
+        },
+        {
+          "feature_name": "crypto_weakness",
+          "importance": 0.4271004796028137,
+          "normalized_importance": 0.1509
+        },
+        {
+          "feature_name": "migration_difficulty",
+          "importance": 0.42068564891815186,
+          "normalized_importance": 0.1486
+        }
+      ],
+      "top_edges": [
+        {
+          "edge_type": "crypto_usage->rev_CONTAINS->file",
+          "source_type": "crypto_usage",
+          "source_idx": 6,
+          "relation": "rev_CONTAINS",
+          "target_type": "file",
+          "target_idx": 4,
+          "importance": 0.6069,
+          "direct_incident": true
+        },
+        {
+          "edge_type": "crypto_usage->rev_CONTAINS->file",
+          "source_type": "crypto_usage",
+          "source_idx": 9,
+          "relation": "rev_CONTAINS",
+          "target_type": "file",
+          "target_idx": 4,
+          "importance": 0.6006,
+          "direct_incident": true
+        },
+        {
+          "edge_type": "file->CONTAINS->crypto_usage",
+          "source_type": "file",
+          "source_idx": 4,
+          "relation": "CONTAINS",
+          "target_type": "crypto_usage",
+          "target_idx": 9,
+          "importance": 0.5846,
+          "direct_incident": true
+        }
+      ]
+    },
+    {
+      "repository": "go_jwt",
+      "asset_id": "go_jwt:ecdsa.go",
+      "target_node_idx": 0,
+      "top_features": [
+        {
+          "feature_name": "crypto_weakness",
+          "importance": 0.5712799429893494,
+          "normalized_importance": 0.2042
+        },
+        {
+          "feature_name": "library_centrality",
+          "importance": 0.4806111454963684,
+          "normalized_importance": 0.1718
+        },
+        {
+          "feature_name": "mask_exposure",
+          "importance": 0.47124162316322327,
+          "normalized_importance": 0.1684
+        },
+        {
+          "feature_name": "mask_sensitivity",
+          "importance": 0.4394238293170929,
+          "normalized_importance": 0.157
+        },
+        {
+          "feature_name": "migration_difficulty",
+          "importance": 0.4292983412742615,
+          "normalized_importance": 0.1534
+        }
+      ],
+      "top_edges": [
+        {
+          "edge_type": "file->IMPORTS->library",
+          "source_type": "file",
+          "source_idx": 0,
+          "relation": "IMPORTS",
+          "target_type": "library",
+          "target_idx": 0,
+          "importance": 0.6432,
+          "direct_incident": true
+        },
+        {
+          "edge_type": "file->CONTAINS->crypto_usage",
+          "source_type": "file",
+          "source_idx": 0,
+          "relation": "CONTAINS",
+          "target_type": "crypto_usage",
+          "target_idx": 1,
+          "importance": 0.6117,
+          "direct_incident": true
+        },
+        {
+          "edge_type": "file->IMPORTS->library",
+          "source_type": "file",
+          "source_idx": 0,
+          "relation": "IMPORTS",
+          "target_type": "library",
+          "target_idx": 1,
+          "importance": 0.6027,
+          "direct_incident": true
+        }
+      ]
+    },
+    {
+      "repository": "go_jwt",
+      "asset_id": "go_jwt:ecdsa_test.go",
+      "target_node_idx": 1,
+      "top_features": [
+        {
+          "feature_name": "mask_crypto_weakness",
+          "importance": 0.591561496257782,
+          "normalized_importance": 0.2181
+        },
+        {
+          "feature_name": "asset_criticality",
+          "importance": 0.4466720223426819,
+          "normalized_importance": 0.1647
+        },
+        {
+          "feature_name": "mask_sensitivity",
+          "importance": 0.4379722476005554,
+          "normalized_importance": 0.1615
+        },
+        {
+          "feature_name": "library_centrality",
+          "importance": 0.4269006550312042,
+          "normalized_importance": 0.1574
+        },
+        {
+          "feature_name": "migration_difficulty",
+          "importance": 0.4222908318042755,
+          "normalized_importance": 0.1557
+        }
+      ],
+      "top_edges": [
+        {
+          "edge_type": "library->rev_IMPORTS->file",
+          "source_type": "library",
+          "source_idx": 0,
+          "relation": "rev_IMPORTS",
+          "target_type": "file",
+          "target_idx": 1,
+          "importance": 0.4507,
+          "direct_incident": true
+        },
+        {
+          "edge_type": "file->IMPORTS->library",
+          "source_type": "file",
+          "source_idx": 1,
+          "relation": "IMPORTS",
+          "target_type": "library",
+          "target_idx": 0,
+          "importance": 0.3858,
+          "direct_incident": true
+        },
+        {
+          "edge_type": "file->IMPORTS->library",
+          "source_type": "file",
+          "source_idx": 0,
+          "relation": "IMPORTS",
+          "target_type": "library",
+          "target_idx": 0,
+          "importance": 0.5761,
+          "direct_incident": false
+        }
+      ]
+    },
+    {
+      "repository": "go_jwt",
+      "asset_id": "go_jwt:ecdsa_utils.go",
+      "target_node_idx": 2,
+      "top_features": [
+        {
+          "feature_name": "mask_sensitivity",
+          "importance": 0.6039673089981079,
+          "normalized_importance": 0.1942
+        },
+        {
+          "feature_name": "mask_criticality",
+          "importance": 0.5787877440452576,
+          "normalized_importance": 0.1861
+        },
+        {
+          "feature_name": "mask_crypto_weakness",
+          "importance": 0.5764003396034241,
+          "normalized_importance": 0.1854
+        },
+        {
+          "feature_name": "migration_difficulty",
+          "importance": 0.4680214524269104,
+          "normalized_importance": 0.1505
+        },
+        {
+          "feature_name": "mask_exposure",
+          "importance": 0.45941850543022156,
+          "normalized_importance": 0.1477
+        }
+      ],
+      "top_edges": [
+        {
+          "edge_type": "file->IMPORTS->library",
+          "source_type": "file",
+          "source_idx": 2,
+          "relation": "IMPORTS",
+          "target_type": "library",
+          "target_idx": 0,
+          "importance": 0.5967,
+          "direct_incident": true
+        },
+        {
+          "edge_type": "library->rev_IMPORTS->file",
+          "source_type": "library",
+          "source_idx": 0,
+          "relation": "rev_IMPORTS",
+          "target_type": "file",
+          "target_idx": 2,
+          "importance": 0.5634,
+          "direct_incident": true
+        },
+        {
+          "edge_type": "file->IMPORTS->library",
+          "source_type": "file",
+          "source_idx": 1,
+          "relation": "IMPORTS",
+          "target_type": "library",
+          "target_idx": 0,
+          "importance": 0.6351,
+          "direct_incident": false
+        }
+      ]
+    },
+    {
+      "repository": "go_jwt",
+      "asset_id": "go_jwt:ed25519.go",
+      "target_node_idx": 3,
+      "top_features": [
+        {
+          "feature_name": "crypto_weakness",
+          "importance": 0.5855244398117065,
+          "normalized_importance": 0.2075
+        },
+        {
+          "feature_name": "library_centrality",
+          "importance": 0.5164206624031067,
+          "normalized_importance": 0.183
+        },
+        {
+          "feature_name": "mask_criticality",
+          "importance": 0.44588151574134827,
+          "normalized_importance": 0.158
+        },
+        {
+          "feature_name": "mask_exposure",
+          "importance": 0.42870619893074036,
+          "normalized_importance": 0.1519
+        },
+        {
+          "feature_name": "mask_sensitivity",
+          "importance": 0.423147976398468,
+          "normalized_importance": 0.1499
+        }
+      ],
+      "top_edges": [
+        {
+          "edge_type": "file->IMPORTS->library",
+          "source_type": "file",
+          "source_idx": 3,
+          "relation": "IMPORTS",
+          "target_type": "library",
+          "target_idx": 1,
+          "importance": 0.6252,
+          "direct_incident": true
+        },
+        {
+          "edge_type": "file->IMPORTS->library",
+          "source_type": "file",
+          "source_idx": 3,
+          "relation": "IMPORTS",
+          "target_type": "library",
+          "target_idx": 2,
+          "importance": 0.5922,
+          "direct_incident": true
+        },
+        {
+          "edge_type": "crypto_usage->rev_CONTAINS->file",
+          "source_type": "crypto_usage",
+          "source_idx": 2,
+          "relation": "rev_CONTAINS",
+          "target_type": "file",
+          "target_idx": 3,
+          "importance": 0.5853,
+          "direct_incident": true
+        }
+      ]
+    },
+    {
+      "repository": "go_jwt",
+      "asset_id": "go_jwt:ed25519_utils.go",
+      "target_node_idx": 4,
+      "top_features": [
+        {
+          "feature_name": "mask_sensitivity",
+          "importance": 0.5815028548240662,
+          "normalized_importance": 0.1919
+        },
+        {
+          "feature_name": "mask_crypto_weakness",
+          "importance": 0.5598359704017639,
+          "normalized_importance": 0.1848
+        },
+        {
+          "feature_name": "mask_criticality",
+          "importance": 0.5508625507354736,
+          "normalized_importance": 0.1818
+        },
+        {
+          "feature_name": "migration_difficulty",
+          "importance": 0.4635778069496155,
+          "normalized_importance": 0.153
+        },
+        {
+          "feature_name": "mask_exposure",
+          "importance": 0.4577627182006836,
+          "normalized_importance": 0.1511
+        }
+      ],
+      "top_edges": [
+        {
+          "edge_type": "file->IMPORTS->library",
+          "source_type": "file",
+          "source_idx": 4,
+          "relation": "IMPORTS",
+          "target_type": "library",
+          "target_idx": 2,
+          "importance": 0.6522,
+          "direct_incident": true
+        },
+        {
+          "edge_type": "library->rev_IMPORTS->file",
+          "source_type": "library",
+          "source_idx": 2,
+          "relation": "rev_IMPORTS",
+          "target_type": "file",
+          "target_idx": 4,
+          "importance": 0.4393,
+          "direct_incident": true
+        },
+        {
+          "edge_type": "file->IMPORTS->library",
+          "source_type": "file",
+          "source_idx": 3,
+          "relation": "IMPORTS",
+          "target_type": "library",
+          "target_idx": 2,
+          "importance": 0.5692,
+          "direct_incident": false
+        }
+      ]
+    }
+  ]
+}

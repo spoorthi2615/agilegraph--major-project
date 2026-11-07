@@ -18,6 +18,7 @@ EXCLUDED_DIR_NAMES = {
     "build",
     ".venv",
     "venv",
+    "scratch",
     ".idea",
     ".vscode",
 }

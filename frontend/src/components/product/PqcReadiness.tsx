@@ -116,11 +116,11 @@ export default function PqcReadiness() {
                 <CheckCircle2 className="w-5 h-5 text-primary" /> Evidence Coverage
               </h3>
               <div className="flex flex-col gap-3">
-                <CoverageItem label="File Dependencies" status="COLLECTED" />
-                <CoverageItem label="Library Imports" status="COLLECTED" />
-                <CoverageItem label="Certificates" status="NOT_COLLECTED" />
-                <CoverageItem label="Endpoints" status="NOT_COLLECTED" />
-                <CoverageItem label="Sensitive Data" status="NOT_COLLECTED" />
+                <CoverageItem label="File Dependencies" status={data.coverage?.file_dependencies || "COLLECTED"} />
+                <CoverageItem label="Library Imports" status={data.coverage?.library_imports || "COLLECTED"} />
+                <CoverageItem label="Certificates" status={data.coverage?.certificates || "NOT_COLLECTED"} />
+                <CoverageItem label="Endpoints" status={data.coverage?.endpoints || "NOT_COLLECTED"} />
+                <CoverageItem label="Sensitive Data" status={data.coverage?.sensitive_data || "NOT_COLLECTED"} />
               </div>
             </div>
           </div>

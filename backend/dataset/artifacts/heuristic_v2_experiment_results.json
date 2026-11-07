@@ -1,0 +1,764 @@
+{
+  "1_Baseline_V1": {
+    "macro_f1": 0.3225,
+    "weighted_cohens_kappa": 0.2625,
+    "accuracy": 0.3312,
+    "bootstrap_95ci": {
+      "point_estimate": 0.3225,
+      "ci_lower": 0.2558,
+      "ci_upper": 0.3799,
+      "n_bootstraps": 1000
+    },
+    "confusion_matrix": {
+      "labels": [
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ],
+      "matrix": [
+        [
+          26,
+          1,
+          2
+        ],
+        [
+          45,
+          2,
+          4
+        ],
+        [
+          9,
+          46,
+          25
+        ]
+      ]
+    },
+    "per_class_metrics": {
+      "LOW": {
+        "precision": 0.325,
+        "recall": 0.8966,
+        "f1": 0.4771,
+        "support": 29
+      },
+      "MEDIUM": {
+        "precision": 0.0408,
+        "recall": 0.0392,
+        "f1": 0.04,
+        "support": 51
+      },
+      "HIGH": {
+        "precision": 0.8065,
+        "recall": 0.3125,
+        "f1": 0.4505,
+        "support": 80
+      }
+    },
+    "threshold_strategy": "Fixed (0.30, 0.60)",
+    "thresholds_by_held_out_repo": {},
+    "per_repository_performance": {
+      "go_crypto": {
+        "sample_size": 57,
+        "accuracy": 0.2807,
+        "macro_f1": 0.2985,
+        "fitted_thresholds": null
+      },
+      "go_jwt": {
+        "sample_size": 14,
+        "accuracy": 0.4286,
+        "macro_f1": 0.3333,
+        "fitted_thresholds": null
+      },
+      "go_jwt_go": {
+        "sample_size": 10,
+        "accuracy": 0.5,
+        "macro_f1": 0.4286,
+        "fitted_thresholds": null
+      },
+      "java_java_jwt": {
+        "sample_size": 7,
+        "accuracy": 0.4286,
+        "macro_f1": 0.3333,
+        "fitted_thresholds": null
+      },
+      "java_jjwt": {
+        "sample_size": 43,
+        "accuracy": 0.0233,
+        "macro_f1": 0.0155,
+        "fitted_thresholds": null
+      },
+      "python_cryptography": {
+        "sample_size": 28,
+        "accuracy": 0.75,
+        "macro_f1": 0.2917,
+        "fitted_thresholds": null
+      },
+      "python_itsdangerous": {
+        "sample_size": 1,
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "fitted_thresholds": null
+      }
+    },
+    "description": "Production Baseline V1 (Fixed 0.30/0.60 thresholds, no weakness propagation)"
+  },
+  "2_V2_Threshold_Calibration_Only": {
+    "macro_f1": 0.496,
+    "weighted_cohens_kappa": 0.4955,
+    "accuracy": 0.5938,
+    "bootstrap_95ci": {
+      "point_estimate": 0.496,
+      "ci_lower": 0.4238,
+      "ci_upper": 0.5626,
+      "n_bootstraps": 1000
+    },
+    "confusion_matrix": {
+      "labels": [
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ],
+      "matrix": [
+        [
+          14,
+          12,
+          3
+        ],
+        [
+          37,
+          10,
+          4
+        ],
+        [
+          5,
+          4,
+          71
+        ]
+      ]
+    },
+    "per_class_metrics": {
+      "LOW": {
+        "precision": 0.25,
+        "recall": 0.4828,
+        "f1": 0.3294,
+        "support": 29
+      },
+      "MEDIUM": {
+        "precision": 0.3846,
+        "recall": 0.1961,
+        "f1": 0.2597,
+        "support": 51
+      },
+      "HIGH": {
+        "precision": 0.9103,
+        "recall": 0.8875,
+        "f1": 0.8987,
+        "support": 80
+      }
+    },
+    "threshold_strategy": "LORO-Calibrated",
+    "thresholds_by_held_out_repo": {
+      "go_crypto": [
+        0.16,
+        0.38
+      ],
+      "go_jwt": [
+        0.12,
+        0.38
+      ],
+      "go_jwt_go": [
+        0.16,
+        0.38
+      ],
+      "java_java_jwt": [
+        0.16,
+        0.38
+      ],
+      "java_jjwt": [
+        0.18,
+        0.32
+      ],
+      "python_cryptography": [
+        0.16,
+        0.32
+      ],
+      "python_itsdangerous": [
+        0.16,
+        0.38
+      ]
+    },
+    "per_repository_performance": {
+      "go_crypto": {
+        "sample_size": 57,
+        "accuracy": 0.8596,
+        "macro_f1": 0.7688,
+        "fitted_thresholds": [
+          0.16,
+          0.38
+        ]
+      },
+      "go_jwt": {
+        "sample_size": 14,
+        "accuracy": 0.6429,
+        "macro_f1": 0.4286,
+        "fitted_thresholds": [
+          0.12,
+          0.38
+        ]
+      },
+      "go_jwt_go": {
+        "sample_size": 10,
+        "accuracy": 0.7,
+        "macro_f1": 0.4667,
+        "fitted_thresholds": [
+          0.16,
+          0.38
+        ]
+      },
+      "java_java_jwt": {
+        "sample_size": 7,
+        "accuracy": 0.4286,
+        "macro_f1": 0.2,
+        "fitted_thresholds": [
+          0.16,
+          0.38
+        ]
+      },
+      "java_jjwt": {
+        "sample_size": 43,
+        "accuracy": 0.1163,
+        "macro_f1": 0.1763,
+        "fitted_thresholds": [
+          0.18,
+          0.32
+        ]
+      },
+      "python_cryptography": {
+        "sample_size": 28,
+        "accuracy": 0.75,
+        "macro_f1": 0.2857,
+        "fitted_thresholds": [
+          0.16,
+          0.32
+        ]
+      },
+      "python_itsdangerous": {
+        "sample_size": 1,
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "fitted_thresholds": [
+          0.16,
+          0.38
+        ]
+      }
+    },
+    "description": "V2 Strategy 1 Only: Data-Aware Threshold Calibration via LORO CV"
+  },
+  "3_V2_Graph_Propagation_Only": {
+    "macro_f1": 0.3653,
+    "weighted_cohens_kappa": 0.2657,
+    "accuracy": 0.3563,
+    "bootstrap_95ci": {
+      "point_estimate": 0.3653,
+      "ci_lower": 0.2893,
+      "ci_upper": 0.4276,
+      "n_bootstraps": 1000
+    },
+    "confusion_matrix": {
+      "labels": [
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ],
+      "matrix": [
+        [
+          22,
+          5,
+          2
+        ],
+        [
+          37,
+          10,
+          4
+        ],
+        [
+          5,
+          50,
+          25
+        ]
+      ]
+    },
+    "per_class_metrics": {
+      "LOW": {
+        "precision": 0.3438,
+        "recall": 0.7586,
+        "f1": 0.4731,
+        "support": 29
+      },
+      "MEDIUM": {
+        "precision": 0.1538,
+        "recall": 0.1961,
+        "f1": 0.1724,
+        "support": 51
+      },
+      "HIGH": {
+        "precision": 0.8065,
+        "recall": 0.3125,
+        "f1": 0.4505,
+        "support": 80
+      }
+    },
+    "threshold_strategy": "Fixed (0.30, 0.60)",
+    "thresholds_by_held_out_repo": {},
+    "per_repository_performance": {
+      "go_crypto": {
+        "sample_size": 57,
+        "accuracy": 0.2105,
+        "macro_f1": 0.2556,
+        "fitted_thresholds": null
+      },
+      "go_jwt": {
+        "sample_size": 14,
+        "accuracy": 0.4286,
+        "macro_f1": 0.3333,
+        "fitted_thresholds": null
+      },
+      "go_jwt_go": {
+        "sample_size": 10,
+        "accuracy": 0.5,
+        "macro_f1": 0.4286,
+        "fitted_thresholds": null
+      },
+      "java_java_jwt": {
+        "sample_size": 7,
+        "accuracy": 0.4286,
+        "macro_f1": 0.3333,
+        "fitted_thresholds": null
+      },
+      "java_jjwt": {
+        "sample_size": 43,
+        "accuracy": 0.2093,
+        "macro_f1": 0.1313,
+        "fitted_thresholds": null
+      },
+      "python_cryptography": {
+        "sample_size": 28,
+        "accuracy": 0.75,
+        "macro_f1": 0.2917,
+        "fitted_thresholds": null
+      },
+      "python_itsdangerous": {
+        "sample_size": 1,
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "fitted_thresholds": null
+      }
+    },
+    "description": "V2 Strategy 2 Only: Graph Weakness Propagation Only (Fixed 0.30/0.60 thresholds)"
+  },
+  "4_V2_Combined_Calibrated_and_Propagated": {
+    "macro_f1": 0.7312,
+    "weighted_cohens_kappa": 0.7028,
+    "accuracy": 0.7875,
+    "bootstrap_95ci": {
+      "point_estimate": 0.7312,
+      "ci_lower": 0.6432,
+      "ci_upper": 0.8084,
+      "n_bootstraps": 1000
+    },
+    "confusion_matrix": {
+      "labels": [
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ],
+      "matrix": [
+        [
+          14,
+          13,
+          2
+        ],
+        [
+          5,
+          39,
+          7
+        ],
+        [
+          0,
+          7,
+          73
+        ]
+      ]
+    },
+    "per_class_metrics": {
+      "LOW": {
+        "precision": 0.7368,
+        "recall": 0.4828,
+        "f1": 0.5833,
+        "support": 29
+      },
+      "MEDIUM": {
+        "precision": 0.661,
+        "recall": 0.7647,
+        "f1": 0.7091,
+        "support": 51
+      },
+      "HIGH": {
+        "precision": 0.8902,
+        "recall": 0.9125,
+        "f1": 0.9012,
+        "support": 80
+      }
+    },
+    "threshold_strategy": "LORO-Calibrated",
+    "thresholds_by_held_out_repo": {
+      "go_crypto": [
+        0.24,
+        0.38
+      ],
+      "go_jwt": [
+        0.18,
+        0.38
+      ],
+      "go_jwt_go": [
+        0.18,
+        0.38
+      ],
+      "java_java_jwt": [
+        0.24,
+        0.38
+      ],
+      "java_jjwt": [
+        0.18,
+        0.32
+      ],
+      "python_cryptography": [
+        0.18,
+        0.38
+      ],
+      "python_itsdangerous": [
+        0.18,
+        0.38
+      ]
+    },
+    "per_repository_performance": {
+      "go_crypto": {
+        "sample_size": 57,
+        "accuracy": 0.7719,
+        "macro_f1": 0.619,
+        "fitted_thresholds": [
+          0.24,
+          0.38
+        ]
+      },
+      "go_jwt": {
+        "sample_size": 14,
+        "accuracy": 0.9286,
+        "macro_f1": 0.6364,
+        "fitted_thresholds": [
+          0.18,
+          0.38
+        ]
+      },
+      "go_jwt_go": {
+        "sample_size": 10,
+        "accuracy": 0.6,
+        "macro_f1": 0.3333,
+        "fitted_thresholds": [
+          0.18,
+          0.38
+        ]
+      },
+      "java_java_jwt": {
+        "sample_size": 7,
+        "accuracy": 0.5714,
+        "macro_f1": 0.4571,
+        "fitted_thresholds": [
+          0.24,
+          0.38
+        ]
+      },
+      "java_jjwt": {
+        "sample_size": 43,
+        "accuracy": 0.8605,
+        "macro_f1": 0.4881,
+        "fitted_thresholds": [
+          0.18,
+          0.32
+        ]
+      },
+      "python_cryptography": {
+        "sample_size": 28,
+        "accuracy": 0.75,
+        "macro_f1": 0.2917,
+        "fitted_thresholds": [
+          0.18,
+          0.38
+        ]
+      },
+      "python_itsdangerous": {
+        "sample_size": 1,
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "fitted_thresholds": [
+          0.18,
+          0.38
+        ]
+      }
+    },
+    "description": "V2 Combined: Threshold Calibration + Graph Weakness Propagation via LORO CV"
+  },
+  "5_Strategy_3_PQC_Dominance_Floor_Alone": {
+    "macro_f1": 0.4852,
+    "weighted_cohens_kappa": 0.55,
+    "accuracy": 0.6188,
+    "bootstrap_95ci": {
+      "point_estimate": 0.4852,
+      "ci_lower": 0.4224,
+      "ci_upper": 0.5429,
+      "n_bootstraps": 1000
+    },
+    "confusion_matrix": {
+      "labels": [
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ],
+      "matrix": [
+        [
+          26,
+          1,
+          2
+        ],
+        [
+          45,
+          2,
+          4
+        ],
+        [
+          9,
+          0,
+          71
+        ]
+      ]
+    },
+    "per_class_metrics": {
+      "LOW": {
+        "precision": 0.325,
+        "recall": 0.8966,
+        "f1": 0.4771,
+        "support": 29
+      },
+      "MEDIUM": {
+        "precision": 0.6667,
+        "recall": 0.0392,
+        "f1": 0.0741,
+        "support": 51
+      },
+      "HIGH": {
+        "precision": 0.9221,
+        "recall": 0.8875,
+        "f1": 0.9045,
+        "support": 80
+      }
+    },
+    "threshold_strategy": "Fixed (0.30, 0.60)",
+    "thresholds_by_held_out_repo": {},
+    "per_repository_performance": {
+      "go_crypto": {
+        "sample_size": 57,
+        "accuracy": 0.8421,
+        "macro_f1": 0.6502,
+        "fitted_thresholds": null
+      },
+      "go_jwt": {
+        "sample_size": 14,
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "fitted_thresholds": null
+      },
+      "go_jwt_go": {
+        "sample_size": 10,
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "fitted_thresholds": null
+      },
+      "java_java_jwt": {
+        "sample_size": 7,
+        "accuracy": 0.4286,
+        "macro_f1": 0.3333,
+        "fitted_thresholds": null
+      },
+      "java_jjwt": {
+        "sample_size": 43,
+        "accuracy": 0.0465,
+        "macro_f1": 0.1266,
+        "fitted_thresholds": null
+      },
+      "python_cryptography": {
+        "sample_size": 28,
+        "accuracy": 0.75,
+        "macro_f1": 0.2917,
+        "fitted_thresholds": null
+      },
+      "python_itsdangerous": {
+        "sample_size": 1,
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "fitted_thresholds": null
+      }
+    },
+    "description": "Strategy 3: Non-Linear PQC Dominance Floor Alone (Fixed 0.30/0.60 thresholds)"
+  },
+  "6_V2_Full_Combined_with_PQC_Floor": {
+    "macro_f1": 0.7312,
+    "weighted_cohens_kappa": 0.7028,
+    "accuracy": 0.7875,
+    "bootstrap_95ci": {
+      "point_estimate": 0.7312,
+      "ci_lower": 0.6432,
+      "ci_upper": 0.8084,
+      "n_bootstraps": 1000
+    },
+    "confusion_matrix": {
+      "labels": [
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ],
+      "matrix": [
+        [
+          14,
+          13,
+          2
+        ],
+        [
+          5,
+          39,
+          7
+        ],
+        [
+          0,
+          7,
+          73
+        ]
+      ]
+    },
+    "per_class_metrics": {
+      "LOW": {
+        "precision": 0.7368,
+        "recall": 0.4828,
+        "f1": 0.5833,
+        "support": 29
+      },
+      "MEDIUM": {
+        "precision": 0.661,
+        "recall": 0.7647,
+        "f1": 0.7091,
+        "support": 51
+      },
+      "HIGH": {
+        "precision": 0.8902,
+        "recall": 0.9125,
+        "f1": 0.9012,
+        "support": 80
+      }
+    },
+    "threshold_strategy": "LORO-Calibrated",
+    "thresholds_by_held_out_repo": {
+      "go_crypto": [
+        0.24,
+        0.38
+      ],
+      "go_jwt": [
+        0.18,
+        0.38
+      ],
+      "go_jwt_go": [
+        0.18,
+        0.38
+      ],
+      "java_java_jwt": [
+        0.24,
+        0.38
+      ],
+      "java_jjwt": [
+        0.18,
+        0.32
+      ],
+      "python_cryptography": [
+        0.18,
+        0.38
+      ],
+      "python_itsdangerous": [
+        0.18,
+        0.38
+      ]
+    },
+    "per_repository_performance": {
+      "go_crypto": {
+        "sample_size": 57,
+        "accuracy": 0.7719,
+        "macro_f1": 0.619,
+        "fitted_thresholds": [
+          0.24,
+          0.38
+        ]
+      },
+      "go_jwt": {
+        "sample_size": 14,
+        "accuracy": 0.9286,
+        "macro_f1": 0.6364,
+        "fitted_thresholds": [
+          0.18,
+          0.38
+        ]
+      },
+      "go_jwt_go": {
+        "sample_size": 10,
+        "accuracy": 0.6,
+        "macro_f1": 0.3333,
+        "fitted_thresholds": [
+          0.18,
+          0.38
+        ]
+      },
+      "java_java_jwt": {
+        "sample_size": 7,
+        "accuracy": 0.5714,
+        "macro_f1": 0.4571,
+        "fitted_thresholds": [
+          0.24,
+          0.38
+        ]
+      },
+      "java_jjwt": {
+        "sample_size": 43,
+        "accuracy": 0.8605,
+        "macro_f1": 0.4881,
+        "fitted_thresholds": [
+          0.18,
+          0.32
+        ]
+      },
+      "python_cryptography": {
+        "sample_size": 28,
+        "accuracy": 0.75,
+        "macro_f1": 0.2917,
+        "fitted_thresholds": [
+          0.18,
+          0.38
+        ]
+      },
+      "python_itsdangerous": {
+        "sample_size": 1,
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "fitted_thresholds": [
+          0.18,
+          0.38
+        ]
+      }
+    },
+    "description": "V2 Full Combined: Calibration + Propagation + PQC Dominance Floor via LORO CV"
+  }
+}

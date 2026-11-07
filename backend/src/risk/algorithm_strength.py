@@ -45,6 +45,7 @@ CANONICAL_FAMILY_MAP = {
     "dilithium":  0.0,
     "falcon":     0.0,
     "sphincs":    0.0,
+    "sphincsplus":0.0,
     # NIST PQC final names (ML-DSA / ML-KEM / SLH-DSA) — strong
     "mlkem":      0.0,
     "mldsa":      0.0,

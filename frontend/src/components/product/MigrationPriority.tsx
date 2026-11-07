@@ -16,24 +16,30 @@ export default function MigrationPriority() {
     setLoading(true);
     setError(null);
     try {
-      // Fetch all assets from risk response first to get the asset IDs
-      const riskRes = await apiClient.getRisk(projectId);
-      if (!riskRes.assets || riskRes.assets.length === 0) {
-        setAssetsPriority([]);
-        return;
+      let priorities: any[] | null = null;
+      if (typeof apiClient.getAllMigrationPriorities === 'function') {
+        try {
+          priorities = await apiClient.getAllMigrationPriorities(projectId, moscaStatus);
+        } catch {}
       }
-      
-      // Fetch priority for each asset
-      const priorities = await Promise.all(
-        riskRes.assets.map(async (asset) => {
-          try {
-            const p = await apiClient.getMigrationPriority(projectId, asset.asset_id, moscaStatus);
-            return { asset_id: asset.asset_id, ...p };
-          } catch {
-            return { asset_id: asset.asset_id, priority: 'NOT_ASSESSED', rationale: 'Failed to fetch priority' };
-          }
-        })
-      );
+
+      if (!priorities) {
+        const riskRes = await apiClient.getRisk(projectId);
+        if (!riskRes.assets || riskRes.assets.length === 0) {
+          setAssetsPriority([]);
+          return;
+        }
+        priorities = await Promise.all(
+          riskRes.assets.map(async (asset) => {
+            try {
+              const p = await apiClient.getMigrationPriority(projectId, asset.asset_id, moscaStatus);
+              return { asset_id: asset.asset_id, ...p };
+            } catch {
+              return { asset_id: asset.asset_id, priority: 'NOT_ASSESSED', rationale: 'Failed to fetch priority' };
+            }
+          })
+        );
+      }
       
       // Sort deterministically by sort_key
       priorities.sort((a, b) => {

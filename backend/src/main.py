@@ -10,7 +10,17 @@ async def lifespan(app: FastAPI):
     logger.info("AgileGraph application startup.")
     yield
 
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI(title="AgileGraph API", description="Graph-Learned Crypto-Agility Risk Scoring", lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(router, prefix="/api/v1")
 

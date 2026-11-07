@@ -45,27 +45,48 @@ export default function Reports() {
 
       // Fetch migration priorities for scored assets where available
       if (riskRes?.assets && riskRes.assets.length > 0) {
-        const priorityEntries = await Promise.all(
-          riskRes.assets.map(async (asset) => {
-            try {
-              const p = await apiClient.getMigrationPriority(id, asset.asset_id, 'NOT_AT_RISK');
-              return [asset.asset_id, {
-                priority: p.priority || 'NOT_ASSESSED',
-                rationale: p.rationale || '',
-                pqc_relevance: p.pqc_relevance,
-                mosca_status: p.mosca_status
-              }] as const;
-            } catch {
-              return [asset.asset_id, {
-                priority: 'NOT_ASSESSED',
-                rationale: 'Priority unavailable',
-                pqc_relevance: false,
-                mosca_status: 'UNKNOWN'
-              }] as const;
+        let loaded = false;
+        if (typeof apiClient.getAllMigrationPriorities === 'function') {
+          try {
+            const priorityList = await apiClient.getAllMigrationPriorities(id, 'NOT_AT_RISK');
+            if (Array.isArray(priorityList) && priorityList.length > 0) {
+              const entries = priorityList.map((p: any) => [
+                p.asset_id,
+                {
+                  priority: p.priority || 'NOT_ASSESSED',
+                  rationale: p.rationale || '',
+                  pqc_relevance: p.pqc_relevance,
+                  mosca_status: p.mosca_status
+                }
+              ]);
+              setPriorities(Object.fromEntries(entries));
+              loaded = true;
             }
-          })
-        );
-        setPriorities(Object.fromEntries(priorityEntries));
+          } catch {}
+        }
+        if (!loaded) {
+          const priorityEntries = await Promise.all(
+            riskRes.assets.map(async (asset) => {
+              try {
+                const p = await apiClient.getMigrationPriority(id, asset.asset_id, 'NOT_AT_RISK');
+                return [asset.asset_id, {
+                  priority: p.priority || 'NOT_ASSESSED',
+                  rationale: p.rationale || '',
+                  pqc_relevance: p.pqc_relevance,
+                  mosca_status: p.mosca_status
+                }] as const;
+              } catch {
+                return [asset.asset_id, {
+                  priority: 'NOT_ASSESSED',
+                  rationale: 'Priority unavailable',
+                  pqc_relevance: false,
+                  mosca_status: 'UNKNOWN'
+                }] as const;
+              }
+            })
+          );
+          setPriorities(Object.fromEntries(priorityEntries));
+        }
       } else {
         setPriorities({});
       }

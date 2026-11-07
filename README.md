@@ -1,7 +1,7 @@
 # AgileGraph: Graph-Learned Crypto-Agility Risk Scoring for Post-Quantum Migration
 
-[![Backend Tests](https://img.shields.io/badge/Backend%20Tests-413%20Passed%20(4%20skipped)-success?style=flat-square&logo=pytest)](docs/evaluation.md)
-[![Frontend Tests](https://img.shields.io/badge/Frontend%20Tests-38%20Passed-success?style=flat-square&logo=vitest)](frontend/)
+[![Backend Tests](https://img.shields.io/badge/Backend%20Tests-427%20Passed%20(4%20skipped)-success?style=flat-square&logo=pytest)](docs/evaluation.md)
+[![Frontend Tests](https://img.shields.io/badge/Frontend%20Tests-39%20Passed-success?style=flat-square&logo=vitest)](frontend/)
 [![Python Version](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue?style=flat-square&logo=python)](backend/)
 [![React Version](https://img.shields.io/badge/Frontend-React%2019%20%7C%20TypeScript%20%7C%20Vite-61dafb?style=flat-square&logo=react)](frontend/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
@@ -336,6 +336,23 @@ To evaluate model capacity when training folds are not starved of high-risk sign
 9. **Architectural Safeguards**:
    - In production scans, cryptographic findings are cataloged 100% deterministically by AST/regex scanners and scored by the 7-factor engine. While weak-label distillation has been rigorously evaluated, expert-label validation remains blocked; thus, the PyTorch GATv2 model is isolated as an architectural prototype (`ml_status: ARCHITECTURAL_PROTOTYPE`) and cannot suppress or alter scanner findings.
 
+### 8.1 Independent Four-Expert Validation & Heuristic V2 Engine
+
+Following Phase 2 research requirements, an independent blinded four-expert validation audit was conducted across 160 repository-scoped assets sampled from 7 canonical benchmark repositories (`go_crypto`, `go_jwt`, `go_jwt_go`, `java_java_jwt`, `java_jjwt`, `python_cryptography`, `python_itsdangerous`):
+
+- **Inter-Annotator Agreement**:
+  - Mutually rated assets: $N = 154$ (4 raters), $N = 160$ (at least 3 raters).
+  - Mean pairwise linear weighted Cohen's Kappa: $\bar{\kappa} = \mathbf{0.8167}$ (Near-perfect agreement).
+  - Multi-rater Fleiss' Kappa: $\kappa_{\text{Fleiss}} = \mathbf{0.7791}$ (Substantial consensus).
+- **Consensus Ground Truth Distribution ($N = 160$)**:
+  - HIGH: 80 assets (50.0%), MEDIUM: 51 assets (31.9%), LOW: 29 assets (18.1%).
+- **Evaluation Protocols & Methodological Framing**:
+  - **V1 Fixed (Original baseline point evaluation)**: Macro-F1: **0.3225** (95% bootstrap CI: $[0.2558, 0.3799]$), Weighted $\kappa = 0.2625$, Accuracy = $33.12\%$. High specificity on non-crypto assets (LOW recall: $89.66\%$), with precision on HIGH of $80.65\%$ (25/31).
+  - **V1 LORO (Cross-validated calibrated-threshold baseline)**: Macro-F1: **0.4960**, Accuracy: **59.38%** under 7-fold Leave-One-Repository-Out cross-validation.
+  - **V2 LORO (Cross-validated calibrated heuristic with graph weakness propagation)**: Accessible via `engine_version="v2"` (`heuristic-v2.0-experimental`) while strictly retaining V1 as production default. Macro-F1 = **0.7312** (95% CI: $[0.6432, 0.8084]$), Weighted Cohen's $\kappa = \mathbf{0.7028}$, Accuracy = **$78.75\%$** ($126/160$), HIGH recall = **$91.25\%$** ($73/80$), MEDIUM recall = **$76.47\%$** ($39/51$), LOW recall = **$48.28\%$**.
+  - **Experiment 3 (Post-hoc exploratory asymmetric-specific propagation ablation)**: Offline research ablation restricting propagation to Shor-vulnerable primitives; Macro-F1 = **0.8172**, Accuracy = **83.75%**, LOW recall = **75.86%**.
+  - *Methodological Caveat*: LORO cross-validation evaluates internal stability across held-out repositories; **internal cross-validation alone does not constitute proof of external generalization** to arbitrary third-party codebases.
+
 ---
 
 ## 9. Authentication & Multi-User Data Isolation
@@ -525,7 +542,7 @@ agilegraph--major-project/
 │   │   ├── scanners/              # Python AST, Java, Go, manifest scanners
 │   │   ├── cli.py                 # Command-line interface
 │   │   └── main.py                # FastAPI app entrypoint
-│   └── tests/                     # 413 passing pytest tests
+│   └── tests/                     # 427 passing pytest tests
 ├── docs/                          # Architectural specs, proposal synopsis, and benchmarks
 │   ├── AGILEGRAPH_PROJECT_SYNOPSIS.pdf   # Academic proposal synopsis (PDF)
 │   ├── AGILEGRAPH_PROJECT_SYNOPSIS.docx  # Academic proposal synopsis (Word)
@@ -560,8 +577,8 @@ Every component of AgileGraph is covered by automated unit, integration, and sec
 
 | Test Suite | Framework | Total Tests | Passed | Skipped | Status |
 | :--- | :--- | :---: | :---: | :---: | :---: |
-| **Backend Suite** | `pytest` | 417 | **413** | 4* | **100% Pass** |
-| **Frontend Suite** | `vitest` | 38 | **38** | 0 | **100% Pass** |
+| **Backend Suite** | `pytest` | 431 | **427** | 4* | **100% Pass** |
+| **Frontend Suite** | `vitest` | 39 | **39** | 0 | **100% Pass** |
 | **Frontend Production Build** | `tsc -b && vite build` | — | **Exit 0** | 0 | **Clean** |
 
 *\*Note: 4 skips are Windows OS symlink and FIFO limitations in pipeline filesystem isolation tests.*

@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AgileGraph Expert Review Annotation Template",
+  "description": "Template format for external cybersecurity reviewers to independently evaluate cryptographic migration risk. Real expert annotations must be filled by verified reviewers; synthetic or hallucinated data is prohibited.",
+  "metadata": {
+    "protocol_version": "1.0.0",
+    "project": "AgileGraph - Final Year B.Tech Project",
+    "institution": "NMAM Institute of Technology",
+    "target_sample_size": "150-200 cryptographic assets",
+    "min_reviewers": 4
+  },
+  "expert_profile": {
+    "expert_id": "EXP_001",
+    "name": "Reviewer Name / Pseudonym",
+    "years_experience": 0,
+    "primary_role": "Cryptographer / Security Engineer / Security Researcher",
+    "affiliation_category": "Industry / Academia / Independent"
+  },
+  "review_instructions": {
+    "categories": {
+      "HIGH": "Assets employing broken asymmetric cryptography (e.g. RSA < 3072, ECC/ECDSA, DSA, DH) susceptible to Shor's algorithm on a CRQC, or broken symmetric/hash primitives (MD5, SHA1, DES, RC4) in sensitive paths.",
+      "MEDIUM": "Assets with intermediate risk (e.g. SHA-256 in high-exposure signatures, large-key RSA 4096 in isolated modules, or symmetric primitives requiring quantum-safe key lengthening).",
+      "LOW": "Assets employing quantum-resistant primitives (AES-256, ChaCha20, SHA-3, ML-KEM, ML-DSA) or non-sensitive, isolated cryptographic operations."
+    },
+    "confidence_scale": "Float between 0.0 (uncertain) and 1.0 (absolute certainty)."
+  },
+  "annotations": [
+    {
+      "asset_id": "example_repository/path/to/crypto_file.py",
+      "repository": "example_repo",
+      "detected_primitives": ["RSA-2048", "SHA-256"],
+      "assigned_risk_category": "HIGH",
+      "confidence": 0.95,
+      "rationale": "RSA-2048 key exchange is vulnerable to Shor's algorithm on a CRQC. Subject to Harvest Now, Decrypt Later threats.",
+      "timestamp_utc": "YYYY-MM-DDTHH:MM:SSZ"
+    }
+  ]
+}
+

@@ -32,16 +32,32 @@ export default function MigrationRoadmap() {
         return;
       }
       
-      const states = await Promise.all(
-        riskRes.assets.map(async (asset) => {
-          try {
-            const state = await apiClient.getRoadmapState(projectId, asset.asset_id);
-            return { ...asset, roadmap: state };
-          } catch {
-            return { ...asset, roadmap: { current_state: "DISCOVERED" } };
+      let states: any[] | null = null;
+      if (typeof apiClient.getAllRoadmapStates === 'function') {
+        try {
+          const roadmapMap = await apiClient.getAllRoadmapStates(projectId);
+          if (roadmapMap && typeof roadmapMap === 'object' && Object.keys(roadmapMap).length > 0) {
+            states = riskRes.assets.map((asset) => {
+              const state = roadmapMap[asset.asset_id] || { current_state: "DISCOVERED" };
+              return { ...asset, roadmap: state };
+            });
           }
-        })
-      );
+        } catch {}
+      }
+
+      if (!states) {
+        states = await Promise.all(
+          riskRes.assets.map(async (asset) => {
+            try {
+              const state = await apiClient.getRoadmapState(projectId, asset.asset_id);
+              return { ...asset, roadmap: state };
+            } catch {
+              return { ...asset, roadmap: { current_state: "DISCOVERED" } };
+            }
+          })
+        );
+      }
+
       setAssets(states);
     } catch (err: any) {
       setError(err.message || "Failed to load migration roadmap.");

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { apiClient } from '../../api/client';
-import { Search, AlertCircle, Calculator } from 'lucide-react';
+import { Search, AlertCircle, Calculator, Info, Gauge } from 'lucide-react';
 
 export default function MoscaReadiness() {
   const [x, setX] = useState<number>(24);
@@ -26,8 +26,6 @@ export default function MoscaReadiness() {
     }
   };
 
-
-
   return (
     <div className="flex flex-col gap-8 w-full max-w-7xl mx-auto font-sans animate-fade-up">
       {/* Page Header */}
@@ -35,10 +33,10 @@ export default function MoscaReadiness() {
         <div className="absolute -inset-8 rounded-3xl bg-gradient-to-br from-primary/10 to-transparent blur-2xl -z-10"></div>
         <div className="text-xs font-semibold uppercase tracking-widest text-primary">Theorem Analysis</div>
         <h2 className="text-3xl font-semibold tracking-tight text-foreground md:text-4xl flex items-center gap-3">
-          <Calculator className="w-8 h-8 text-primary" /> Mosca Readiness
+          <Calculator className="w-8 h-8 text-primary" /> Mosca Readiness Analysis
         </h2>
-        <p className="text-muted-foreground max-w-2xl mt-1">
-          Planning view based on confidentiality period, migration time, and quantum capability horizon.
+        <p className="text-muted-foreground max-w-3xl mt-1 text-sm leading-relaxed">
+          Planning view harmonizing the classical Mosca condition (<span className="font-mono text-primary font-medium">X + Y &gt; Z</span>) with the continuous urgency index (<span className="font-mono text-primary font-medium">U = (X + Y) / Z</span>).
         </p>
       </div>
 
@@ -51,12 +49,15 @@ export default function MoscaReadiness() {
             
             <form onSubmit={handleEvaluate} className="flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Data Confidentiality Period (x)</label>
+                <div className="flex items-center justify-between">
+                  <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Confidentiality Shelf-Life (x)</label>
+                  <span className="text-[10px] text-muted-foreground font-mono">X</span>
+                </div>
                 <div className="flex items-center gap-2">
                   <input 
                     type="number" 
                     value={x} 
-                    onChange={e => setX(parseInt(e.target.value))}
+                    onChange={e => setX(parseInt(e.target.value) || 0)}
                     className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-ring transition-shadow font-mono"
                   />
                   <span className="text-xs font-medium text-muted-foreground w-12">months</span>
@@ -64,12 +65,15 @@ export default function MoscaReadiness() {
               </div>
               
               <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Migration Time (y)</label>
+                <div className="flex items-center justify-between">
+                  <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Migration Timeline (y)</label>
+                  <span className="text-[10px] text-muted-foreground font-mono">Y</span>
+                </div>
                 <div className="flex items-center gap-2">
                   <input 
                     type="number" 
                     value={y} 
-                    onChange={e => setY(parseInt(e.target.value))}
+                    onChange={e => setY(parseInt(e.target.value) || 0)}
                     className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-ring transition-shadow font-mono"
                   />
                   <span className="text-xs font-medium text-muted-foreground w-12">months</span>
@@ -77,12 +81,15 @@ export default function MoscaReadiness() {
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Quantum Horizon (z)</label>
+                <div className="flex items-center justify-between">
+                  <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Quantum Capability Horizon (z)</label>
+                  <span className="text-[10px] text-muted-foreground font-mono">Z</span>
+                </div>
                 <div className="flex items-center gap-2">
                   <input 
                     type="number" 
                     value={z} 
-                    onChange={e => setZ(parseInt(e.target.value))}
+                    onChange={e => setZ(parseInt(e.target.value) || 0)}
                     className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-ring transition-shadow font-mono"
                   />
                   <span className="text-xs font-medium text-muted-foreground w-12">months</span>
@@ -94,10 +101,22 @@ export default function MoscaReadiness() {
               </button>
             </form>
 
-            <div className="mt-4 p-4 bg-muted/30 border border-border/50 rounded-xl text-xs text-muted-foreground">
-              <p className="font-semibold text-foreground mb-1">Planning Assumption</p>
+            <div className="mt-4 p-4 bg-muted/30 border border-border/50 rounded-xl text-xs text-muted-foreground flex flex-col gap-2">
+              <div className="flex items-center gap-1.5 text-foreground font-semibold">
+                <Info className="w-3.5 h-3.5 text-primary" />
+                <span>Formulation Guidance</span>
+              </div>
               <p className="leading-relaxed">
-                <span className="font-mono text-primary font-bold">z</span> is a configurable planning assumption, not a scientific prediction of quantum capability. AgileGraph does not predict when CRQCs will exist.
+                <strong>Readiness Condition:</strong> If <span className="font-mono text-primary">X + Y &gt; Z</span>, cryptographic assets become vulnerable before migration is complete (Harvest Now, Decrypt Later risk).
+              </p>
+              <p className="leading-relaxed">
+                <strong>Urgency Index:</strong> <span className="font-mono text-primary">U = (X + Y) / Z</span>. <br/>
+                • <span className="font-mono font-bold text-destructive">U &gt; 1.0</span>: Immediate migration required.<br/>
+                • <span className="font-mono font-bold text-warning">0.8 ≤ U ≤ 1.0</span>: Urgent planning buffer.<br/>
+                • <span className="font-mono font-bold text-success">U &lt; 0.8</span>: Timeline within safety margin.
+              </p>
+              <p className="text-[11px] border-t border-border/40 pt-2 text-muted-foreground/80">
+                <span className="font-mono text-primary font-bold">Z</span> is an organizational planning assumption, not a physical quantum prediction.
               </p>
             </div>
           </div>
@@ -115,11 +134,12 @@ export default function MoscaReadiness() {
             <div className="bg-card border border-border rounded-2xl shadow-elevated flex flex-col overflow-hidden">
               <div className="p-5 border-b border-border bg-background/50 flex justify-between items-center">
                 <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                  Mosca Theorem <span className="text-muted-foreground text-sm font-normal ml-2 font-mono">x + y vs z</span>
+                  Mosca Analysis Results <span className="text-muted-foreground text-sm font-normal ml-2 font-mono">X + Y vs Z &amp; Urgency Index</span>
                 </h3>
               </div>
               
               <div className="p-8 flex flex-col gap-8 items-center bg-card">
+                {/* Visual Comparison Strip */}
                 <div className="flex flex-col md:flex-row items-center gap-6 w-full justify-center">
                   <div className="flex flex-col items-center gap-2 flex-1 max-w-[200px]">
                     <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Required Time (x+y)</span>
@@ -140,8 +160,23 @@ export default function MoscaReadiness() {
                       <span className="text-[10px] text-muted-foreground uppercase tracking-widest mt-1">Months</span>
                     </div>
                   </div>
+
+                  <div className="flex flex-col items-center gap-2 flex-1 max-w-[200px]">
+                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+                      <Gauge className="w-3.5 h-3.5 text-primary" /> Urgency Index (U)
+                    </span>
+                    <div className="h-24 w-full bg-muted/30 border border-border rounded-2xl flex flex-col items-center justify-center shadow-inner">
+                      <span className="text-4xl font-mono font-bold text-primary">
+                        {data.urgency_index !== null && data.urgency_index !== undefined ? Number(data.urgency_index).toFixed(2) : '--'}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground uppercase tracking-widest mt-1 font-mono">
+                        {data.urgency_index > 1.0 ? 'U > 1.0' : data.urgency_index >= 0.8 ? '0.8 ≤ U ≤ 1.0' : 'U < 0.8'}
+                      </span>
+                    </div>
+                  </div>
                 </div>
 
+                {/* Status & Explanation Box */}
                 <div className={`w-full max-w-2xl p-6 rounded-2xl border flex flex-col items-center text-center gap-3 ${
                   data.status === 'AT_RISK' ? 'bg-destructive/10 border-destructive/30' :
                   (data.status === 'SAFE' || data.status === 'NOT_AT_RISK') ? 'bg-success/10 border-success/30' :

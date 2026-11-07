@@ -1,11 +1,15 @@
 from fastapi import APIRouter, HTTPException, BackgroundTasks, Depends
 from fastapi.responses import PlainTextResponse
+from typing import Optional, List, Dict, Any
 import tempfile
 from pydantic import BaseModel
 import os
 import json
 import networkx as nx
-from src.api.schemas import ScanRequest, ScanResponse, RiskResponse, RiskScore, GraphResponse
+from src.api.schemas import (
+    ScanRequest, ScanResponse, RiskResponse, RiskScore, GraphResponse,
+    GNNExplanationResponse, FeatureAttribution, InfluentialEdge
+)
 from src.graph.graph import AgileGraph
 from src.graph.builder import GraphBuilder
 from src.graph.schema import GraphNode, GraphEdge
@@ -23,6 +27,10 @@ from src.pipeline.runner import run_pipeline
 from src.core.storage import default_storage, sanitize_project_id
 from src.core.auth import User, get_current_user
 from src.core.auth_storage import default_auth_storage
+from src.ml.explainability import explain_with_gnnexplainer, explain_heuristic_decomposition
+from src.ml.converter import convert_agilegraph_to_pyg
+from src.ml.features import FeatureConfig
+from src.ml.gatv2 import create_hetero_gatv2
 
 router = APIRouter()
 
@@ -98,21 +106,26 @@ def get_mosca_readiness_index(confidentiality: int = 10, migration: int = 5, qua
 
 @router.post("/scan", response_model=ScanResponse)
 def trigger_scan(request: ScanRequest, current_user: User = Depends(get_current_user)):
+    import urllib.request
+    import urllib.parse
     repo_path = request.repository_path.strip().strip('"').strip("'")
     if repo_path.startswith("http://") or repo_path.startswith("https://") or "github.com" in repo_path:
         raise HTTPException(status_code=400, detail="The AgileGraph scanner requires a local filesystem path, not a remote URL. The current architecture does not clone remote repositories.")
-    if repo_path.startswith("file:///"):
-        repo_path = repo_path[8:]
-    elif repo_path.startswith("file://"):
-        repo_path = repo_path[7:]
+    if repo_path.startswith("file://"):
+        parsed = urllib.parse.urlparse(repo_path)
+        path_part = parsed.path
+        if parsed.netloc and parsed.netloc not in ("localhost", "127.0.0.1"):
+            path_part = f"//{parsed.netloc}{path_part}"
+        repo_path = urllib.request.url2pathname(path_part)
+    else:
+        repo_path = urllib.parse.unquote(repo_path)
 
-    if not os.path.exists(repo_path):
+    req_root = os.path.realpath(repo_path)
+    if not os.path.exists(req_root):
         raise HTTPException(status_code=400, detail="Repository path does not exist.")
         
     allowed_root_env = os.environ.get("AGILEGRAPH_SCAN_ROOT") or os.environ.get("ALLOWED_SCAN_ROOT")
-    allowed_root = os.path.realpath(allowed_root_env) if allowed_root_env else None
-    
-    req_root = os.path.realpath(repo_path)
+    allowed_root = os.path.realpath(allowed_root_env) if allowed_root_env and allowed_root_env.strip() and allowed_root_env.strip().lower() != "none" else None
     
     try:
         # Validate project_id for safety
@@ -121,7 +134,8 @@ def trigger_scan(request: ScanRequest, current_user: User = Depends(get_current_
         # Verify scan permission and ownership
         verify_project_scan_permission(request.project_id, current_user.username)
         
-        result = run_pipeline(req_root, request.project_id, "RENORMALIZE", allowed_root=allowed_root)
+        engine_ver = (request.engine_version or "v1").lower()
+        result = run_pipeline(req_root, request.project_id, "RENORMALIZE", allowed_root=allowed_root, engine_version=engine_ver)
         project_cache[request.project_id] = result
         default_storage.save_scan_result(request.project_id, result)
         default_auth_storage.assign_project_owner(request.project_id, current_user.username)
@@ -135,6 +149,8 @@ def trigger_scan(request: ScanRequest, current_user: User = Depends(get_current_
             scored_assets=prov.get("scored_assets", 0),
             unrated_assets=prov.get("unrated_assets", 0),
             skipped_files=prov.get("skipped_files", 0),
+            engine_version=prov.get("engine_version", "v1"),
+            available_engine_versions=prov.get("available_engine_versions", ["v1", "v2"])
         )
     except HTTPException:
         raise
@@ -152,30 +168,140 @@ def get_graph(project_id: str, current_user: User = Depends(get_current_user)):
     if not data_dict:
         raise HTTPException(status_code=404, detail="Project not found or not scanned.")
     
+    if "_cached_graph_response" in data_dict:
+        return data_dict["_cached_graph_response"]
+
     g = data_dict["graph"]
     data = nx.node_link_data(g)
     
-    return GraphResponse(
+    resp = GraphResponse(
         project_id=project_id,
         nodes=data.get("nodes", []),
         edges=data.get("edges", [])
     )
+    data_dict["_cached_graph_response"] = resp
+    return resp
 
 @router.get("/projects/{project_id}/risk", response_model=RiskResponse)
-def get_risk(project_id: str, current_user: User = Depends(get_current_user)):
+def get_risk(
+    project_id: str,
+    engine_version: Optional[str] = None,
+    current_user: User = Depends(get_current_user)
+):
     verify_project_ownership(project_id, current_user.username)
     data_dict = get_project_data(project_id)
     if not data_dict:
         raise HTTPException(status_code=404, detail="Project not found or not scanned.")
     
-    scores = data_dict["scores"]
+    raw_scores = data_dict["scores"]
+    active_engine = (engine_version or data_dict.get("provenance", {}).get("engine_version", "v1")).lower()
     
-    risk_scores = [RiskScore(**s) for s in scores]
+    formatted_scores = []
+    for s in raw_scores:
+        s_copy = dict(s)
+        if active_engine == "v2" and "v2_score" in s_copy:
+            s_copy["score"] = s_copy.get("v2_score")
+            s_copy["heuristic_label"] = s_copy.get("v2_label")
+            s_copy["engine_version"] = "v2"
+            s_copy["formula_version"] = "heuristic-v2.0-experimental"
+        elif active_engine == "v1" and "v1_score" in s_copy:
+            s_copy["score"] = s_copy.get("v1_score")
+            s_copy["heuristic_label"] = s_copy.get("v1_label")
+            s_copy["engine_version"] = "v1"
+            s_copy["formula_version"] = "heuristic-v1.0"
+        formatted_scores.append(RiskScore(**s_copy))
     
     return RiskResponse(
         project_id=project_id,
-        assets=risk_scores,
+        assets=formatted_scores,
+        active_engine_version=active_engine,
+        available_engine_versions=["v1", "v2"],
         ml_status="ARCHITECTURAL_PROTOTYPE"
+    )
+
+@router.get("/projects/{project_id}/assets/{asset_id:path}/explanation", response_model=GNNExplanationResponse)
+def get_asset_explanation(
+    project_id: str,
+    asset_id: str,
+    epochs: int = 25,
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Returns unified explainability report for a specific asset:
+    1. Deterministic heuristic factor decomposition (exact linear contributions)
+    2. GNNExplainer graph & feature attribution (identifies influential neighbors and features)
+    Discloses that GNN explanations reflect approximation of weak-supervision heuristic rules.
+    """
+    verify_project_ownership(project_id, current_user.username)
+    data_dict = get_project_data(project_id)
+    if not data_dict:
+        raise HTTPException(status_code=404, detail="Project not found or not scanned.")
+
+    scores = data_dict.get("scores", [])
+    target_score = next((s for s in scores if s.get("asset_id") == asset_id), None)
+    if not target_score:
+        raise HTTPException(status_code=404, detail=f"Asset '{asset_id}' not found in project '{project_id}'.")
+
+    # Heuristic additive linear decomposition
+    heuristic_decomp = {
+        "status": "COMPUTED",
+        "method": "HEURISTIC_LINEAR_DECOMPOSITION",
+        "formula_version": target_score.get("formula_version", "heuristic-v0.1"),
+        "total_risk_score": target_score.get("score"),
+        "missing_factors": target_score.get("missing_factors", []),
+        "missing_data_policy": target_score.get("missing_data_policy", "RENORMALIZE"),
+        "factor_contributions": target_score.get("weighted_contributions", {}),
+        "caveat": "Additive linear decomposition of rule prior; not causal attribution of real vulnerability."
+    }
+
+    # GNNExplainer graph & feature attribution
+    gnn_attributions = []
+    influential_edges = []
+    target_node_idx = None
+    caveat = (
+        "GNNExplainer attributions reflect the model's approximation of weak-supervision heuristic rules, "
+        "explaining model sensitivity rather than certifying ground-truth post-quantum cryptographic exploitability."
+    )
+
+    try:
+        raw_g = data_dict.get("graph")
+        if raw_g is not None:
+            ag = AgileGraph()
+            ag.G = raw_g
+            pyg_data = convert_agilegraph_to_pyg(ag, FeatureConfig(include_base_risk=False))
+
+            if "file" in pyg_data.node_types and hasattr(pyg_data["file"], "node_ids"):
+                file_ids = list(pyg_data["file"].node_ids)
+                if asset_id in file_ids:
+                    target_node_idx = file_ids.index(asset_id)
+                    model = create_hetero_gatv2(pyg_data.metadata(), hidden_channels=32, out_channels=3)
+                    model.initialize_lazy_layers(pyg_data)
+                    
+                    safe_epochs = max(5, min(epochs, 100))
+                    gnn_res = explain_with_gnnexplainer(
+                        model=model,
+                        pyg_data=pyg_data,
+                        target_node_category="file",
+                        target_node_idx=target_node_idx,
+                        epochs=safe_epochs,
+                        top_k_edges=5
+                    )
+                    gnn_attributions = [FeatureAttribution(**fa) for fa in gnn_res.get("feature_attributions", [])]
+                    influential_edges = [InfluentialEdge(**ie) for ie in gnn_res.get("top_influential_edges", [])]
+                    caveat = gnn_res.get("caveat", caveat)
+    except Exception as e:
+        # Fall back gracefully without crashing: preserve heuristic explanation
+        caveat += f" (GNN explanation fallback: {str(e)})"
+
+    return GNNExplanationResponse(
+        asset_id=asset_id,
+        project_id=project_id,
+        target_node_idx=target_node_idx,
+        heuristic_decomposition=heuristic_decomp,
+        gnn_feature_attributions=gnn_attributions,
+        top_influential_edges=influential_edges,
+        ml_status="ARCHITECTURAL_PROTOTYPE",
+        caveat=caveat
     )
 
 @router.get("/projects/{project_id}/report/json")

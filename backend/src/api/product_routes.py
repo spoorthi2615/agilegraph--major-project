@@ -74,6 +74,19 @@ def get_pqc_readiness(project_id: str, current_user: User = Depends(get_current_
     
     candidates = sum(1 for s in scored_assets if s["score"] >= 0.5)
     
+    # Calculate dynamic coverage based on whether node types were found in the graph
+    has_certs = any(data.get("category") == "certificate" for _, data in g.nodes(data=True))
+    has_endpoints = any(data.get("category") == "endpoint" for _, data in g.nodes(data=True))
+    has_sensitive = any(data.get("category") == "sensitive_data" for _, data in g.nodes(data=True))
+    
+    coverage = {
+        "file_dependencies": "COLLECTED",
+        "library_imports": "COLLECTED",
+        "certificates": "COLLECTED" if has_certs else "NOT_COLLECTED",
+        "endpoints": "COLLECTED" if has_endpoints else "NOT_COLLECTED",
+        "sensitive_data": "COLLECTED" if has_sensitive else "NOT_COLLECTED",
+    }
+    
     return {
         "status": "Preliminary heuristic \u2014 initial configurable weights",
         "semantic_disclaimer": "This is an inventory/coverage summary, not a scientifically validated PQC readiness score.",
@@ -83,7 +96,8 @@ def get_pqc_readiness(project_id: str, current_user: User = Depends(get_current_
         "assets_requiring_attention": candidates,
         "migration_candidates": candidates,
         "recognized_algorithms": list(algorithms - {"unknown"}),
-        "unknown_algorithms": unknown_algorithms
+        "unknown_algorithms": unknown_algorithms,
+        "coverage": coverage
     }
 
 @router.post("/mosca", response_model=MoscaResult)
@@ -138,6 +152,68 @@ def get_migration_priority(
         migration_difficulty=migration_difficulty,
         algorithm=algorithm
     )
+
+@router.get("/{project_id}/priorities")
+def get_all_migration_priorities(
+    project_id: str,
+    mosca_status: str = "SAFE",
+    exposure_posture: Optional[str] = None,
+    current_user: User = Depends(get_current_user)
+):
+    verify_project_ownership(project_id, current_user.username)
+    result = get_project_data(project_id)
+    if not result:
+        raise HTTPException(status_code=404, detail="Project not found or not scanned.")
+    
+    scores = result["scores"]
+    g = result["graph"]
+
+    try:
+        mosca_enum = MoscaStatus(mosca_status)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid Mosca status provided.")
+
+    results = []
+    for asset in scores:
+        asset_id = asset["asset_id"]
+        if asset_id not in g:
+            continue
+        base_risk = asset.get("score")
+        missing_factors = asset.get("missing_factors", [])
+        factors = asset.get("factors", {})
+        migration_difficulty = factors.get("migration_difficulty", {}).get("value")
+        
+        node_data = g.nodes[asset_id]
+        algorithm = node_data.get("algorithm") if node_data.get("type") == "CryptoUsageNode" or node_data.get("category") == "crypto_usage" else None
+        effective_exposure = exposure_posture or node_data.get("network_exposure")
+        
+        res = calculate_migration_priority(
+            asset_id=asset_id,
+            base_risk=base_risk,
+            mosca_status=mosca_enum,
+            missing_factors=missing_factors,
+            exposure_posture=effective_exposure,
+            migration_difficulty=migration_difficulty,
+            algorithm=algorithm
+        )
+        res_dict = res.model_dump()
+        res_dict["asset_id"] = asset_id
+        results.append(res_dict)
+
+    return results
+
+@router.get("/{project_id}/roadmap-all")
+def get_all_roadmap_states(project_id: str, current_user: User = Depends(get_current_user)):
+    verify_project_ownership(project_id, current_user.username)
+    result = get_project_data(project_id)
+    if not result:
+        raise HTTPException(status_code=404, detail="Project not found or not scanned.")
+        
+    project_roadmap = get_project_roadmap(project_id)
+    return {
+        aid: (rec.model_dump(mode="json") if hasattr(rec, "model_dump") else rec)
+        for aid, rec in project_roadmap.items()
+    }
 
 @router.get("/{project_id}/assets/{asset_id:path}/roadmap", response_model=MigrationStateRecord)
 def get_roadmap_state(project_id: str, asset_id: str, current_user: User = Depends(get_current_user)):
@@ -230,6 +306,10 @@ def get_crypto_inventory(project_id: str, current_user: User = Depends(get_curre
                 "risk": risk
             })
             
+    has_certs = any(data.get("category") == "certificate" for _, data in g.nodes(data=True))
+    has_endpoints = any(data.get("category") == "endpoint" for _, data in g.nodes(data=True))
+    has_sensitive = any(data.get("category") == "sensitive_data" for _, data in g.nodes(data=True))
+
     return {
         "project_id": project_id,
         "summary": {
@@ -241,8 +321,8 @@ def get_crypto_inventory(project_id: str, current_user: User = Depends(get_curre
         },
         "items": items,
         "coverage": {
-            "certificates": "NOT_COLLECTED",
-            "endpoints": "NOT_COLLECTED",
-            "sensitive_data": "NOT_COLLECTED"
+            "certificates": "COLLECTED" if has_certs else "NOT_COLLECTED",
+            "endpoints": "COLLECTED" if has_endpoints else "NOT_COLLECTED",
+            "sensitive_data": "COLLECTED" if has_sensitive else "NOT_COLLECTED"
         }
     }

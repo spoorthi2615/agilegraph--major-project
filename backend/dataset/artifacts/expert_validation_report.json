@@ -1,0 +1,2702 @@
+{
+  "status": "EVALUATED",
+  "num_experts": 4,
+  "num_assets": 160,
+  "consensus_distribution": {
+    "HIGH": 80,
+    "MEDIUM": 51,
+    "LOW": 29
+  },
+  "adjudication_summary": {
+    "unanimous_consensus_count": 117,
+    "majority_consensus_count": 32,
+    "resolved_tie_count": 11
+  },
+  "deduplication_audit": {
+    "AgileGraph_Filled - 4": {
+      "total_rows_parsed": 154,
+      "unique_canonical_assets": 154,
+      "duplicate_records_resolved": []
+    },
+    "AgileGraph_Review_Sheet_Completed -2": {
+      "total_rows_parsed": 160,
+      "unique_canonical_assets": 160,
+      "duplicate_records_resolved": []
+    },
+    "AgileGraph_Review_Sheet_Completed -3": {
+      "total_rows_parsed": 160,
+      "unique_canonical_assets": 160,
+      "duplicate_records_resolved": []
+    },
+    "AgileGraph_Review_Sheet_completed": {
+      "total_rows_parsed": 160,
+      "unique_canonical_assets": 160,
+      "duplicate_records_resolved": []
+    }
+  },
+  "pairwise_cohens_kappa": {
+    "pairwise": {
+      "AgileGraph_Filled - 4_vs_AgileGraph_Review_Sheet_Completed -2": 0.9917,
+      "AgileGraph_Filled - 4_vs_AgileGraph_Review_Sheet_Completed -3": 0.8855,
+      "AgileGraph_Filled - 4_vs_AgileGraph_Review_Sheet_completed": 0.6928,
+      "AgileGraph_Review_Sheet_Completed -2_vs_AgileGraph_Review_Sheet_Completed -3": 0.8994,
+      "AgileGraph_Review_Sheet_Completed -2_vs_AgileGraph_Review_Sheet_completed": 0.6697,
+      "AgileGraph_Review_Sheet_Completed -3_vs_AgileGraph_Review_Sheet_completed": 0.7611
+    },
+    "pairwise_details": {
+      "AgileGraph_Filled - 4_vs_AgileGraph_Review_Sheet_Completed -2": {
+        "overlap_assets": 154,
+        "linear_weighted_kappa": 0.9917,
+        "quadratic_weighted_kappa": 0.9942,
+        "unweighted_kappa": 0.9896
+      },
+      "AgileGraph_Filled - 4_vs_AgileGraph_Review_Sheet_Completed -3": {
+        "overlap_assets": 154,
+        "linear_weighted_kappa": 0.8855,
+        "quadratic_weighted_kappa": 0.8974,
+        "unweighted_kappa": 0.8746
+      },
+      "AgileGraph_Filled - 4_vs_AgileGraph_Review_Sheet_completed": {
+        "overlap_assets": 154,
+        "linear_weighted_kappa": 0.6928,
+        "quadratic_weighted_kappa": 0.7724,
+        "unweighted_kappa": 0.6085
+      },
+      "AgileGraph_Review_Sheet_Completed -2_vs_AgileGraph_Review_Sheet_Completed -3": {
+        "overlap_assets": 160,
+        "linear_weighted_kappa": 0.8994,
+        "quadratic_weighted_kappa": 0.9088,
+        "unweighted_kappa": 0.8907
+      },
+      "AgileGraph_Review_Sheet_Completed -2_vs_AgileGraph_Review_Sheet_completed": {
+        "overlap_assets": 160,
+        "linear_weighted_kappa": 0.6697,
+        "quadratic_weighted_kappa": 0.7405,
+        "unweighted_kappa": 0.5945
+      },
+      "AgileGraph_Review_Sheet_Completed -3_vs_AgileGraph_Review_Sheet_completed": {
+        "overlap_assets": 160,
+        "linear_weighted_kappa": 0.7611,
+        "quadratic_weighted_kappa": 0.8219,
+        "unweighted_kappa": 0.6937
+      }
+    },
+    "mean_pairwise_kappa": 0.8167,
+    "num_pairs": 6
+  },
+  "fleiss_kappa": 0.7791,
+  "fleiss_evaluated_assets": 154,
+  "model_evaluation": {
+    "matched_assets": 160,
+    "heuristic_macro_f1": 0.3225,
+    "bootstrap_95ci": {
+      "point_estimate": 0.3225,
+      "ci_lower": 0.2558,
+      "ci_upper": 0.3799,
+      "confidence_level": 0.95,
+      "n_bootstraps": 1000
+    },
+    "weighted_cohens_kappa_vs_heuristic": 0.2625,
+    "per_class_metrics": {
+      "LOW": {
+        "precision": 0.325,
+        "recall": 0.8966,
+        "f1": 0.4771,
+        "support": 29
+      },
+      "MEDIUM": {
+        "precision": 0.0408,
+        "recall": 0.0392,
+        "f1": 0.04,
+        "support": 51
+      },
+      "HIGH": {
+        "precision": 0.8065,
+        "recall": 0.3125,
+        "f1": 0.4505,
+        "support": 80
+      }
+    },
+    "confusion_matrix_expert_rows_vs_heuristic_cols": {
+      "labels": [
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ],
+      "matrix": [
+        [
+          26,
+          1,
+          2
+        ],
+        [
+          45,
+          2,
+          4
+        ],
+        [
+          9,
+          46,
+          25
+        ]
+      ]
+    },
+    "empirical_observation": "Human domain experts classify primarily based on intrinsic algorithmic exploitability (Shor/Grover vulnerability of public-key primitives), whereas the multi-factor heuristic engine dampens risk for test fixtures, unexposed internal assets, and library wrappers."
+  },
+  "asset_adjudication_audit": [
+    {
+      "canonical_asset_id": "go_crypto:acme/acme.go",
+      "repository": "go_crypto",
+      "file_path": "acme/acme.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:acme/acme_test.go",
+      "repository": "go_crypto",
+      "file_path": "acme/acme_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:acme/autocert/autocert.go",
+      "repository": "go_crypto",
+      "file_path": "acme/autocert/autocert.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:acme/autocert/autocert_test.go",
+      "repository": "go_crypto",
+      "file_path": "acme/autocert/autocert_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:acme/autocert/internal/acmetest/ca.go",
+      "repository": "go_crypto",
+      "file_path": "acme/autocert/internal/acmetest/ca.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:acme/autocert/listener.go",
+      "repository": "go_crypto",
+      "file_path": "acme/autocert/listener.go",
+      "expert_votes": {
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "MEDIUM"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_crypto:acme/internal/acmeprobe/prober.go",
+      "repository": "go_crypto",
+      "file_path": "acme/internal/acmeprobe/prober.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:acme/jws.go",
+      "repository": "go_crypto",
+      "file_path": "acme/jws.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "LOW",
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_crypto:acme/jws_test.go",
+      "repository": "go_crypto",
+      "file_path": "acme/jws_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:acme/pebble_test.go",
+      "repository": "go_crypto",
+      "file_path": "acme/pebble_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:acme/rfc8555_test.go",
+      "repository": "go_crypto",
+      "file_path": "acme/rfc8555_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "LOW",
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_crypto:ed25519/ed25519.go",
+      "repository": "go_crypto",
+      "file_path": "ed25519/ed25519.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:ed25519/ed25519_test.go",
+      "repository": "go_crypto",
+      "file_path": "ed25519/ed25519_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:hkdf/example_test.go",
+      "repository": "go_crypto",
+      "file_path": "hkdf/example_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "LOW",
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_crypto:hkdf/hkdf.go",
+      "repository": "go_crypto",
+      "file_path": "hkdf/hkdf.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "LOW",
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_crypto:hkdf/hkdf_test.go",
+      "repository": "go_crypto",
+      "file_path": "hkdf/hkdf_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:nacl/auth/auth.go",
+      "repository": "go_crypto",
+      "file_path": "nacl/auth/auth.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "LOW",
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_crypto:nacl/sign/sign.go",
+      "repository": "go_crypto",
+      "file_path": "nacl/sign/sign.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:ocsp/ocsp.go",
+      "repository": "go_crypto",
+      "file_path": "ocsp/ocsp.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_crypto:ocsp/ocsp_test.go",
+      "repository": "go_crypto",
+      "file_path": "ocsp/ocsp_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:openpgp/keys.go",
+      "repository": "go_crypto",
+      "file_path": "openpgp/keys.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:openpgp/packet/encrypted_key.go",
+      "repository": "go_crypto",
+      "file_path": "openpgp/packet/encrypted_key.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:openpgp/packet/ocfb_test.go",
+      "repository": "go_crypto",
+      "file_path": "openpgp/packet/ocfb_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "MEDIUM"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_crypto:openpgp/packet/packet.go",
+      "repository": "go_crypto",
+      "file_path": "openpgp/packet/packet.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "MEDIUM"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_crypto:openpgp/packet/private_key.go",
+      "repository": "go_crypto",
+      "file_path": "openpgp/packet/private_key.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:openpgp/packet/private_key_test.go",
+      "repository": "go_crypto",
+      "file_path": "openpgp/packet/private_key_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:openpgp/packet/public_key.go",
+      "repository": "go_crypto",
+      "file_path": "openpgp/packet/public_key.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:openpgp/packet/public_key_test.go",
+      "repository": "go_crypto",
+      "file_path": "openpgp/packet/public_key_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_crypto:openpgp/packet/public_key_v3.go",
+      "repository": "go_crypto",
+      "file_path": "openpgp/packet/public_key_v3.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:openpgp/packet/signature.go",
+      "repository": "go_crypto",
+      "file_path": "openpgp/packet/signature.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:openpgp/packet/symmetrically_encrypted.go",
+      "repository": "go_crypto",
+      "file_path": "openpgp/packet/symmetrically_encrypted.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:openpgp/packet/symmetrically_encrypted_test.go",
+      "repository": "go_crypto",
+      "file_path": "openpgp/packet/symmetrically_encrypted_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:openpgp/s2k/s2k_test.go",
+      "repository": "go_crypto",
+      "file_path": "openpgp/s2k/s2k_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:otr/otr.go",
+      "repository": "go_crypto",
+      "file_path": "otr/otr.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "go_crypto:otr/smp.go",
+      "repository": "go_crypto",
+      "file_path": "otr/smp.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "LOW",
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_crypto:pbkdf2/pbkdf2_test.go",
+      "repository": "go_crypto",
+      "file_path": "pbkdf2/pbkdf2_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:pkcs12/mac.go",
+      "repository": "go_crypto",
+      "file_path": "pkcs12/mac.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "LOW",
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "MEDIUM"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_crypto:pkcs12/pbkdf.go",
+      "repository": "go_crypto",
+      "file_path": "pkcs12/pbkdf.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:pkcs12/pkcs12_test.go",
+      "repository": "go_crypto",
+      "file_path": "pkcs12/pkcs12_test.go",
+      "expert_votes": {
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.6667,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_crypto:scrypt/scrypt.go",
+      "repository": "go_crypto",
+      "file_path": "scrypt/scrypt.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "LOW",
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_crypto:ssh/agent/server.go",
+      "repository": "go_crypto",
+      "file_path": "ssh/agent/server.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_crypto:ssh/certs_test.go",
+      "repository": "go_crypto",
+      "file_path": "ssh/certs_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:ssh/cipher.go",
+      "repository": "go_crypto",
+      "file_path": "ssh/cipher.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "MEDIUM"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:ssh/example_test.go",
+      "repository": "go_crypto",
+      "file_path": "ssh/example_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:ssh/internal/bcrypt_pbkdf/bcrypt_pbkdf.go",
+      "repository": "go_crypto",
+      "file_path": "ssh/internal/bcrypt_pbkdf/bcrypt_pbkdf.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "LOW",
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_crypto:ssh/kex.go",
+      "repository": "go_crypto",
+      "file_path": "ssh/kex.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:ssh/keys.go",
+      "repository": "go_crypto",
+      "file_path": "ssh/keys.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "go_crypto:ssh/keys_test.go",
+      "repository": "go_crypto",
+      "file_path": "ssh/keys_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:ssh/knownhosts/knownhosts.go",
+      "repository": "go_crypto",
+      "file_path": "ssh/knownhosts/knownhosts.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "LOW",
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_crypto:ssh/knownhosts/knownhosts_test.go",
+      "repository": "go_crypto",
+      "file_path": "ssh/knownhosts/knownhosts_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:ssh/mac.go",
+      "repository": "go_crypto",
+      "file_path": "ssh/mac.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "LOW",
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_crypto:ssh/mlkem.go",
+      "repository": "go_crypto",
+      "file_path": "ssh/mlkem.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "LOW",
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "MEDIUM"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.5,
+      "adjudication_method": "RESOLVED_TIE",
+      "is_tie_break": true,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_crypto:ssh/server_test.go",
+      "repository": "go_crypto",
+      "file_path": "ssh/server_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:x509roots/fallback/bundle/bundle_test.go",
+      "repository": "go_crypto",
+      "file_path": "x509roots/fallback/bundle/bundle_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "LOW",
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_crypto:x509roots/gen_fallback_bundle.go",
+      "repository": "go_crypto",
+      "file_path": "x509roots/gen_fallback_bundle.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "LOW",
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_crypto:x509roots/nss/parser.go",
+      "repository": "go_crypto",
+      "file_path": "x509roots/nss/parser.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 0.5,
+      "adjudication_method": "RESOLVED_TIE",
+      "is_tie_break": true,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_crypto:xts/xts_test.go",
+      "repository": "go_crypto",
+      "file_path": "xts/xts_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "MEDIUM"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_jwt:ecdsa.go",
+      "repository": "go_jwt",
+      "file_path": "ecdsa.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_jwt:ed25519.go",
+      "repository": "go_jwt",
+      "file_path": "ed25519.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_jwt:example_test.go",
+      "repository": "go_jwt",
+      "file_path": "example_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "LOW",
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_jwt:hmac.go",
+      "repository": "go_jwt",
+      "file_path": "hmac.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "LOW",
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_jwt:hmac_example_test.go",
+      "repository": "go_jwt",
+      "file_path": "hmac_example_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "LOW",
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_jwt:hmac_test.go",
+      "repository": "go_jwt",
+      "file_path": "hmac_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "LOW",
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_jwt:parser_test.go",
+      "repository": "go_jwt",
+      "file_path": "parser_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_jwt:request/request_test.go",
+      "repository": "go_jwt",
+      "file_path": "request/request_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_jwt:rsa.go",
+      "repository": "go_jwt",
+      "file_path": "rsa.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_jwt:rsa_pss.go",
+      "repository": "go_jwt",
+      "file_path": "rsa_pss.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_jwt:rsa_pss_test.go",
+      "repository": "go_jwt",
+      "file_path": "rsa_pss_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_jwt:rsa_test.go",
+      "repository": "go_jwt",
+      "file_path": "rsa_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_jwt:token_test.go",
+      "repository": "go_jwt",
+      "file_path": "token_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "LOW",
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_jwt:types_test.go",
+      "repository": "go_jwt",
+      "file_path": "types_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "LOW",
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_jwt_go:ecdsa.go",
+      "repository": "go_jwt_go",
+      "file_path": "ecdsa.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_jwt_go:example_test.go",
+      "repository": "go_jwt_go",
+      "file_path": "example_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "LOW",
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_jwt_go:hmac.go",
+      "repository": "go_jwt_go",
+      "file_path": "hmac.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "LOW",
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_jwt_go:hmac_example_test.go",
+      "repository": "go_jwt_go",
+      "file_path": "hmac_example_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "LOW",
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_jwt_go:hmac_test.go",
+      "repository": "go_jwt_go",
+      "file_path": "hmac_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "LOW",
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "go_jwt_go:rsa.go",
+      "repository": "go_jwt_go",
+      "file_path": "rsa.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_jwt_go:rsa_pss.go",
+      "repository": "go_jwt_go",
+      "file_path": "rsa_pss.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_jwt_go:rsa_pss_test.go",
+      "repository": "go_jwt_go",
+      "file_path": "rsa_pss_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "go_jwt_go:rsa_test.go",
+      "repository": "go_jwt_go",
+      "file_path": "rsa_test.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "go_jwt_go:test/helpers.go",
+      "repository": "go_jwt_go",
+      "file_path": "test/helpers.go",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "java_java_jwt:lib/src/main/java/com/auth0/jwt/algorithms/CryptoHelper.java",
+      "repository": "java_java_jwt",
+      "file_path": "lib/src/main/java/com/auth0/jwt/algorithms/CryptoHelper.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "java_java_jwt:lib/src/main/java/com/auth0/jwt/interfaces/ECDSAKeyProvider.java",
+      "repository": "java_java_jwt",
+      "file_path": "lib/src/main/java/com/auth0/jwt/interfaces/ECDSAKeyProvider.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 0.5,
+      "adjudication_method": "RESOLVED_TIE",
+      "is_tie_break": true,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_java_jwt:lib/src/main/java/com/auth0/jwt/interfaces/KeyProvider.java",
+      "repository": "java_java_jwt",
+      "file_path": "lib/src/main/java/com/auth0/jwt/interfaces/KeyProvider.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "MEDIUM"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_java_jwt:lib/src/main/java/com/auth0/jwt/interfaces/RSAKeyProvider.java",
+      "repository": "java_java_jwt",
+      "file_path": "lib/src/main/java/com/auth0/jwt/interfaces/RSAKeyProvider.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 0.5,
+      "adjudication_method": "RESOLVED_TIE",
+      "is_tie_break": true,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_java_jwt:lib/src/test/java/com/auth0/jwt/PemUtils.java",
+      "repository": "java_java_jwt",
+      "file_path": "lib/src/test/java/com/auth0/jwt/PemUtils.java",
+      "expert_votes": {
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.6667,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_java_jwt:lib/src/test/java/com/auth0/jwt/algorithms/ECDSAAlgorithmTest.java",
+      "repository": "java_java_jwt",
+      "file_path": "lib/src/test/java/com/auth0/jwt/algorithms/ECDSAAlgorithmTest.java",
+      "expert_votes": {
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 0.6667,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_java_jwt:lib/src/test/java/com/auth0/jwt/algorithms/ECDSABouncyCastleProviderTests.java",
+      "repository": "java_java_jwt",
+      "file_path": "lib/src/test/java/com/auth0/jwt/algorithms/ECDSABouncyCastleProviderTests.java",
+      "expert_votes": {
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 0.6667,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:api/src/main/java/io/jsonwebtoken/SignatureAlgorithm.java",
+      "repository": "java_jjwt",
+      "file_path": "api/src/main/java/io/jsonwebtoken/SignatureAlgorithm.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 0.5,
+      "adjudication_method": "RESOLVED_TIE",
+      "is_tie_break": true,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:api/src/main/java/io/jsonwebtoken/security/DecryptionKeyRequest.java",
+      "repository": "java_jjwt",
+      "file_path": "api/src/main/java/io/jsonwebtoken/security/DecryptionKeyRequest.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:api/src/main/java/io/jsonwebtoken/security/KeyAlgorithm.java",
+      "repository": "java_jjwt",
+      "file_path": "api/src/main/java/io/jsonwebtoken/security/KeyAlgorithm.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "MEDIUM"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:api/src/main/java/io/jsonwebtoken/security/KeyBuilder.java",
+      "repository": "java_jjwt",
+      "file_path": "api/src/main/java/io/jsonwebtoken/security/KeyBuilder.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "MEDIUM"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:api/src/main/java/io/jsonwebtoken/security/KeyBuilderSupplier.java",
+      "repository": "java_jjwt",
+      "file_path": "api/src/main/java/io/jsonwebtoken/security/KeyBuilderSupplier.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:api/src/main/java/io/jsonwebtoken/security/KeyPair.java",
+      "repository": "java_jjwt",
+      "file_path": "api/src/main/java/io/jsonwebtoken/security/KeyPair.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:api/src/main/java/io/jsonwebtoken/security/KeyPairBuilder.java",
+      "repository": "java_jjwt",
+      "file_path": "api/src/main/java/io/jsonwebtoken/security/KeyPairBuilder.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "MEDIUM"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:api/src/main/java/io/jsonwebtoken/security/KeyPairBuilderSupplier.java",
+      "repository": "java_jjwt",
+      "file_path": "api/src/main/java/io/jsonwebtoken/security/KeyPairBuilderSupplier.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:api/src/main/java/io/jsonwebtoken/security/KeyResult.java",
+      "repository": "java_jjwt",
+      "file_path": "api/src/main/java/io/jsonwebtoken/security/KeyResult.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:api/src/main/java/io/jsonwebtoken/security/KeySupplier.java",
+      "repository": "java_jjwt",
+      "file_path": "api/src/main/java/io/jsonwebtoken/security/KeySupplier.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:api/src/main/java/io/jsonwebtoken/security/Keys.java",
+      "repository": "java_jjwt",
+      "file_path": "api/src/main/java/io/jsonwebtoken/security/Keys.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "MEDIUM"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:api/src/main/java/io/jsonwebtoken/security/PrivateKeyBuilder.java",
+      "repository": "java_jjwt",
+      "file_path": "api/src/main/java/io/jsonwebtoken/security/PrivateKeyBuilder.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:api/src/main/java/io/jsonwebtoken/security/SecretKeyAlgorithm.java",
+      "repository": "java_jjwt",
+      "file_path": "api/src/main/java/io/jsonwebtoken/security/SecretKeyAlgorithm.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "MEDIUM"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:api/src/main/java/io/jsonwebtoken/security/SecretKeyBuilder.java",
+      "repository": "java_jjwt",
+      "file_path": "api/src/main/java/io/jsonwebtoken/security/SecretKeyBuilder.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:api/src/main/java/io/jsonwebtoken/security/X509Accessor.java",
+      "repository": "java_jjwt",
+      "file_path": "api/src/main/java/io/jsonwebtoken/security/X509Accessor.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:api/src/main/java/io/jsonwebtoken/security/X509Builder.java",
+      "repository": "java_jjwt",
+      "file_path": "api/src/main/java/io/jsonwebtoken/security/X509Builder.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:api/src/main/java/io/jsonwebtoken/security/X509Mutator.java",
+      "repository": "java_jjwt",
+      "file_path": "api/src/main/java/io/jsonwebtoken/security/X509Mutator.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/AesGcmKeyAlgorithm.java",
+      "repository": "java_jjwt",
+      "file_path": "impl/src/main/java/io/jsonwebtoken/impl/security/AesGcmKeyAlgorithm.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "MEDIUM"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/AesWrapKeyAlgorithm.java",
+      "repository": "java_jjwt",
+      "file_path": "impl/src/main/java/io/jsonwebtoken/impl/security/AesWrapKeyAlgorithm.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "MEDIUM"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/ConstantKeyLocator.java",
+      "repository": "java_jjwt",
+      "file_path": "impl/src/main/java/io/jsonwebtoken/impl/security/ConstantKeyLocator.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/CryptoAlgorithm.java",
+      "repository": "java_jjwt",
+      "file_path": "impl/src/main/java/io/jsonwebtoken/impl/security/CryptoAlgorithm.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "MEDIUM"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/DefaultDecryptionKeyRequest.java",
+      "repository": "java_jjwt",
+      "file_path": "impl/src/main/java/io/jsonwebtoken/impl/security/DefaultDecryptionKeyRequest.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/DefaultHashAlgorithm.java",
+      "repository": "java_jjwt",
+      "file_path": "impl/src/main/java/io/jsonwebtoken/impl/security/DefaultHashAlgorithm.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/DefaultKeyPair.java",
+      "repository": "java_jjwt",
+      "file_path": "impl/src/main/java/io/jsonwebtoken/impl/security/DefaultKeyPair.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/DefaultKeyPairBuilder.java",
+      "repository": "java_jjwt",
+      "file_path": "impl/src/main/java/io/jsonwebtoken/impl/security/DefaultKeyPairBuilder.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "MEDIUM"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/DefaultKeyRequest.java",
+      "repository": "java_jjwt",
+      "file_path": "impl/src/main/java/io/jsonwebtoken/impl/security/DefaultKeyRequest.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/DefaultKeyResult.java",
+      "repository": "java_jjwt",
+      "file_path": "impl/src/main/java/io/jsonwebtoken/impl/security/DefaultKeyResult.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/DefaultRsaKeyAlgorithm.java",
+      "repository": "java_jjwt",
+      "file_path": "impl/src/main/java/io/jsonwebtoken/impl/security/DefaultRsaKeyAlgorithm.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 0.5,
+      "adjudication_method": "RESOLVED_TIE",
+      "is_tie_break": true,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/DefaultSecretKeyBuilder.java",
+      "repository": "java_jjwt",
+      "file_path": "impl/src/main/java/io/jsonwebtoken/impl/security/DefaultSecretKeyBuilder.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/DirectKeyAlgorithm.java",
+      "repository": "java_jjwt",
+      "file_path": "impl/src/main/java/io/jsonwebtoken/impl/security/DirectKeyAlgorithm.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "MEDIUM"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/EcdhKeyAlgorithm.java",
+      "repository": "java_jjwt",
+      "file_path": "impl/src/main/java/io/jsonwebtoken/impl/security/EcdhKeyAlgorithm.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 0.5,
+      "adjudication_method": "RESOLVED_TIE",
+      "is_tie_break": true,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/EdwardsPublicKeyDeriver.java",
+      "repository": "java_jjwt",
+      "file_path": "impl/src/main/java/io/jsonwebtoken/impl/security/EdwardsPublicKeyDeriver.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 0.5,
+      "adjudication_method": "RESOLVED_TIE",
+      "is_tie_break": true,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/JcaTemplate.java",
+      "repository": "java_jjwt",
+      "file_path": "impl/src/main/java/io/jsonwebtoken/impl/security/JcaTemplate.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "MEDIUM"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/JwtX509StringConverter.java",
+      "repository": "java_jjwt",
+      "file_path": "impl/src/main/java/io/jsonwebtoken/impl/security/JwtX509StringConverter.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/KeyPairs.java",
+      "repository": "java_jjwt",
+      "file_path": "impl/src/main/java/io/jsonwebtoken/impl/security/KeyPairs.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "MEDIUM"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/KeyUsage.java",
+      "repository": "java_jjwt",
+      "file_path": "impl/src/main/java/io/jsonwebtoken/impl/security/KeyUsage.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/KeysBridge.java",
+      "repository": "java_jjwt",
+      "file_path": "impl/src/main/java/io/jsonwebtoken/impl/security/KeysBridge.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "MEDIUM"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/LocatingKeyResolver.java",
+      "repository": "java_jjwt",
+      "file_path": "impl/src/main/java/io/jsonwebtoken/impl/security/LocatingKeyResolver.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/PrivateECKey.java",
+      "repository": "java_jjwt",
+      "file_path": "impl/src/main/java/io/jsonwebtoken/impl/security/PrivateECKey.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 0.5,
+      "adjudication_method": "RESOLVED_TIE",
+      "is_tie_break": true,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/ProvidedKeyBuilder.java",
+      "repository": "java_jjwt",
+      "file_path": "impl/src/main/java/io/jsonwebtoken/impl/security/ProvidedKeyBuilder.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/ProvidedPrivateKeyBuilder.java",
+      "repository": "java_jjwt",
+      "file_path": "impl/src/main/java/io/jsonwebtoken/impl/security/ProvidedPrivateKeyBuilder.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/ProvidedSecretKeyBuilder.java",
+      "repository": "java_jjwt",
+      "file_path": "impl/src/main/java/io/jsonwebtoken/impl/security/ProvidedSecretKeyBuilder.java",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "java_jjwt:impl/src/main/java/io/jsonwebtoken/impl/security/Randoms.java",
+      "repository": "java_jjwt",
+      "file_path": "impl/src/main/java/io/jsonwebtoken/impl/security/Randoms.java",
+      "expert_votes": {
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "LOW"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:docs/development/custom-vectors/rsa-oaep-sha2/generate_rsa_oaep_sha2.py",
+      "repository": "python_cryptography",
+      "file_path": "docs/development/custom-vectors/rsa-oaep-sha2/generate_rsa_oaep_sha2.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:src/cryptography/x509/extensions.py",
+      "repository": "python_cryptography",
+      "file_path": "src/cryptography/x509/extensions.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 0.5,
+      "adjudication_method": "RESOLVED_TIE",
+      "is_tie_break": true,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:tests/hazmat/primitives/decrepit/test_3des.py",
+      "repository": "python_cryptography",
+      "file_path": "tests/hazmat/primitives/decrepit/test_3des.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:tests/hazmat/primitives/decrepit/test_algorithms.py",
+      "repository": "python_cryptography",
+      "file_path": "tests/hazmat/primitives/decrepit/test_algorithms.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:tests/hazmat/primitives/decrepit/test_arc4.py",
+      "repository": "python_cryptography",
+      "file_path": "tests/hazmat/primitives/decrepit/test_arc4.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:tests/hazmat/primitives/decrepit/test_rc2.py",
+      "repository": "python_cryptography",
+      "file_path": "tests/hazmat/primitives/decrepit/test_rc2.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 0.5,
+      "adjudication_method": "RESOLVED_TIE",
+      "is_tie_break": true,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:tests/hazmat/primitives/fixtures_rsa.py",
+      "repository": "python_cryptography",
+      "file_path": "tests/hazmat/primitives/fixtures_rsa.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:tests/hazmat/primitives/test_aes.py",
+      "repository": "python_cryptography",
+      "file_path": "tests/hazmat/primitives/test_aes.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "MEDIUM"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:tests/hazmat/primitives/test_block.py",
+      "repository": "python_cryptography",
+      "file_path": "tests/hazmat/primitives/test_block.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "MEDIUM"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:tests/hazmat/primitives/test_camellia.py",
+      "repository": "python_cryptography",
+      "file_path": "tests/hazmat/primitives/test_camellia.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "MEDIUM"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:tests/hazmat/primitives/test_cmac.py",
+      "repository": "python_cryptography",
+      "file_path": "tests/hazmat/primitives/test_cmac.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:tests/hazmat/primitives/test_dsa.py",
+      "repository": "python_cryptography",
+      "file_path": "tests/hazmat/primitives/test_dsa.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:tests/hazmat/primitives/test_ec.py",
+      "repository": "python_cryptography",
+      "file_path": "tests/hazmat/primitives/test_ec.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:tests/hazmat/primitives/test_hpke.py",
+      "repository": "python_cryptography",
+      "file_path": "tests/hazmat/primitives/test_hpke.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:tests/hazmat/primitives/test_mldsa.py",
+      "repository": "python_cryptography",
+      "file_path": "tests/hazmat/primitives/test_mldsa.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "LOW",
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:tests/hazmat/primitives/test_pkcs12.py",
+      "repository": "python_cryptography",
+      "file_path": "tests/hazmat/primitives/test_pkcs12.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 0.75,
+      "adjudication_method": "MAJORITY",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:tests/hazmat/primitives/test_rsa.py",
+      "repository": "python_cryptography",
+      "file_path": "tests/hazmat/primitives/test_rsa.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:tests/hazmat/primitives/test_serialization.py",
+      "repository": "python_cryptography",
+      "file_path": "tests/hazmat/primitives/test_serialization.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:tests/hazmat/primitives/test_sm4.py",
+      "repository": "python_cryptography",
+      "file_path": "tests/hazmat/primitives/test_sm4.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -2": "MEDIUM",
+        "AgileGraph_Review_Sheet_Completed -3": "MEDIUM",
+        "AgileGraph_Review_Sheet_completed": "MEDIUM"
+      },
+      "consensus_label": "MEDIUM",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:tests/hazmat/primitives/test_ssh.py",
+      "repository": "python_cryptography",
+      "file_path": "tests/hazmat/primitives/test_ssh.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:tests/hazmat/primitives/twofactor/test_hotp.py",
+      "repository": "python_cryptography",
+      "file_path": "tests/hazmat/primitives/twofactor/test_hotp.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:tests/wycheproof/test_cobblestone.py",
+      "repository": "python_cryptography",
+      "file_path": "tests/wycheproof/test_cobblestone.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "LOW",
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "MEDIUM"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:tests/wycheproof/test_mldsa.py",
+      "repository": "python_cryptography",
+      "file_path": "tests/wycheproof/test_mldsa.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "LOW",
+        "AgileGraph_Review_Sheet_Completed -2": "LOW",
+        "AgileGraph_Review_Sheet_Completed -3": "LOW",
+        "AgileGraph_Review_Sheet_completed": "LOW"
+      },
+      "consensus_label": "LOW",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:tests/x509/test_ocsp.py",
+      "repository": "python_cryptography",
+      "file_path": "tests/x509/test_ocsp.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:tests/x509/test_x509.py",
+      "repository": "python_cryptography",
+      "file_path": "tests/x509/test_x509.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:tests/x509/test_x509_crlbuilder.py",
+      "repository": "python_cryptography",
+      "file_path": "tests/x509/test_x509_crlbuilder.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:tests/x509/test_x509_ext.py",
+      "repository": "python_cryptography",
+      "file_path": "tests/x509/test_x509_ext.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "python_cryptography:tests/x509/verification/test_verification.py",
+      "repository": "python_cryptography",
+      "file_path": "tests/x509/verification/test_verification.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    },
+    {
+      "canonical_asset_id": "python_itsdangerous:src/itsdangerous/signer.py",
+      "repository": "python_itsdangerous",
+      "file_path": "src/itsdangerous/signer.py",
+      "expert_votes": {
+        "AgileGraph_Filled - 4": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -2": "HIGH",
+        "AgileGraph_Review_Sheet_Completed -3": "HIGH",
+        "AgileGraph_Review_Sheet_completed": "HIGH"
+      },
+      "consensus_label": "HIGH",
+      "agreement_score": 1.0,
+      "adjudication_method": "UNANIMOUS",
+      "is_tie_break": false,
+      "heuristic_prediction": "HIGH"
+    }
+  ]
+}

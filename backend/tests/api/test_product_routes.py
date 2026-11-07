@@ -193,3 +193,32 @@ def test_insufficient_data_serialization():
     assert data["priority"] == "NOT_ASSESSED"
     assert data["risk_score"] is None
     assert "mosca_status is a provided planning input" in data["mosca_provenance"]
+
+def test_batch_priorities_and_roadmap_endpoints():
+    mock_scan = {
+        "graph": nx.MultiDiGraph(),
+        "scores": [
+            {
+                "asset_id": "file1.py",
+                "score": 0.8,
+                "missing_factors": [],
+                "factors": {"migration_difficulty": {"value": 0.3}}
+            }
+        ],
+        "provenance": {"is_mock": True}
+    }
+    mock_scan["graph"].add_node("file1.py", category="file")
+    project_cache["batch_test_proj"] = mock_scan
+
+    # Test batch priorities
+    resp = client.get("/api/v1/product/batch_test_proj/priorities?mosca_status=SAFE")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert len(data) == 1
+    assert data[0]["asset_id"] == "file1.py"
+    assert "priority" in data[0]
+
+    # Test batch roadmap
+    resp_r = client.get("/api/v1/product/batch_test_proj/roadmap-all")
+    assert resp_r.status_code == 200
+    assert isinstance(resp_r.json(), dict)

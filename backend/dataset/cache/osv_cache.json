@@ -1789,5 +1789,235 @@
     "package": "requests",
     "version": null,
     "enrichment_date": "2026-10-25T10:17:37.618300+00:00"
+  },
+  "PyPI:fastapi:0.115.0": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "fastapi",
+    "version": "0.115.0",
+    "enrichment_date": "2026-10-26T17:44:24.152911+00:00"
+  },
+  "PyPI:uvicorn:0.30.0": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "uvicorn",
+    "version": "0.30.0",
+    "enrichment_date": "2026-10-26T17:44:31.641486+00:00"
+  },
+  "PyPI:pydantic:2.10.0": {
+    "status": "unavailable",
+    "error": "OSV service timeout: The read operation timed out",
+    "package": "pydantic",
+    "version": "2.10.0",
+    "enrichment_date": "2026-10-26T17:44:37.570393+00:00"
+  },
+  "PyPI:pydantic-settings:2.5.0": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "pydantic-settings",
+    "version": "2.5.0",
+    "enrichment_date": "2026-10-26T17:44:45.804333+00:00"
+  },
+  "PyPI:pytest:8.0.0": {
+    "status": "success",
+    "cves": [
+      "CVE-2025-71176"
+    ],
+    "count": 1,
+    "package": "pytest",
+    "version": "8.0.0",
+    "enrichment_date": "2026-10-26T17:44:49.767935+00:00"
+  },
+  "PyPI:httpx:0.27.0": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "httpx",
+    "version": "0.27.0",
+    "enrichment_date": "2026-10-26T17:44:53.555783+00:00"
+  },
+  "PyPI:networkx:3.2.0": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "networkx",
+    "version": "3.2.0",
+    "enrichment_date": "2026-10-26T17:44:55.008413+00:00"
+  },
+  "PyPI:numpy:2.0.0": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "numpy",
+    "version": "2.0.0",
+    "enrichment_date": "2026-10-26T17:44:56.125333+00:00"
+  },
+  "PyPI:scipy:1.14.0": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "scipy",
+    "version": "1.14.0",
+    "enrichment_date": "2026-10-26T17:44:57.490232+00:00"
+  },
+  "PyPI:cryptography:43.0.0": {
+    "status": "success",
+    "cves": [
+      "GHSA-537c-gmf6-5ccf",
+      "CVE-2024-12797",
+      "GHSA-h4gh-qq45-vh27",
+      "CVE-2026-69249",
+      "CVE-2026-34073",
+      "CVE-2026-26007",
+      "CVE-2026-69248"
+    ],
+    "count": 7,
+    "package": "cryptography",
+    "version": "43.0.0",
+    "enrichment_date": "2026-10-26T17:44:59.007042+00:00"
+  },
+  "PyPI:matplotlib:3.9.0": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "matplotlib",
+    "version": "3.9.0",
+    "enrichment_date": "2026-10-26T17:45:00.689007+00:00"
+  },
+  "PyPI:torch:2.4.0": {
+    "status": "success",
+    "cves": [
+      "CVE-2025-2953",
+      "CVE-2025-32434",
+      "CVE-2025-3730",
+      "CVE-2025-2148",
+      "CVE-2025-2998",
+      "CVE-2025-3001",
+      "CVE-2025-3000",
+      "CVE-2025-2999",
+      "CVE-2025-2149",
+      "CVE-2024-48063",
+      "CVE-2025-46148",
+      "CVE-2025-55551",
+      "CVE-2025-55552",
+      "CVE-2025-55553",
+      "CVE-2025-55554",
+      "CVE-2025-55557",
+      "CVE-2025-55558",
+      "CVE-2025-55560",
+      "CVE-2026-4538",
+      "CVE-2026-24747"
+    ],
+    "count": 20,
+    "package": "torch",
+    "version": "2.4.0",
+    "enrichment_date": "2026-10-26T17:45:01.793409+00:00"
+  },
+  "PyPI:torch_geometric:2.6.0": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "torch_geometric",
+    "version": "2.6.0",
+    "enrichment_date": "2026-10-26T17:45:03.243495+00:00"
+  },
+  "PyPI:scikit-learn:1.5.0": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "scikit-learn",
+    "version": "1.5.0",
+    "enrichment_date": "2026-10-26T17:45:04.755537+00:00"
+  },
+  "PyPI:bcrypt:4.2.0": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "bcrypt",
+    "version": "4.2.0",
+    "enrichment_date": "2026-10-26T17:45:06.194019+00:00"
+  },
+  "PyPI:PyJWT:2.9.0": {
+    "status": "success",
+    "cves": [
+      "CVE-2026-101917",
+      "CVE-2026-101918",
+      "CVE-2026-32597",
+      "CVE-2026-48522",
+      "CVE-2026-102267",
+      "CVE-2026-102268",
+      "CVE-2026-48524",
+      "CVE-2026-102269",
+      "CVE-2026-48523",
+      "CVE-2026-102270",
+      "CVE-2026-102271",
+      "GHSA-pxh4-856f-4h89",
+      "CVE-2026-102274",
+      "CVE-2026-48525",
+      "CVE-2026-102275",
+      "CVE-2026-48526",
+      "CVE-2025-45768"
+    ],
+    "count": 17,
+    "package": "PyJWT",
+    "version": "2.9.0",
+    "enrichment_date": "2026-10-26T17:45:07.320788+00:00"
+  },
+  "PyPI:cryptography:41.0.0": {
+    "status": "success",
+    "cves": [
+      "CVE-2023-50782",
+      "GHSA-537c-gmf6-5ccf",
+      "CVE-2024-26130",
+      "CVE-2024-0727",
+      "CVE-2023-38325",
+      "GHSA-h4gh-qq45-vh27",
+      "CVE-2023-49083",
+      "GHSA-jm77-qphf-c4w8",
+      "CVE-2026-34073",
+      "CVE-2026-26007",
+      "GHSA-v8gr-m533-ghj9",
+      "CVE-2026-69249",
+      "CVE-2026-69248"
+    ],
+    "count": 13,
+    "package": "cryptography",
+    "version": "41.0.0",
+    "enrichment_date": "2026-10-26T18:38:29.210030+00:00"
+  },
+  "PyPI:jwt:any": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "jwt",
+    "version": null,
+    "enrichment_date": "2026-10-26T18:38:30.743550+00:00"
+  },
+  "PyPI:tests:[\"pytest>": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "tests",
+    "version": "[\"pytest>",
+    "enrichment_date": "2026-10-26T18:48:24.955894+00:00"
+  },
+  "PyPI:typecheck:[\"mypy\"]": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "typecheck",
+    "version": "[\"mypy\"]",
+    "enrichment_date": "2026-10-26T18:48:26.953599+00:00"
+  },
+  "PyPI:ssh:[\"bcrypt >": {
+    "status": "success",
+    "cves": [],
+    "count": 0,
+    "package": "ssh",
+    "version": "[\"bcrypt >",
+    "enrichment_date": "2026-10-26T18:48:27.764525+00:00"
   }
 }

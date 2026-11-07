@@ -93,6 +93,8 @@ export default function RiskTable({ data, graphData, selectedAssetId, onRowClick
           <thead className="bg-muted/50 text-muted-foreground font-semibold sticky top-0 z-10 backdrop-blur-md">
             <tr>
               <th className="px-5 py-3 rounded-tl-md">Asset ID</th>
+              <th className="px-5 py-3 text-center">Engine</th>
+              <th className="px-5 py-3 text-center">Label</th>
               <th className="px-5 py-3 text-right">Base Risk</th>
               <th className="px-5 py-3 rounded-tr-md">Policy Status</th>
             </tr>
@@ -102,6 +104,9 @@ export default function RiskTable({ data, graphData, selectedAssetId, onRowClick
               const isSelected = asset.asset_id === selectedAssetId;
               const isUnrated = asset.score === null || asset.score === undefined;
               const hasMissing = asset.missing_factors && asset.missing_factors.length > 0;
+              const label = asset.heuristic_label || (asset.score !== null && asset.score !== undefined ? (asset.score >= 0.6 ? 'HIGH' : asset.score >= 0.3 ? 'MEDIUM' : 'LOW') : null);
+              const engineTag = asset.engine_version ? asset.engine_version.toUpperCase() : 'V1';
+              
               return (
                 <tr 
                   key={asset.asset_id} 
@@ -109,6 +114,23 @@ export default function RiskTable({ data, graphData, selectedAssetId, onRowClick
                   className={`cursor-pointer transition-colors ${isSelected ? 'bg-primary/10 border-l-2 border-primary' : 'hover:bg-muted/30 border-l-2 border-transparent'} ${isUnrated ? 'opacity-70' : ''}`}
                 >
                   <td className="px-5 py-3 font-mono text-foreground truncate max-w-xs text-xs" title={asset.asset_id}>{asset.asset_id}</td>
+                  <td className="px-5 py-3 text-center">
+                    <span className={`text-[10px] font-mono px-2 py-0.5 rounded font-bold ${engineTag === 'V2' ? 'bg-primary/15 text-primary border border-primary/30' : 'bg-muted text-muted-foreground'}`}>
+                      {engineTag}
+                    </span>
+                  </td>
+                  <td className="px-5 py-3 text-center">
+                    {label ? (
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                        label === 'HIGH' ? 'bg-destructive/15 text-destructive' :
+                        label === 'MEDIUM' ? 'bg-warning/15 text-warning' : 'bg-success/15 text-success'
+                      }`}>
+                        {label}
+                      </span>
+                    ) : (
+                      <span className="text-[10px] text-muted-foreground italic">N/A</span>
+                    )}
+                  </td>
                   <td className="px-5 py-3 text-right font-medium">
                     <ScoreBadge score={asset.score} />
                   </td>
@@ -139,6 +161,37 @@ export default function RiskTable({ data, graphData, selectedAssetId, onRowClick
           <h3 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2 truncate" title={selectedAsset.asset_id}>
             <Info className="w-4 h-4 text-primary" /> Details: {selectedAsset.asset_id}
           </h3>
+
+          {/* Version Comparison Card */}
+          {selectedAsset.comparison && (
+            <div className="mb-4 bg-muted/20 border border-border p-3.5 rounded-xl">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-1.5">
+                <FileCode className="w-3.5 h-3.5 text-primary" /> Engine Version Comparison (Non-Destructive)
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-background/80 p-2.5 rounded-lg border border-border/60">
+                  <span className="text-[10px] uppercase font-bold text-muted-foreground">V1 Production Baseline</span>
+                  <div className="flex items-center justify-between mt-1">
+                    <span className="text-xs font-mono">{selectedAsset.comparison.v1.formula_version}</span>
+                    <ScoreBadge score={selectedAsset.comparison.v1.score} />
+                  </div>
+                  <span className="text-[10px] text-muted-foreground block mt-1">
+                    Label: <strong>{selectedAsset.comparison.v1.label || 'N/A'}</strong> (Fixed 0.30/0.60)
+                  </span>
+                </div>
+                <div className="bg-background/80 p-2.5 rounded-lg border border-primary/30">
+                  <span className="text-[10px] uppercase font-bold text-primary">V2 Experimental Engine</span>
+                  <div className="flex items-center justify-between mt-1">
+                    <span className="text-xs font-mono">{selectedAsset.comparison.v2.formula_version}</span>
+                    <ScoreBadge score={selectedAsset.comparison.v2.score} />
+                  </div>
+                  <span className="text-[10px] text-primary block mt-1">
+                    Label: <strong>{selectedAsset.comparison.v2.label || 'N/A'}</strong> (Calibrated 0.18/0.38)
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Unrated notice */}
           {(selectedAsset.score === null || selectedAsset.score === undefined) && (
