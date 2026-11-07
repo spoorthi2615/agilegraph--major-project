@@ -1,7 +1,7 @@
 # AgileGraph: Graph-Learned Crypto-Agility Risk Scoring for Post-Quantum Migration
 
-[![Backend Tests](https://img.shields.io/badge/Backend%20Tests-427%20Passed%20(4%20skipped)-success?style=flat-square&logo=pytest)](docs/evaluation.md)
-[![Frontend Tests](https://img.shields.io/badge/Frontend%20Tests-39%20Passed-success?style=flat-square&logo=vitest)](frontend/)
+[![Backend Tests](https://img.shields.io/badge/Backend%20Tests-439%20Passed%20(4%20skipped)-success?style=flat-square&logo=pytest)](docs/evaluation.md)
+[![Frontend Tests](https://img.shields.io/badge/Frontend%20Tests-40%20Passed-success?style=flat-square&logo=vitest)](frontend/)
 [![Python Version](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue?style=flat-square&logo=python)](backend/)
 [![React Version](https://img.shields.io/badge/Frontend-React%2019%20%7C%20TypeScript%20%7C%20Vite-61dafb?style=flat-square&logo=react)](frontend/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
@@ -542,7 +542,7 @@ agilegraph--major-project/
 │   │   ├── scanners/              # Python AST, Java, Go, manifest scanners
 │   │   ├── cli.py                 # Command-line interface
 │   │   └── main.py                # FastAPI app entrypoint
-│   └── tests/                     # 427 passing pytest tests
+│   └── tests/                     # 439 passing pytest tests
 ├── docs/                          # Architectural specs, proposal synopsis, and benchmarks
 │   ├── AGILEGRAPH_PROJECT_SYNOPSIS.pdf   # Academic proposal synopsis (PDF)
 │   ├── AGILEGRAPH_PROJECT_SYNOPSIS.docx  # Academic proposal synopsis (Word)
@@ -557,12 +557,17 @@ agilegraph--major-project/
 │   ├── CASE_STUDIES.md
 │   ├── NIST_CONSISTENCY_REVIEW.md
 │   └── ethics_authorization.md
+├── FINAL_RESEARCH_HANDOVER.md     # Comprehensive academic handover and research scorecard
+├── FINAL_METRIC_RECONCILIATION.md # Reconciled metrics across all evaluation protocols
+├── PROJECT_DEMO_CHECKLIST.md      # Scripted 5-minute live viva demonstration guide
+├── VIVA_PREPARATION.md            # Comprehensive defense Q&A and examiner guide
+├── TERMINOLOGY_CORRECTION_RECORD.md # Formal record of epistemological terminology
 ├── frontend/                      # React 19 / TypeScript / Vite web application
 │   ├── src/
 │   │   ├── api/                   # Axios API client and auth headers
 │   │   ├── components/            # UI components (LandingPage, Dashboard, Graph, ...)
 │   │   ├── context/               # AuthContext for session management
-│   │   └── tests/                 # 38 passing Vitest tests
+│   │   └── tests/                 # 40 passing Vitest tests
 ├── .github/workflows/ci.yml       # Continuous integration workflow
 ├── .gitignore
 ├── LICENSE
@@ -577,8 +582,8 @@ Every component of AgileGraph is covered by automated unit, integration, and sec
 
 | Test Suite | Framework | Total Tests | Passed | Skipped | Status |
 | :--- | :--- | :---: | :---: | :---: | :---: |
-| **Backend Suite** | `pytest` | 431 | **427** | 4* | **100% Pass** |
-| **Frontend Suite** | `vitest` | 39 | **39** | 0 | **100% Pass** |
+| **Backend Suite** | `pytest` | 443 | **439** | 4* | **100% Pass** |
+| **Frontend Suite** | `vitest` | 40 | **40** | 0 | **100% Pass** |
 | **Frontend Production Build** | `tsc -b && vite build` | — | **Exit 0** | 0 | **Clean** |
 
 *\*Note: 4 skips are Windows OS symlink and FIFO limitations in pipeline filesystem isolation tests.*
